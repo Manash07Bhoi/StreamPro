@@ -51,7 +51,8 @@ class StreamProApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (_) => getIt<VideoListBloc>()..add(LoadVideosEvent())),
-        BlocProvider(create: (_) => getIt<VpnBloc>()..add(AutoConnectVpnEvent())),
+        BlocProvider(
+            create: (_) => getIt<VpnBloc>()..add(AutoConnectVpnEvent())),
       ],
       child: MaterialApp(
         title: 'StreamPro',
