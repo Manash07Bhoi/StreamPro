@@ -16,16 +16,28 @@ class VideoPlayerPage extends StatefulWidget {
   State<VideoPlayerPage> createState() => _VideoPlayerPageState();
 }
 
-class _VideoPlayerPageState extends State<VideoPlayerPage> {
+class _VideoPlayerPageState extends State<VideoPlayerPage>
+    with SingleTickerProviderStateMixin {
   InAppWebViewController? webViewController;
   bool _showControls = true;
   bool _isBookmarked = false;
   final _repository = getIt<VideoRepository>();
   List<VideoEntity> _relatedVideos = [];
 
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _fadeAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_fadeController);
+    _fadeController.value = 1.0; // Show initially
+
     // Hide system UI for immersive experience
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     // Allow landscape orientation
@@ -62,6 +74,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   @override
   void dispose() {
+    _fadeController.dispose();
+    webViewController?.dispose();
     // Restore system UI and portrait orientation on exit
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([
@@ -69,6 +83,17 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       DeviceOrientation.portraitDown,
     ]);
     super.dispose();
+  }
+
+  bool _isPopping = false;
+
+  void _safePop() {
+    if (_isPopping) return;
+    _isPopping = true;
+    HapticFeedback.selectionClick();
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -91,7 +116,11 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     """;
 
     return PopScope(
-        canPop: true,
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          _safePop();
+        },
         child: Scaffold(
           backgroundColor: Colors.black,
           body: SafeArea(
@@ -99,12 +128,18 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
               onTap: () {
                 setState(() {
                   _showControls = !_showControls;
+                  if (_showControls) {
+                    _fadeController.forward();
+                  } else {
+                    _fadeController.reverse();
+                  }
                 });
               },
               child: Stack(
                 children: [
                   // WebView Player
                   InAppWebView(
+                    keepAlive: InAppWebViewKeepAlive(),
                     initialData: InAppWebViewInitialData(data: htmlData),
                     initialSettings: InAppWebViewSettings(
                       mediaPlaybackRequiresUserGesture: false,
@@ -117,9 +152,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                   ),
 
                   // Controls Overlay
-                  AnimatedOpacity(
-                    opacity: _showControls ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 300),
+                  FadeTransition(
+                    opacity: _fadeAnimation,
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -145,11 +179,9 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                               child: Row(
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.arrow_back,
+                                    icon: const Icon(Icons.arrow_back_ios_new,
                                         color: Colors.white),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                    onPressed: _safePop,
                                   ),
                                   Expanded(
                                     child: Text(

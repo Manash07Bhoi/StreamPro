@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/vpn_bloc.dart';
 
@@ -15,14 +16,28 @@ class VpnStatusScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isPopping = false;
+    void safePop() {
+      if (isPopping) return;
+      isPopping = true;
+      HapticFeedback.selectionClick();
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+    }
+
     return PopScope(
-        canPop: true,
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          safePop();
+        },
         child: Scaffold(
           appBar: AppBar(
             title: const Text('VPN Status'),
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back_ios_new),
+              onPressed: safePop,
             ),
           ),
           body: BlocBuilder<VpnBloc, VpnState>(
