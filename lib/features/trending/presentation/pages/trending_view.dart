@@ -25,9 +25,12 @@ class TrendingView extends StatelessWidget {
           Expanded(
             child: TabBarView(
               children: [
-                _buildRankedList(),
-                _buildRankedList(),
-                _buildRankedList(),
+                _buildRankedList(
+                    context.read<VideoListBloc>().trendingDailyController),
+                _buildRankedList(
+                    context.read<VideoListBloc>().trendingWeeklyController),
+                _buildRankedList(
+                    context.read<VideoListBloc>().trendingAllTimeController),
               ],
             ),
           ),
@@ -36,10 +39,8 @@ class TrendingView extends StatelessWidget {
     );
   }
 
-  Widget _buildRankedList() {
+  Widget _buildRankedList(pagingController) {
     return Builder(builder: (context) {
-      final pagingController = context.read<VideoListBloc>().pagingController;
-
       return PagedListView<int, VideoEntity>(
         padding: const EdgeInsets.all(16),
         pagingController: pagingController,
@@ -66,8 +67,10 @@ class TrendingView extends StatelessWidget {
               ],
             );
           },
-          firstPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator()),
-          newPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator()),
+          firstPageProgressIndicatorBuilder: (_) =>
+              const Center(child: CircularProgressIndicator()),
+          newPageProgressIndicatorBuilder: (_) =>
+              const Center(child: CircularProgressIndicator()),
         ),
       );
     });

@@ -41,8 +41,13 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   final VideoRepository repository;
 
   // Paging Controllers
-  final PagingController<int, VideoEntity> pagingController =
+  final PagingController<int, VideoEntity> trendingDailyController =
       PagingController<int, VideoEntity>(firstPageKey: 0);
+  final PagingController<int, VideoEntity> trendingWeeklyController =
+      PagingController<int, VideoEntity>(firstPageKey: 0);
+  final PagingController<int, VideoEntity> trendingAllTimeController =
+      PagingController<int, VideoEntity>(firstPageKey: 0);
+
   final PagingController<int, VideoEntity> searchPagingController =
       PagingController<int, VideoEntity>(firstPageKey: 0);
 
@@ -51,8 +56,14 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   String _currentQuery = '';
 
   VideoListBloc(this.repository) : super(VideoListInitial()) {
-    pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
+    trendingDailyController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey, trendingDailyController);
+    });
+    trendingWeeklyController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey, trendingWeeklyController);
+    });
+    trendingAllTimeController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey, trendingAllTimeController);
     });
 
     searchPagingController.addPageRequestListener((pageKey) {
@@ -66,15 +77,14 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
       try {
         await repository.initSampleData();
 
-        // For Home tab carousel and horizontal lists we still load an initial chunk
-        final allVideos = await repository.getAllVideos();
-        final trending = allVideos.take(10).toList();
-        final recommended = allVideos.skip(10).take(10).toList();
+        // For Home tab carousel and horizontal lists we load a small chunk via getVideosPaged
+        // Avoid bulk loading everything.
+        final chunk1 = await repository.getVideosPaged(0, 10);
+        final chunk2 = await repository.getVideosPaged(1, 10);
+        final chunk3 = await repository.getVideosPaged(2, 5);
 
         emit(VideoListLoaded(
-            videos: allVideos.take(5).toList(),
-            trending: trending,
-            recommended: recommended));
+            videos: chunk3, trending: chunk1, recommended: chunk2));
       } catch (e) {
         emit(VideoListError('Failed to load videos.'));
       }
@@ -90,18 +100,21 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     });
   }
 
-  Future<void> _fetchPage(int pageKey) async {
+  Future<void> _fetchPage(
+      int pageKey, PagingController<int, VideoEntity> controller) async {
     try {
+      // Add slight delay to simulate network request and show shimmer
+      await Future.delayed(const Duration(milliseconds: 500));
       final newItems = await repository.getVideosPaged(pageKey, _pageSize);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
-        pagingController.appendLastPage(newItems);
+        controller.appendLastPage(newItems);
       } else {
         final nextPageKey = pageKey + 1;
-        pagingController.appendPage(newItems, nextPageKey);
+        controller.appendPage(newItems, nextPageKey);
       }
     } catch (error) {
-      pagingController.error = error;
+      controller.error = error;
     }
   }
 
@@ -135,7 +148,9 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   @override
   Future<void> close() {
     _debounce?.cancel();
-    pagingController.dispose();
+    trendingDailyController.dispose();
+    trendingWeeklyController.dispose();
+    trendingAllTimeController.dispose();
     searchPagingController.dispose();
     return super.close();
   }

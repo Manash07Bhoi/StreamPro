@@ -14,19 +14,20 @@ class MainDrawer extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
+            padding:
+                const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
             decoration: const BoxDecoration(
               gradient: AppTheme.primaryGradient,
             ),
-            child: Row(
+            child: const Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 30,
                   backgroundColor: Colors.white24,
                   child: Icon(Icons.person, size: 36, color: Colors.white),
                 ),
-                const SizedBox(width: 16),
-                const Column(
+                SizedBox(width: 16),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -52,7 +53,8 @@ class MainDrawer extends StatelessWidget {
             title: 'Categories',
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.category, arguments: 'Action');
+              Navigator.pushNamed(context, AppRoutes.category,
+                  arguments: 'Action');
             },
           ),
           _buildVpnDrawerItem(context),
@@ -67,7 +69,7 @@ class MainDrawer extends StatelessWidget {
           _buildDrawerItem(
             icon: Icons.info_outline,
             title: 'About',
-            onTap: () {}, // placeholder
+            onTap: () {},
           ),
           const Spacer(),
           const Padding(
@@ -103,7 +105,8 @@ class MainDrawer extends StatelessWidget {
             Icons.security,
             color: isConnected ? Colors.green : Colors.red,
           ),
-          title: const Text('VPN Status', style: TextStyle(color: Colors.white)),
+          title:
+              const Text('VPN Status', style: TextStyle(color: Colors.white)),
           subtitle: Text(
             isConnected ? 'Connected (${state.country})' : 'Disconnected',
             style: TextStyle(color: isConnected ? Colors.green : Colors.red),

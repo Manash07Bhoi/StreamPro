@@ -52,10 +52,10 @@ class _LibraryViewState extends State<LibraryView> {
         }
         final videos = snapshot.data ?? [];
         if (videos.isEmpty) {
-          return Center(
+          return const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(Icons.video_library_outlined,
                     size: 80, color: Colors.white24),
                 SizedBox(height: 16),

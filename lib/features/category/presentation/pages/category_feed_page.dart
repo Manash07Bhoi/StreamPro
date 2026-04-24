@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../core/models/video_entity.dart';
 import '../../../../core/widgets/premium_video_card.dart';
@@ -60,16 +61,31 @@ class _CategoryFeedPageState extends State<CategoryFeedPage> {
     super.dispose();
   }
 
+  bool _isPopping = false;
+
+  void _safePop() {
+    if (_isPopping) return;
+    _isPopping = true;
+    HapticFeedback.selectionClick();
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _safePop();
+      },
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.category),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back_ios_new),
+            onPressed: _safePop,
           ),
         ),
         body: PagedListView<int, VideoEntity>(

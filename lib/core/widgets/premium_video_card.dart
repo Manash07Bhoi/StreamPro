@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/video_entity.dart';
 import '../routes/app_routes.dart';
@@ -21,6 +22,7 @@ class PremiumVideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        HapticFeedback.selectionClick();
         Navigator.pushNamed(context, AppRoutes.player, arguments: video);
       },
       child: Container(
@@ -122,7 +124,7 @@ class PremiumVideoCard extends StatelessWidget {
                   children: [
                     Text(
                       video.category.toUpperCase(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppTheme.primaryColor,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
