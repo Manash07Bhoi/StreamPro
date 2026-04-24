@@ -31,7 +31,7 @@ class PremiumVideoCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withValues(alpha: 0.5),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -56,29 +56,42 @@ class PremiumVideoCard extends StatelessWidget {
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
-              // Gradient Overlay
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.8),
-                    ],
+              // Glassmorphic Gradient Overlay at bottom
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: height * 0.6,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.9),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              // Play Icon overlay
+              // Play Icon overlay with glow
               Center(
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    gradient: AppTheme.primaryGradient,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white24, width: 1),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primaryColor.withValues(alpha: 0.5),
+                        blurRadius: 15,
+                        spreadRadius: 2,
+                      )
+                    ],
                   ),
-                  child: const Icon(Icons.play_arrow, color: Colors.white, size: 32),
+                  child: const Icon(Icons.play_arrow,
+                      color: Colors.white, size: 32),
                 ),
               ),
               // Duration Badge
@@ -87,7 +100,8 @@ class PremiumVideoCard extends StatelessWidget {
                 right: 8,
                 child: AppTheme.glassmorphicContainer(
                   borderRadius: 8,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Text(
                     video.duration,
                     style: const TextStyle(

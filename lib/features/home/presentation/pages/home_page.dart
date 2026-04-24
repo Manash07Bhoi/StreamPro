@@ -5,6 +5,8 @@ import '../../../trending/presentation/pages/trending_view.dart';
 import '../../../library/presentation/pages/library_view.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../widgets/main_drawer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../vpn/presentation/blocs/vpn_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,12 +33,24 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {}, // Handled in discover tab
-          ),
-          IconButton(
-            icon: const Icon(Icons.security),
             onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.vpn);
+              setState(() {
+                _currentIndex = 1; // Go to discover
+              });
+            },
+          ),
+          BlocBuilder<VpnBloc, VpnState>(
+            builder: (context, state) {
+              bool isConnected = state is VpnConnected;
+              return IconButton(
+                icon: Icon(
+                  Icons.security,
+                  color: isConnected ? Colors.green : Colors.grey,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.vpn);
+                },
+              );
             },
           ),
         ],
