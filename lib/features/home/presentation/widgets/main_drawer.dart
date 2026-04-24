@@ -50,13 +50,19 @@ class MainDrawer extends StatelessWidget {
           _buildDrawerItem(
             icon: Icons.category,
             title: 'Categories',
-            onTap: () {}, // placeholder
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, AppRoutes.category, arguments: 'Action');
+            },
           ),
           _buildVpnDrawerItem(context),
           _buildDrawerItem(
             icon: Icons.settings,
             title: 'Settings',
-            onTap: () {}, // placeholder
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, AppRoutes.settings);
+            },
           ),
           _buildDrawerItem(
             icon: Icons.info_outline,
