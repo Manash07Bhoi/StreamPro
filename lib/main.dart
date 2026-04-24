@@ -5,6 +5,10 @@ import 'core/models/app_config.dart';
 import 'core/di/injection.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'features/discover/presentation/blocs/video_list_bloc.dart';
+import 'features/vpn/presentation/blocs/vpn_bloc.dart';
+import 'core/models/video_entity.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +18,7 @@ void main() async {
 
   // Register Adapters
   Hive.registerAdapter(AppConfigAdapter());
+  Hive.registerAdapter(VideoEntityAdapter());
 
   // Setup DI
   await setupInjection();
@@ -42,13 +47,19 @@ class StreamProApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We will add MultiBlocProvider here later when BLoCs are created
-    return MaterialApp(
-      title: 'StreamPro',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme, // App applies dark theme globally
-      initialRoute: AppRoutes.splash,
-      onGenerateRoute: AppRoutes.onGenerateRoute,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (_) => getIt<VideoListBloc>()..add(LoadVideosEvent())),
+        BlocProvider(create: (_) => getIt<VpnBloc>()..add(ConnectVpnEvent())),
+      ],
+      child: MaterialApp(
+        title: 'StreamPro',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.darkTheme, // App applies dark theme globally
+        initialRoute: AppRoutes.splash,
+        onGenerateRoute: AppRoutes.onGenerateRoute,
+      ),
     );
   }
 }
