@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 
-// Assuming screens are going to be implemented next
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/home/presentation/pages/splash_page.dart';
 import '../../features/player/presentation/pages/video_player_page.dart';
+import '../../features/vpn/presentation/pages/vpn_status_screen.dart';
+import '../models/video_entity.dart';
 
 class AppRoutes {
   static const String splash = '/';
   static const String home = '/home';
   static const String player = '/player';
+  static const String vpn = '/vpn';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case home:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case player:
-        return MaterialPageRoute(builder: (_) => const VideoPlayerPage());
+        final video = settings.arguments as VideoEntity?;
+        if (video != null) {
+          return MaterialPageRoute(builder: (_) => VideoPlayerPage(video: video));
+        }
+        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Error: No Video Data'))));
+      case vpn:
+        return MaterialPageRoute(builder: (_) => const VpnStatusScreen());
       case splash:
       default:
         return MaterialPageRoute(builder: (_) => const SplashPage());

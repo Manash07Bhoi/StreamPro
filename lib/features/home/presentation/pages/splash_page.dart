@@ -8,45 +8,79 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
+
+    _controller.forward();
     _navigateToHome();
   }
 
   _navigateToHome() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 1800));
     if (mounted) {
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.play_circle_fill,
-              size: 100,
-              color: Color(0xFFC026D3), // Primary color
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'StreamPro',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [Color(0xFFC026D3), Color(0xFFDB2777)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds),
+                  child: const Icon(
+                    Icons.play_circle_fill,
+                    size: 120,
                     color: Colors.white,
                   ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'StreamPro',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                      ),
+                ),
+                const SizedBox(height: 40),
+                const CircularProgressIndicator(
+                  color: Color(0xFFC026D3),
+                ),
+              ],
             ),
-            const SizedBox(height: 40),
-            const CircularProgressIndicator(
-              color: Color(0xFFDB2777), // Secondary color
-            ),
-          ],
+          ),
         ),
       ),
     );
