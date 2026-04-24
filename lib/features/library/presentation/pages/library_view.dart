@@ -52,10 +52,18 @@ class _LibraryViewState extends State<LibraryView> {
         }
         final videos = snapshot.data ?? [];
         if (videos.isEmpty) {
-          return const Center(
-            child: Text(
-              'No videos found here yet.',
-              style: TextStyle(color: Colors.white54, fontSize: 16),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.video_library_outlined,
+                    size: 80, color: Colors.white24),
+                SizedBox(height: 16),
+                Text(
+                  'No videos found here yet.',
+                  style: TextStyle(color: Colors.white54, fontSize: 18),
+                ),
+              ],
             ),
           );
         }

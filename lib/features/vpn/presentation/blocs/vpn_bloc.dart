@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import '../../../../core/models/app_config.dart';
 
 // Events
 abstract class VpnEvent {}
@@ -42,6 +44,7 @@ class VpnBloc extends Bloc<VpnEvent, VpnState> {
       await Future.delayed(const Duration(seconds: 2));
       final selectedCountry = event.country ??
           _optimalCountries[Random().nextInt(_optimalCountries.length)];
+      await _saveConfig(selectedCountry);
       emit(VpnConnected(selectedCountry));
     });
 
@@ -51,11 +54,21 @@ class VpnBloc extends Bloc<VpnEvent, VpnState> {
           const Duration(seconds: 1)); // Quick optimal selection
       final bestCountry =
           _optimalCountries[Random().nextInt(_optimalCountries.length)];
+      await _saveConfig(bestCountry);
       emit(VpnConnected(bestCountry));
     });
 
     on<DisconnectVpnEvent>((event, emit) async {
+      await _saveConfig('');
       emit(VpnDisconnected());
     });
+  }
+
+  Future<void> _saveConfig(String country) async {
+    final box = await Hive.openBox<AppConfig>('app_config');
+    final config = box.get('config') ?? AppConfig();
+    config.isVpnEnabled = country.isNotEmpty;
+    config.lastConnectedCountry = country;
+    await box.put('config', config);
   }
 }

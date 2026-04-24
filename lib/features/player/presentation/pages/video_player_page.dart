@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/models/video_entity.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../../../../core/widgets/premium_video_card.dart';
 import '../../../discover/data/repositories/video_repository.dart';
 
@@ -27,6 +28,13 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     super.initState();
     // Hide system UI for immersive experience
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // Allow landscape orientation
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     _initVideoData();
   }
 
@@ -54,8 +62,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   @override
   void dispose() {
-    // Restore system UI on exit
+    // Restore system UI and portrait orientation on exit
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     super.dispose();
   }
 
@@ -78,171 +90,186 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       </html>
     """;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              _showControls = !_showControls;
-            });
-          },
-          child: Stack(
-            children: [
-              // WebView Player
-              InAppWebView(
-                initialData: InAppWebViewInitialData(data: htmlData),
-                initialSettings: InAppWebViewSettings(
-                  mediaPlaybackRequiresUserGesture: false,
-                  allowsInlineMediaPlayback: true,
-                  iframeAllowFullscreen: true,
-                ),
-                onWebViewCreated: (controller) {
-                  webViewController = controller;
-                },
-              ),
-
-              // Controls Overlay
-              AnimatedOpacity(
-                opacity: _showControls ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.7),
-                        Colors.transparent,
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.7),
-                      ],
-                      stops: const [0.0, 0.2, 0.8, 1.0],
+    return PopScope(
+        canPop: true,
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          body: SafeArea(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _showControls = !_showControls;
+                });
+              },
+              child: Stack(
+                children: [
+                  // WebView Player
+                  InAppWebView(
+                    initialData: InAppWebViewInitialData(data: htmlData),
+                    initialSettings: InAppWebViewSettings(
+                      mediaPlaybackRequiresUserGesture: false,
+                      allowsInlineMediaPlayback: true,
+                      iframeAllowFullscreen: true,
                     ),
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Top Bar
-                      SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 16.0),
-                          child: Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.arrow_back,
-                                    color: Colors.white),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              Expanded(
-                                child: Text(
-                                  widget.video.title,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  _isBookmarked
-                                      ? Icons.bookmark
-                                      : Icons.bookmark_border,
-                                  color: _isBookmarked
-                                      ? const Color(0xFFC026D3)
-                                      : Colors.white,
-                                ),
-                                onPressed: () async {
-                                  await _repository
-                                      .toggleBookmark(widget.video);
-                                  setState(() {
-                                    _isBookmarked = !_isBookmarked;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
+
+                  // Controls Overlay
+                  AnimatedOpacity(
+                    opacity: _showControls ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.7),
+                            Colors.transparent,
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
+                          stops: const [0.0, 0.2, 0.8, 1.0],
                         ),
                       ),
-
-                      // Bottom Overlay with Fake Controls and Related Videos
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Fake Controls
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text('00:00',
-                                    style: TextStyle(color: Colors.white)),
-                                Expanded(
-                                  child: Slider(
-                                    value: 0.0,
-                                    onChanged: (value) {},
-                                    activeColor: const Color(0xFFC026D3),
-                                    inactiveColor: Colors.grey,
+                          // Top Bar
+                          SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 16.0),
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.arrow_back,
+                                        color: Colors.white),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
                                   ),
-                                ),
-                                Text(widget.video.duration,
-                                    style:
-                                        const TextStyle(color: Colors.white)),
-                                const SizedBox(width: 16),
-                                const Icon(Icons.fullscreen,
-                                    color: Colors.white),
-                              ],
+                                  Expanded(
+                                    child: Text(
+                                      widget.video.title,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      _isBookmarked
+                                          ? Icons.bookmark
+                                          : Icons.bookmark_border,
+                                      color: _isBookmarked
+                                          ? const Color(0xFFC026D3)
+                                          : Colors.white,
+                                    ),
+                                    onPressed: () async {
+                                      await _repository
+                                          .toggleBookmark(widget.video);
+                                      setState(() {
+                                        _isBookmarked = !_isBookmarked;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          // Related Videos
-                          if (_relatedVideos.isNotEmpty) ...[
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
-                              child: Text(
-                                'Related Videos',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+
+                          // Bottom Overlay with Fake Controls and Related Videos
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Fake Controls
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('00:00',
+                                        style: TextStyle(color: Colors.white)),
+                                    Expanded(
+                                      child: Slider(
+                                        value: 0.0,
+                                        onChanged: (value) {},
+                                        activeColor: const Color(0xFFC026D3),
+                                        inactiveColor: Colors.grey,
+                                      ),
+                                    ),
+                                    Text(widget.video.duration,
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    const SizedBox(width: 16),
+                                    const Icon(Icons.fullscreen,
+                                        color: Colors.white),
+                                  ],
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 140,
-                              child: ListView.builder(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _relatedVideos.length,
-                                itemBuilder: (context, index) {
-                                  return PremiumVideoCard(
-                                    video: _relatedVideos[index],
-                                    width: 220,
-                                    height: 140,
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                          ]
+                              // Related Videos
+                              if (_relatedVideos.isNotEmpty) ...[
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 8.0),
+                                  child: Text(
+                                    'Related Videos',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 140,
+                                  child: ListView.builder(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _relatedVideos.length,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushReplacementNamed(
+                                            context,
+                                            AppRoutes.player,
+                                            arguments: _relatedVideos[index],
+                                          );
+                                        },
+                                        child: AbsorbPointer(
+                                          // Absorb so the card's native tap doesn't push a new route on top of this one
+                                          child: PremiumVideoCard(
+                                            video: _relatedVideos[index],
+                                            width: 220,
+                                            height: 140,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ]
+                            ],
+                          ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

@@ -60,8 +60,17 @@ class _DiscoverViewState extends State<DiscoverView> {
                   const Center(child: CircularProgressIndicator()),
               newPageProgressIndicatorBuilder: (_) =>
                   const Center(child: CircularProgressIndicator()),
-              noItemsFoundIndicatorBuilder: (_) =>
-                  const Center(child: Text('No premium videos found.')),
+              noItemsFoundIndicatorBuilder: (_) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.search_off, size: 80, color: Colors.white24),
+                    SizedBox(height: 16),
+                    Text('No premium videos found.',
+                        style: TextStyle(color: Colors.white54, fontSize: 18)),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
