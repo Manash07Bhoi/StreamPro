@@ -61,21 +61,26 @@ class _CategoryFeedPageState extends State<CategoryFeedPage> {
     super.dispose();
   }
 
-  bool _isPopping = false;
+  bool _canPop = false;
 
   void _safePop() {
-    if (_isPopping) return;
-    _isPopping = true;
+    if (_canPop) return;
     HapticFeedback.selectionClick();
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
-    }
+    setState(() {
+      _canPop = true;
+    });
+    // Let the frame build with canPop: true, then pop
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: _canPop,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         _safePop();

@@ -1,33 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    bool isPopping = false;
-    void safePop() {
-      if (isPopping) return;
-      isPopping = true;
-      HapticFeedback.selectionClick();
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool _canPop = false;
+
+  void _safePop() {
+    if (_canPop) return;
+    HapticFeedback.selectionClick();
+    setState(() {
+      _canPop = true;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Navigator.of(context).canPop()) {
         Navigator.of(context).pop();
       }
-    }
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: _canPop,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        safePop();
+        _safePop();
       },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new),
-            onPressed: safePop,
+            onPressed: _safePop,
           ),
         ),
         body: ListView(
