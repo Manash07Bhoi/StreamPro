@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import '../../../../core/di/injection.dart';
 import '../../../../core/models/video_entity.dart';
+import '../../../../core/widgets/premium_video_card.dart';
+import '../../../discover/data/repositories/video_repository.dart';
 
 class VideoPlayerPage extends StatefulWidget {
   final VideoEntity video;
@@ -14,6 +18,46 @@ class VideoPlayerPage extends StatefulWidget {
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
   InAppWebViewController? webViewController;
   bool _showControls = true;
+  bool _isBookmarked = false;
+  final _repository = getIt<VideoRepository>();
+  List<VideoEntity> _relatedVideos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Hide system UI for immersive experience
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    _initVideoData();
+  }
+
+  Future<void> _initVideoData() async {
+    await _repository.addToHistory(widget.video);
+    final bookmarked = await _repository.isBookmarked(widget.video.id);
+    final allVideos = await _repository.getAllVideos();
+
+    // Filter related videos (e.g. same category)
+    final related = allVideos
+        .where((v) =>
+            v.id != widget.video.id && v.category == widget.video.category)
+        .toList();
+    if (related.isEmpty) {
+      related.addAll(allVideos.where((v) => v.id != widget.video.id).take(5));
+    }
+
+    if (mounted) {
+      setState(() {
+        _isBookmarked = bookmarked;
+        _relatedVideos = related;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // Restore system UI on exit
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,54 +124,116 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Top Bar
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back, color: Colors.white),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                            Expanded(
-                              child: Text(
-                                widget.video.title,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                      SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 16.0),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.arrow_back,
+                                    color: Colors.white),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
                               ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.share, color: Colors.white),
-                              onPressed: () {}, // share logic
-                            ),
-                          ],
+                              Expanded(
+                                child: Text(
+                                  widget.video.title,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  _isBookmarked
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_border,
+                                  color: _isBookmarked
+                                      ? const Color(0xFFC026D3)
+                                      : Colors.white,
+                                ),
+                                onPressed: () async {
+                                  await _repository
+                                      .toggleBookmark(widget.video);
+                                  setState(() {
+                                    _isBookmarked = !_isBookmarked;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
 
-                      // Bottom Fake Controls (since it's an iframe, we just show UI overlay)
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('00:00', style: TextStyle(color: Colors.white)),
-                            Expanded(
-                              child: Slider(
-                                value: 0.0,
-                                onChanged: (value) {},
-                                activeColor: const Color(0xFFC026D3),
-                                inactiveColor: Colors.grey,
+                      // Bottom Overlay with Fake Controls and Related Videos
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Fake Controls
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('00:00',
+                                    style: TextStyle(color: Colors.white)),
+                                Expanded(
+                                  child: Slider(
+                                    value: 0.0,
+                                    onChanged: (value) {},
+                                    activeColor: const Color(0xFFC026D3),
+                                    inactiveColor: Colors.grey,
+                                  ),
+                                ),
+                                Text(widget.video.duration,
+                                    style:
+                                        const TextStyle(color: Colors.white)),
+                                const SizedBox(width: 16),
+                                const Icon(Icons.fullscreen,
+                                    color: Colors.white),
+                              ],
+                            ),
+                          ),
+                          // Related Videos
+                          if (_relatedVideos.isNotEmpty) ...[
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Text(
+                                'Related Videos',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                            Text(widget.video.duration, style: const TextStyle(color: Colors.white)),
-                            const SizedBox(width: 16),
-                            const Icon(Icons.fullscreen, color: Colors.white),
-                          ],
-                        ),
+                            SizedBox(
+                              height: 140,
+                              child: ListView.builder(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: _relatedVideos.length,
+                                itemBuilder: (context, index) {
+                                  return PremiumVideoCard(
+                                    video: _relatedVideos[index],
+                                    width: 220,
+                                    height: 140,
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ]
+                        ],
                       ),
                     ],
                   ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/models/video_entity.dart';
 import '../../../../core/widgets/premium_video_card.dart';
 import '../../../discover/presentation/blocs/video_list_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DiscoverView extends StatefulWidget {
   const DiscoverView({super.key});
@@ -31,45 +33,45 @@ class _DiscoverViewState extends State<DiscoverView> {
                 borderSide: BorderSide.none,
               ),
             ),
-            onSubmitted: (value) {
-              if (value.isNotEmpty) {
-                context.read<VideoListBloc>().add(SearchVideosEvent(value));
-              } else {
-                context.read<VideoListBloc>().add(LoadVideosEvent());
-              }
+            onChanged: (value) {
+              context.read<VideoListBloc>().add(SearchVideosEvent(value));
             },
           ),
         ),
         Expanded(
-          child: BlocBuilder<VideoListBloc, VideoListState>(
-            builder: (context, state) {
-              if (state is VideoListLoaded) {
-                if (state.videos.isEmpty) {
-                  return const Center(child: Text('No videos found.'));
-                }
-                return GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.8,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: state.videos.length,
-                  itemBuilder: (context, index) {
-                    return PremiumVideoCard(
-                      video: state.videos[index],
-                      width: double.infinity,
-                      height: double.infinity,
-                    );
-                  },
+          child: PagedMasonryGridView<int, VideoEntity>.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            pagingController:
+                context.read<VideoListBloc>().searchPagingController,
+            builderDelegate: PagedChildBuilderDelegate<VideoEntity>(
+              itemBuilder: (context, video, index) {
+                // Staggered heights
+                final double height = (index % 3 == 0) ? 220 : 160;
+                return PremiumVideoCard(
+                  video: video,
+                  width: double.infinity,
+                  height: height,
                 );
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
+              },
+              firstPageProgressIndicatorBuilder: (_) =>
+                  const Center(child: CircularProgressIndicator()),
+              newPageProgressIndicatorBuilder: (_) =>
+                  const Center(child: CircularProgressIndicator()),
+              noItemsFoundIndicatorBuilder: (_) =>
+                  const Center(child: Text('No premium videos found.')),
+            ),
           ),
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }

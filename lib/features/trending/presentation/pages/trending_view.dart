@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import '../../../../core/models/video_entity.dart';
 import '../../../../core/widgets/premium_video_card.dart';
 import '../../../discover/presentation/blocs/video_list_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,39 +37,39 @@ class TrendingView extends StatelessWidget {
   }
 
   Widget _buildRankedList() {
-    return BlocBuilder<VideoListBloc, VideoListState>(
-      builder: (context, state) {
-        if (state is VideoListLoaded) {
-          final rankedVideos = state.trending;
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: rankedVideos.length,
-            itemBuilder: (context, index) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    '${index + 1}',
-                    style: const TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white24,
-                    ),
+    return Builder(builder: (context) {
+      final pagingController = context.read<VideoListBloc>().pagingController;
+
+      return PagedListView<int, VideoEntity>(
+        padding: const EdgeInsets.all(16),
+        pagingController: pagingController,
+        builderDelegate: PagedChildBuilderDelegate<VideoEntity>(
+          itemBuilder: (context, video, index) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '${index + 1}',
+                  style: const TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white24,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: PremiumVideoCard(
-                      video: rankedVideos[index],
-                      height: 120,
-                    ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: PremiumVideoCard(
+                    video: video,
+                    height: 120,
                   ),
-                ],
-              );
-            },
-          );
-        }
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
+                ),
+              ],
+            );
+          },
+          firstPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator()),
+          newPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator()),
+        ),
+      );
+    });
   }
 }
