@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../core/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import '../../../../core/models/app_config.dart';
+import '../../../../core/routes/app_router.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -8,80 +11,45 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
-
+class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
-
-    _controller.forward();
-    _navigateToHome();
+    _checkInitialRoute();
   }
 
-  _navigateToHome() async {
-    await Future.delayed(const Duration(milliseconds: 1800));
-    if (mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+  Future<void> _checkInitialRoute() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!Hive.isBoxOpen('app_config_box')) {
+      await Hive.openBox<AppConfig>('app_config_box');
+    }
+    final configBox = Hive.box<AppConfig>('app_config_box');
+
+    if (configBox.isEmpty) {
+      await configBox.put(0, AppConfig());
+    }
+
+    final config = configBox.getAt(0);
+
+    if (config != null) {
+      if (!config.hasAcceptedTerms || !config.hasAcceptedAgeGate || !config.hasAcceptedPrivacy) {
+        if (mounted) context.go(AppRoutes.ageGate);
+      } else if (config.isFirstLaunch) {
+        if (mounted) context.go(AppRoutes.onboarding);
+      } else {
+        if (mounted) context.go(AppRoutes.home);
+      }
+    } else {
+       if (mounted) context.go(AppRoutes.ageGate);
     }
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [Color(0xFFC026D3), Color(0xFFDB2777)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ).createShader(bounds),
-                  child: const Icon(
-                    Icons.play_circle_fill,
-                    size: 120,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'StreamPro',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5,
-                      ),
-                ),
-                const SizedBox(height: 40),
-                const CircularProgressIndicator(
-                  color: Color(0xFFC026D3),
-                ),
-              ],
-            ),
-          ),
-        ),
+        child: CircularProgressIndicator(),
       ),
     );
   }
