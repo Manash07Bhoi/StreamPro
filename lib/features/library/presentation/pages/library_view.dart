@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../core/di/injection.dart';
 import '../../../../core/models/video_entity.dart';
 import '../../../../core/widgets/premium_video_card.dart';
-import '../../../discover/data/repositories/video_repository.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../features/discover/data/repositories/video_repository.dart';
 
 class LibraryView extends StatefulWidget {
   const LibraryView({super.key});
@@ -11,73 +11,84 @@ class LibraryView extends StatefulWidget {
   State<LibraryView> createState() => _LibraryViewState();
 }
 
-class _LibraryViewState extends State<LibraryView> {
-  final _repository = getIt<VideoRepository>();
+class _LibraryViewState extends State<LibraryView> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  List<VideoEntity> _history = [];
+  List<VideoEntity> _bookmarks = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, vsync: this);
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final repo = getIt<VideoRepository>();
+    final history = repo.getHistory();
+    final bookmarks = repo.getBookmarks();
+    if (mounted) {
+      setState(() {
+        _history = history;
+        _bookmarks = bookmarks;
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Column(
-        children: [
-          const TabBar(
-            tabs: [
-              Tab(text: 'Watch History'),
-              Tab(text: 'Bookmarks'),
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+      children: [
+        TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          tabs: const [
+            Tab(text: 'History'),
+            Tab(text: 'Bookmarks'),
+            Tab(text: 'Downloads'),
+            Tab(text: 'Playlists'),
+            Tab(text: 'Liked'),
+          ],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildList(_history, 'No watch history yet.'),
+              _buildList(_bookmarks, 'No bookmarks yet.'),
+              const Center(child: Text('No downloads yet.')),
+              const Center(child: Text('No playlists yet.')),
+              const Center(child: Text('No liked videos yet.')),
             ],
-            indicatorColor: Color(0xFFC026D3),
           ),
-          Expanded(
-            child: TabBarView(
-              children: [
-                _buildList(_repository.getHistory()),
-                _buildList(_repository.getBookmarks()),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildList(Future<List<VideoEntity>> future) {
-    return FutureBuilder<List<VideoEntity>>(
-      future: future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return const Center(child: Text('Failed to load.'));
-        }
-        final videos = snapshot.data ?? [];
-        if (videos.isEmpty) {
-          return const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.video_library_outlined,
-                    size: 80, color: Colors.white24),
-                SizedBox(height: 16),
-                Text(
-                  'No videos found here yet.',
-                  style: TextStyle(color: Colors.white54, fontSize: 18),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: videos.length,
-          itemBuilder: (context, index) {
-            return PremiumVideoCard(
-              video: videos[index],
-              width: double.infinity,
-              height: 200,
-            );
-          },
+  Widget _buildList(List<VideoEntity> videos, String emptyMessage) {
+    if (videos.isEmpty) {
+      return Center(child: Text(emptyMessage));
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: videos.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: PremiumVideoCard(video: videos[index]),
         );
       },
     );

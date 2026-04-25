@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/routes/app_routes.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../vpn/presentation/blocs/vpn_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/routes/app_router.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -10,113 +8,121 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppTheme.backgroundColor,
       child: Column(
         children: [
-          Container(
-            padding:
-                const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
-            decoration: const BoxDecoration(
-              gradient: AppTheme.primaryGradient,
+          UserAccountsDrawerHeader(
+            accountName: const Text('Guest User'),
+            accountEmail: const Text('Free Member'),
+            currentAccountPicture: const CircleAvatar(
+              child: Icon(Icons.person),
             ),
-            child: const Row(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Theme.of(context).primaryColor, Colors.pink],
+              )
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white24,
-                  child: Icon(Icons.person, size: 36, color: Colors.white),
+                ListTile(
+                  leading: const Icon(Icons.home_rounded),
+                  title: const Text('Home'),
+                  onTap: () {
+                    context.pop();
+                    context.go(AppRoutes.home);
+                  },
                 ),
-                SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'StreamPro Guest',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'Free Member',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  ],
+                ListTile(
+                  leading: const Icon(Icons.person_outline),
+                  title: const Text('My Profile'),
+                  onTap: () {
+                     context.pop();
+                     context.push(AppRoutes.profile);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.playlist_play),
+                  title: const Text('My Playlists'),
+                  onTap: () {
+                     context.pop();
+                     context.push(AppRoutes.playlists);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.download_rounded),
+                  title: const Text('Downloads'),
+                  onTap: () {
+                     context.pop();
+                     context.push(AppRoutes.downloads);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.favorite_border),
+                  title: const Text('Liked Videos'),
+                  onTap: () {
+                     context.pop();
+                     context.push(AppRoutes.liked);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.vpn_key_outlined),
+                  title: const Text('VPN Status'),
+                  onTap: () {
+                     context.pop();
+                     context.push(AppRoutes.vpn);
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                   leading: const Icon(Icons.settings),
+                   title: const Text('Settings'),
+                   onTap: () {
+                     context.pop();
+                     context.push(AppRoutes.settings);
+                   },
+                ),
+                ListTile(
+                   leading: const Icon(Icons.help_outline),
+                   title: const Text('Help & FAQ'),
+                   onTap: () {
+                      context.pop();
+                      context.push(AppRoutes.help);
+                   },
+                ),
+                ListTile(
+                   leading: const Icon(Icons.info_outline),
+                   title: const Text('About'),
+                   onTap: () {
+                      context.pop();
+                      context.push(AppRoutes.about);
+                   },
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 10),
-          _buildDrawerItem(
-            icon: Icons.category,
-            title: 'Categories',
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.category,
-                  arguments: 'Action');
-            },
-          ),
-          _buildVpnDrawerItem(context),
-          _buildDrawerItem(
-            icon: Icons.settings,
-            title: 'Settings',
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.settings);
-            },
-          ),
-          _buildDrawerItem(
-            icon: Icons.info_outline,
-            title: 'About',
-            onTap: () {},
-          ),
-          const Spacer(),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'v1.0.0',
-              style: TextStyle(color: Colors.grey),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  onPressed: () => context.push(AppRoutes.privacy),
+                  child: Text('Privacy', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.grey)),
+                ),
+                TextButton(
+                  onPressed: () => context.push(AppRoutes.terms),
+                  child: Text('Terms', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.grey)),
+                ),
+              ],
             ),
           ),
+          Text('v1.0.0', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.grey)),
+          const SizedBox(height: 16),
         ],
       ),
-    );
-  }
-
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white70),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildVpnDrawerItem(BuildContext context) {
-    return BlocBuilder<VpnBloc, VpnState>(
-      builder: (context, state) {
-        bool isConnected = state is VpnConnected;
-        return ListTile(
-          leading: Icon(
-            Icons.security,
-            color: isConnected ? Colors.green : Colors.red,
-          ),
-          title:
-              const Text('VPN Status', style: TextStyle(color: Colors.white)),
-          subtitle: Text(
-            isConnected ? 'Connected (${state.country})' : 'Disconnected',
-            style: TextStyle(color: isConnected ? Colors.green : Colors.red),
-          ),
-          onTap: () {
-            Navigator.pop(context); // close drawer
-            Navigator.pushNamed(context, AppRoutes.vpn);
-          },
-        );
-      },
     );
   }
 }
