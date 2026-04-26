@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:haptic_feedback/haptic_feedback.dart';
-import '../../../../core/models/video_entity.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/models/video_entity.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../../core/widgets/premium_video_card.dart';
 import '../../../discover/data/repositories/video_repository.dart';
-import 'package:go_router/go_router.dart';
 
 class VideoPlayerPage extends StatefulWidget {
   final VideoEntity video;
@@ -16,356 +16,297 @@ class VideoPlayerPage extends StatefulWidget {
   State<VideoPlayerPage> createState() => _VideoPlayerPageState();
 }
 
-class _VideoPlayerPageState extends State<VideoPlayerPage> {
-  InAppWebViewController? _webViewController;
-  bool _isPlaying = true;
-  bool _controlsVisible = true;
+class _VideoPlayerPageState extends State<VideoPlayerPage>
+    with SingleTickerProviderStateMixin {
+  InAppWebViewController? webViewController;
+  bool _showControls = true;
   bool _isBookmarked = false;
-  double _brightness = 0.5;
-  double _volume = 0.5;
-  bool _isFillMode = false;
-  bool _showBrightnessHud = false;
-  bool _showVolumeHud = false;
+  final _repository = getIt<VideoRepository>();
+  List<VideoEntity> _relatedVideos = [];
+
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-    _enterImmersiveMode();
-    _checkBookmarkStatus();
-    // Simulate setting initial system brightness/volume internally
-  }
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _fadeAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_fadeController);
+    _fadeController.value = 1.0; // Show initially
 
-  void _enterImmersiveMode() {
+    // Hide system UI for immersive experience
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // Allow landscape orientation
     SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    _initVideoData();
   }
 
-  void _exitImmersiveMode() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  }
+  Future<void> _initVideoData() async {
+    await _repository.addToHistory(widget.video);
+    final bookmarked = await _repository.isBookmarked(widget.video.id);
+    final allVideos = await _repository.getAllVideos();
 
-  Future<void> _checkBookmarkStatus() async {
-    final repo = getIt<VideoRepository>();
-    final status = repo.isBookmarked(widget.video.id);
+    // Filter related videos (e.g. same category)
+    final related = allVideos
+        .where((v) =>
+            v.id != widget.video.id && v.category == widget.video.category)
+        .toList();
+    if (related.isEmpty) {
+      related.addAll(allVideos.where((v) => v.id != widget.video.id).take(5));
+    }
+
     if (mounted) {
       setState(() {
-        _isBookmarked = status;
+        _isBookmarked = bookmarked;
+        _relatedVideos = related;
       });
     }
   }
 
   @override
   void dispose() {
-    _exitImmersiveMode();
+    _fadeController.dispose();
+    webViewController?.dispose();
+    // Restore system UI and portrait orientation on exit
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     super.dispose();
+  }
+
+  bool _canPop = false;
+
+  void _safePop() {
+    if (_canPop) return;
+    HapticFeedback.selectionClick();
+    setState(() {
+      _canPop = true;
+    });
+    // Let the frame build with canPop: true, then pop
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          // Player
-          Transform.scale(
-             scale: _isFillMode ? 1.3 : 1.0,
-             child: AbsorbPointer(
-               absorbing: true, // Absorb pointer to let GestureDetector handle all touches
-               child: InAppWebView(
-                 initialData: InAppWebViewInitialData(
-                   data: _buildHtmlContent(widget.video.embedCode),
-                 ),
-                 initialSettings: InAppWebViewSettings(
-                   mediaPlaybackRequiresUserGesture: false,
-                   allowsInlineMediaPlayback: true,
-                   iframeAllowFullscreen: true,
-                 ),
-                 onWebViewCreated: (controller) {
-                   _webViewController = controller;
-                 },
-               ),
-             ),
-          ),
-
-          // Gesture Overlay
-          GestureDetector(
-             onTap: () {
-               setState(() {
-                 _controlsVisible = !_controlsVisible;
-               });
-             },
-             onDoubleTapDown: (details) {
-                final width = MediaQuery.of(context).size.width;
-                if (details.globalPosition.dx < width * 0.4) {
-                   Haptics.vibrate(HapticsType.light);
-                   // Seek Backward
-                } else if (details.globalPosition.dx > width * 0.6) {
-                   Haptics.vibrate(HapticsType.light);
-                   // Seek Forward
-                }
-             },
-             onVerticalDragUpdate: (details) {
-                final width = MediaQuery.of(context).size.width;
-                if (details.globalPosition.dx < width * 0.4) {
-                   // Brightness
-                   setState(() {
-                     _showBrightnessHud = true;
-                     _brightness -= details.delta.dy * 0.002;
-                     _brightness = _brightness.clamp(0.05, 1.0);
-                   });
-                } else if (details.globalPosition.dx > width * 0.6) {
-                   // Volume
-                   setState(() {
-                     _showVolumeHud = true;
-                     _volume -= details.delta.dy * 0.002;
-                     _volume = _volume.clamp(0.0, 1.0);
-                   });
-                }
-             },
-             onVerticalDragEnd: (details) {
-                setState(() {
-                  _showBrightnessHud = false;
-                  _showVolumeHud = false;
-                });
-
-                // PiP / Minimize (swipe down from top edge)
-                if (details.primaryVelocity != null && details.primaryVelocity! > 400) {
-                   Haptics.vibrate(HapticsType.medium);
-                   context.pop();
-                }
-
-                // Comments sheet (swipe up from bottom edge)
-                if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
-                   Haptics.vibrate(HapticsType.light);
-                   _showCommentsSheet();
-                }
-             },
-             onScaleUpdate: (details) {
-                if (details.scale > 1.2 && !_isFillMode) {
-                   Haptics.vibrate(HapticsType.medium);
-                   setState(() { _isFillMode = true; });
-                } else if (details.scale < 0.8 && _isFillMode) {
-                   Haptics.vibrate(HapticsType.medium);
-                   setState(() { _isFillMode = false; });
-                }
-             },
-             onLongPressStart: (_) {
-                Haptics.vibrate(HapticsType.heavy);
-                // 2x speed
-             },
-             onLongPressEnd: (_) {
-                Haptics.vibrate(HapticsType.light);
-                // 1x speed
-             },
-             child: Container(color: Colors.transparent),
-          ),
-
-          // HUD Overlays
-          if (_showBrightnessHud)
-             Positioned(
-                left: 32, top: 0, bottom: 0,
-                child: Center(
-                   child: Container(
-                      width: 48, height: 160,
-                      decoration: BoxDecoration(
-                         color: Colors.black45,
-                         borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Column(
-                         mainAxisAlignment: MainAxisAlignment.end,
-                         children: [
-                            Expanded(child: RotatedBox(quarterTurns: -1, child: LinearProgressIndicator(value: _brightness, backgroundColor: Colors.transparent, color: Theme.of(context).primaryColor))),
-                            const Padding(padding: EdgeInsets.all(8.0), child: Icon(Icons.brightness_6, color: Colors.white, size: 24)),
-                         ]
-                      )
-                   )
-                )
-             ),
-
-          if (_showVolumeHud)
-             Positioned(
-                right: 32, top: 0, bottom: 0,
-                child: Center(
-                   child: Container(
-                      width: 48, height: 160,
-                      decoration: BoxDecoration(
-                         color: Colors.black45,
-                         borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Column(
-                         mainAxisAlignment: MainAxisAlignment.end,
-                         children: [
-                            Expanded(child: RotatedBox(quarterTurns: -1, child: LinearProgressIndicator(value: _volume, backgroundColor: Colors.transparent, color: Theme.of(context).primaryColor))),
-                            Padding(padding: const EdgeInsets.all(8.0), child: Icon(_volume == 0 ? Icons.volume_off : Icons.volume_up, color: Colors.white, size: 24)),
-                         ]
-                      )
-                   )
-                )
-             ),
-
-          // Controls Overlay
-          if (_controlsVisible)
-            Container(
-              color: Colors.black45,
-              child: Column(
-                children: [
-                  // Top Bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
-                          onPressed: () => context.pop(),
-                        ),
-                        Expanded(
-                          child: Text(
-                            widget.video.title,
-                            style: const TextStyle(color: Colors.white, fontSize: 18),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.cast, color: Colors.white),
-                          onPressed: () => context.push('/cast'),
-                        ),
-                        IconButton(
-                          icon: Icon(_isBookmarked ? Icons.bookmark : Icons.bookmark_border, color: Colors.white),
-                          onPressed: () async {
-                            Haptics.vibrate(HapticsType.selection);
-                            await getIt<VideoRepository>().toggleBookmark(widget.video.id);
-                            _checkBookmarkStatus();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  // Center Controls
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.skip_previous, color: Colors.white, size: 48),
-                        onPressed: () { Haptics.vibrate(HapticsType.selection); },
-                      ),
-                      const SizedBox(width: 32),
-                      IconButton(
-                        icon: Icon(_isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled, color: Colors.white, size: 64),
-                        onPressed: () {
-                          Haptics.vibrate(HapticsType.selection);
-                          setState(() {
-                            _isPlaying = !_isPlaying;
-                          });
-                        },
-                      ),
-                      const SizedBox(width: 32),
-                      IconButton(
-                        icon: const Icon(Icons.skip_next, color: Colors.white, size: 48),
-                        onPressed: () { Haptics.vibrate(HapticsType.selection); },
-                      ),
-                    ],
-                  ),
-
-                  const Spacer(),
-
-                  // Bottom Bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                    child: Row(
-                      children: [
-                        const Text('00:00', style: TextStyle(color: Colors.white)),
-                        Expanded(
-                          child: Slider(
-                            value: 0.0,
-                            onChanged: (val) {},
-                            activeColor: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        Text(widget.video.duration, style: const TextStyle(color: Colors.white)),
-                        IconButton(
-                           icon: const Icon(Icons.picture_in_picture_alt, color: Colors.white),
-                           onPressed: () {},
-                        )
-                      ],
-                    ),
-                  ),
-
-                  // Comments Hint
-                  Padding(
-                     padding: const EdgeInsets.only(bottom: 8.0),
-                     child: GestureDetector(
-                        onTap: _showCommentsSheet,
-                        child: const Text('↑ More', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                     )
-                  )
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  void _showCommentsSheet() {
-     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (context) {
-           return DraggableScrollableSheet(
-              initialChildSize: 0.45,
-              minChildSize: 0.2,
-              maxChildSize: 0.9,
-              builder: (_, controller) {
-                 return Container(
-                    decoration: BoxDecoration(
-                       color: Theme.of(context).colorScheme.surface,
-                       borderRadius: const BorderRadius.vertical(top: Radius.circular(24))
-                    ),
-                    child: Column(
-                       children: [
-                          const SizedBox(height: 8),
-                          Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey.shade700, borderRadius: BorderRadius.circular(2))),
-                          const SizedBox(height: 16),
-                          Text('Comments & Related', style: Theme.of(context).textTheme.titleLarge),
-                          Expanded(
-                             child: Center(child: Text('Comments Placeholder', style: TextStyle(color: Colors.grey.shade400))),
-                          )
-                       ]
-                    )
-                 );
-              }
-           );
-        }
-     );
-  }
-
-  String _buildHtmlContent(String embedCode) {
-    return '''
+    // Generate a basic HTML wrapper for the embed code to ensure it scales correctly
+    final String htmlData = """
       <!DOCTYPE html>
       <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <style>
-          body { margin: 0; padding: 0; background-color: black; overflow: hidden; }
-          .video-container { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
+          body { margin: 0; padding: 0; background-color: black; display: flex; justify-content: center; align-items: center; height: 100vh; }
           iframe { width: 100%; height: 100%; border: none; }
         </style>
       </head>
       <body>
-        <div class="video-container">
-          $embedCode
-        </div>
+        ${widget.video.embedCode}
       </body>
       </html>
-    ''';
+    """;
+
+    return PopScope(
+        canPop: _canPop,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          _safePop();
+        },
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          body: SafeArea(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _showControls = !_showControls;
+                  if (_showControls) {
+                    _fadeController.forward();
+                  } else {
+                    _fadeController.reverse();
+                  }
+                });
+              },
+              child: Stack(
+                children: [
+                  // WebView Player
+                  InAppWebView(
+                    keepAlive: InAppWebViewKeepAlive(),
+                    initialData: InAppWebViewInitialData(data: htmlData),
+                    initialSettings: InAppWebViewSettings(
+                      mediaPlaybackRequiresUserGesture: false,
+                      allowsInlineMediaPlayback: true,
+                      iframeAllowFullscreen: true,
+                    ),
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                  ),
+
+                  // Controls Overlay
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withValues(alpha:(0.7)),
+                            Colors.transparent,
+                            Colors.transparent,
+                            Colors.black.withValues(alpha:(0.7)),
+                          ],
+                          stops: const [0.0, 0.2, 0.8, 1.0],
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Top Bar
+                          SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 16.0),
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.arrow_back_ios_new,
+                                        color: Colors.white),
+                                    onPressed: _safePop,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      widget.video.title,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      _isBookmarked
+                                          ? Icons.bookmark
+                                          : Icons.bookmark_border,
+                                      color: _isBookmarked
+                                          ? const Color(0xFFC026D3)
+                                          : Colors.white,
+                                    ),
+                                    onPressed: () async {
+                                      await _repository
+                                          .toggleBookmark(widget.video);
+                                      setState(() {
+                                        _isBookmarked = !_isBookmarked;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // Bottom Overlay with Fake Controls and Related Videos
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Fake Controls
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('00:00',
+                                        style: TextStyle(color: Colors.white)),
+                                    Expanded(
+                                      child: Slider(
+                                        value: 0.0,
+                                        onChanged: (value) {},
+                                        activeColor: const Color(0xFFC026D3),
+                                        inactiveColor: Colors.grey,
+                                      ),
+                                    ),
+                                    Text(widget.video.duration,
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                    const SizedBox(width: 16),
+                                    const Icon(Icons.fullscreen,
+                                        color: Colors.white),
+                                  ],
+                                ),
+                              ),
+                              // Related Videos
+                              if (_relatedVideos.isNotEmpty) ...[
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 8.0),
+                                  child: Text(
+                                    'Related Videos',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 140,
+                                  child: ListView.builder(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _relatedVideos.length,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushReplacementNamed(
+                                            context,
+                                            AppRoutes.player,
+                                            arguments: _relatedVideos[index],
+                                          );
+                                        },
+                                        child: AbsorbPointer(
+                                          // Absorb so the card's native tap doesn't push a new route on top of this one
+                                          child: PremiumVideoCard(
+                                            video: _relatedVideos[index],
+                                            width: 220,
+                                            height: 140,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ]
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 }
