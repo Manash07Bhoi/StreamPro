@@ -10,77 +10,37 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # State Management
-  flutter_bloc: ^8.1.6
-  equatable: ^2.0.5
-
-  # Dependency Injection
-  get_it: ^8.0.0
-
-  # Local Storage / Database
+  cupertino_icons: ^1.0.8
+  flutter_bloc: ^9.1.1
+  bloc: ^9.2.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-
-  # Navigation
-  go_router: ^13.2.0
-
-  # Video Playback
-  flutter_inappwebview: ^6.0.0
-
-  # Networking & Images
-  cached_network_image: ^3.3.1
-  shimmer: ^3.0.0
-
-  # UI & Layout
-  google_fonts: ^6.2.1
-  carousel_slider: ^5.0.0
-  flutter_staggered_grid_view: ^0.7.0
+  get_it: ^9.2.1
+  cached_network_image: ^3.4.1
+  flutter_inappwebview: ^6.1.0
+  webview_flutter: ^4.9.0
   infinite_scroll_pagination: ^4.0.0
-
-  # Animations
-  lottie: ^3.1.2
-  animate_do: ^3.3.4
-
-  # Gestures & Interactions
-  flutter_slidable: ^3.1.0
-  haptic_feedback: ^0.0.2
-
-  # System / Platform
-  wakelock_plus: ^1.2.3
-  package_info_plus: ^8.0.0
-  share_plus: ^9.0.0
-  url_launcher: ^6.2.6
-
-  # Permissions
-  permission_handler: ^11.3.1
-
-  # Local Notifications (simulated)
-  flutter_local_notifications: ^17.2.2
-
-  # Connectivity
-  connectivity_plus: ^6.0.3
-
-  # Device Info
-  device_info_plus: ^10.1.0
-
-  # Date & Time Utilities
-  intl: ^0.19.0
-  timeago: ^3.6.1
-
-  # UUID Generation
-  uuid: ^4.4.2
-
-  # Secure Storage (for age gate preference)
-  flutter_secure_storage: ^9.0.0
+  shimmer: ^3.0.0
+  lottie: ^3.1.0
+  google_fonts: ^8.0.2
+  connectivity_plus: ^7.1.1
+  dio: ^5.7.0
+  path_provider: ^2.1.4
+  permission_handler: ^12.0.1
+  url_launcher: ^6.3.1
+  getwidget: ^7.0.0
+  fluent_ui: ^4.13.0
+  flutter_staggered_grid_view: ^0.7.0
+  smooth_page_indicator: ^2.0.1
+  carousel_slider: ^5.0.0
+  platform: ^3.1.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator: ^2.0.1
-  build_runner: ^2.4.9
-  flutter_lints: ^4.0.0
-  mocktail: ^1.0.4
+  build_runner: ^2.4.12
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
@@ -88,4 +48,7 @@ flutter:
     - assets/images/
     - assets/animations/
     - assets/icons/
-    - assets/lottie/
+  # fonts:
+  #   - family: CustomFont
+  #     fonts:
+  #       - asset: fonts/CustomFont.ttf

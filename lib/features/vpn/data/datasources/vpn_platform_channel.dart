@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 /// Placeholder for VPN Method Channel integration.
@@ -12,7 +13,7 @@ class VpnPlatformChannel {
       return result;
     } on PlatformException catch (e) {
       // Log error here
-      print("Failed to connect VPN: '${e.message}'.");
+      debugPrint("Failed to connect VPN: '${e.message}'.");
       return false;
     }
   }
@@ -22,7 +23,7 @@ class VpnPlatformChannel {
       final bool result = await _channel.invokeMethod('disconnect');
       return result;
     } on PlatformException catch (e) {
-      print("Failed to disconnect VPN: '${e.message}'.");
+      debugPrint("Failed to disconnect VPN: '${e.message}'.");
       return false;
     }
   }
@@ -32,7 +33,7 @@ class VpnPlatformChannel {
       final String status = await _channel.invokeMethod('getStatus');
       return status;
     } on PlatformException catch (e) {
-      print("Failed to get VPN status: '${e.message}'.");
+      debugPrint("Failed to get VPN status: '${e.message}'.");
       return "ERROR";
     }
   }

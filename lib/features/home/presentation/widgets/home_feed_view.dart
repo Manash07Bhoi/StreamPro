@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/premium_video_card.dart';
 import '../../../../core/widgets/shimmer_loading_card.dart';
-import '../../../../core/routes/app_router.dart';
 import '../../../discover/presentation/blocs/video_list_bloc.dart';
 
 class HomeFeedView extends StatelessWidget {
@@ -16,132 +13,125 @@ class HomeFeedView extends StatelessWidget {
     return BlocBuilder<VideoListBloc, VideoListState>(
       builder: (context, state) {
         if (state is VideoListLoading || state is VideoListInitial) {
-           return ListView.builder(
-             itemCount: 3,
-             itemBuilder: (context, index) => const ShimmerVideoCard(),
-           );
-        } else if (state is VideoListLoaded) {
-           final featured = state.videos.where((v) => v.isFeatured).take(6).toList();
-           final newVideos = state.videos.where((v) => v.isNew).toList();
-           final trending = state.videos.where((v) => v.isTrending).toList();
-
-           return CustomScrollView(
-             slivers: [
-               SliverToBoxAdapter(
-                 child: CarouselSlider(
-                   options: CarouselOptions(
-                     height: 220.0,
-                     autoPlay: true,
-                     viewportFraction: 1.0,
-                   ),
-                   items: featured.map((video) {
-                     return Builder(
-                       builder: (BuildContext context) {
-                         return GestureDetector(
-                           onTap: () => context.push(AppRoutes.player, extra: video),
-                           child: Stack(
-                             fit: StackFit.expand,
-                             children: [
-                               CachedNetworkImage(
-                                 imageUrl: video.thumbnailUrl,
-                                 fit: BoxFit.cover,
-                                 memCacheWidth: 640,
-                                 memCacheHeight: 360,
-                               ),
-                               Container(
-                                 decoration: BoxDecoration(
-                                   gradient: LinearGradient(
-                                     begin: Alignment.topCenter,
-                                     end: Alignment.bottomCenter,
-                                     colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
-                                   )
-                                 ),
-                               ),
-                               Positioned(
-                                 bottom: 16,
-                                 left: 16,
-                                 right: 16,
-                                 child: Column(
-                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                   children: [
-                                     Chip(label: Text(video.category, style: const TextStyle(fontSize: 10)), backgroundColor: Theme.of(context).primaryColor),
-                                     Text(video.title, style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Colors.white)),
-                                   ],
-                                 ),
-                               )
-                             ],
-                           ),
-                         );
-                       },
-                     );
-                   }).toList(),
-                 ),
-               ),
-               _buildSectionHeader(context, 'New This Week', () => context.push('/category/New')),
-               SliverToBoxAdapter(
-                 child: SizedBox(
-                   height: 140,
-                   child: ListView.builder(
-                     scrollDirection: Axis.horizontal,
-                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                     itemCount: newVideos.length,
-                     itemBuilder: (context, index) {
-                       return SizedBox(
-                         width: 200,
-                         child: Padding(
-                           padding: const EdgeInsets.only(right: 16),
-                           child: PremiumVideoCard(video: newVideos[index]),
-                         ),
-                       );
-                     },
-                   ),
-                 ),
-               ),
-               _buildSectionHeader(context, 'Trending Now', () => {}),
-               SliverToBoxAdapter(
-                 child: SizedBox(
-                   height: 140,
-                   child: ListView.builder(
-                     scrollDirection: Axis.horizontal,
-                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                     itemCount: trending.length,
-                     itemBuilder: (context, index) {
-                       return SizedBox(
-                         width: 200,
-                         child: Padding(
-                           padding: const EdgeInsets.only(right: 16),
-                           child: PremiumVideoCard(video: trending[index]),
-                         ),
-                       );
-                     },
-                   ),
-                 ),
-               ),
-               const SliverToBoxAdapter(child: SizedBox(height: 32)),
-             ],
-           );
+          return const _HomeShimmer();
         } else if (state is VideoListError) {
-           return Center(child: Text(state.message));
+          return Center(child: Text(state.message));
+        } else if (state is VideoListLoaded) {
+          final trending = state.trending;
+          final recommended = state.recommended;
+          final fresh = state.videos.take(5).toList(); // Demo
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Hero Carousel
+                if (trending.isNotEmpty)
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 250.0,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.9,
+                      aspectRatio: 16 / 9,
+                      initialPage: 0,
+                    ),
+                    items: trending.take(5).map((video) {
+                      return PremiumVideoCard(
+                        video: video,
+                        width: double.infinity,
+                        height: 250,
+                      );
+                    }).toList(),
+                  ),
+
+                const SizedBox(height: 24),
+                _buildSectionTitle('Trending Now'),
+                _buildHorizontalList(trending),
+
+                const SizedBox(height: 24),
+                _buildSectionTitle('Recommended For You'),
+                _buildHorizontalList(recommended),
+
+                const SizedBox(height: 24),
+                _buildSectionTitle('Fresh Releases'),
+                _buildHorizontalList(fresh),
+
+                const SizedBox(height: 40),
+              ],
+            ),
+          );
         }
         return const SizedBox.shrink();
       },
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title, VoidCallback onSeeAll) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.headlineMedium),
-            TextButton(
-              onPressed: onSeeAll,
-              child: const Text('See All'),
-            ),
-          ],
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
         ),
+      ),
+    );
+  }
+
+  Widget _buildHorizontalList(List videos) {
+    return SizedBox(
+      height: 180,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemCount: videos.length,
+        itemBuilder: (context, index) {
+          return PremiumVideoCard(video: videos[index]);
+        },
+      ),
+    );
+  }
+}
+
+class _HomeShimmer extends StatelessWidget {
+  const _HomeShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          Center(
+            child: ShimmerLoadingCard(
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: 250,
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: SizedBox(
+              height: 20,
+              width: 150,
+              child: ShimmerLoadingCard(width: 150, height: 20),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 180,
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              scrollDirection: Axis.horizontal,
+              itemCount: 3,
+              itemBuilder: (context, index) => const ShimmerLoadingCard(),
+            ),
+          ),
+        ],
       ),
     );
   }

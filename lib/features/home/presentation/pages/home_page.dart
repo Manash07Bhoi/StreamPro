@@ -3,8 +3,10 @@ import '../widgets/home_feed_view.dart';
 import '../../../discover/presentation/pages/discover_view.dart';
 import '../../../trending/presentation/pages/trending_view.dart';
 import '../../../library/presentation/pages/library_view.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../widgets/main_drawer.dart';
-import 'package:haptic_feedback/haptic_feedback.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../vpn/presentation/blocs/vpn_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _views = [
+  final List<Widget> _pages = [
     const HomeFeedView(),
     const DiscoverView(),
     const TrendingView(),
@@ -27,63 +29,50 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _currentIndex == 0
-            ? Text('StreamPro', style: Theme.of(context).textTheme.titleLarge)
-            : Text(_getTabName(_currentIndex)),
-        centerTitle: false,
+        title: const Text('StreamPro'),
         actions: [
-           IconButton(
-             icon: const Icon(Icons.notifications_none),
-             onPressed: () {}, // To implement
-           ),
-           IconButton(
-             icon: const Icon(Icons.vpn_key),
-             onPressed: () {}, // To implement
-           )
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              setState(() {
+                _currentIndex = 1; // Go to discover
+              });
+            },
+          ),
+          BlocBuilder<VpnBloc, VpnState>(
+            builder: (context, state) {
+              bool isConnected = state is VpnConnected;
+              return IconButton(
+                icon: Icon(
+                  Icons.security,
+                  color: isConnected ? Colors.green : Colors.grey,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.vpn);
+                },
+              );
+            },
+          ),
         ],
       ),
       drawer: const MainDrawer(),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _views,
-      ),
+      body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          Haptics.vibrate(HapticsType.selection);
           setState(() {
             _currentIndex = index;
           });
         },
-        type: BottomNavigationBarType.fixed,
         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Discover'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: 'Home',
-          ),
+              icon: Icon(Icons.trending_up), label: 'Trending'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore_rounded),
-            label: 'Discover',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_fire_department_rounded),
-            label: 'Trending',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.video_library_rounded),
-            label: 'Library',
-          ),
+              icon: Icon(Icons.video_library), label: 'Library'),
         ],
       ),
     );
-  }
-
-  String _getTabName(int index) {
-    switch(index) {
-      case 1: return 'Discover';
-      case 2: return 'Trending';
-      case 3: return 'Library';
-      default: return 'StreamPro';
-    }
   }
 }

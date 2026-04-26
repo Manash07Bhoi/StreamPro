@@ -109,7 +109,7 @@ class _VpnStatusScreenState extends State<VpnStatusScreen> {
                             style: TextStyle(fontSize: 18)),
                         Switch(
                           value: isConnected || isConnecting,
-                          activeColor: const Color(0xFFC026D3),
+                          activeThumbColor: const Color(0xFFC026D3),
                           onChanged: (val) {
                             if (val) {
                               context
