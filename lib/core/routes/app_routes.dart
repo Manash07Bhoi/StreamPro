@@ -24,11 +24,13 @@ class AppRoutes {
         final video = settings.arguments as VideoEntity?;
         if (video != null) {
           return MaterialPageRoute(
-              builder: (_) => VideoPlayerPage(video: video));
+            builder: (_) => VideoPlayerPage(video: video),
+          );
         }
         return MaterialPageRoute(
-            builder: (_) => const Scaffold(
-                body: Center(child: Text('Error: No Video Data'))));
+          builder: (_) =>
+              const Scaffold(body: Center(child: Text('Error: No Video Data'))),
+        );
       case AppRoutes.vpn:
         return MaterialPageRoute(builder: (_) => const VpnStatusScreen());
       case AppRoutes.settings:
@@ -36,7 +38,8 @@ class AppRoutes {
       case AppRoutes.category:
         final cat = settings.arguments as String?;
         return MaterialPageRoute(
-            builder: (_) => CategoryFeedPage(category: cat ?? 'Category'));
+          builder: (_) => CategoryFeedPage(category: cat ?? 'Category'),
+        );
       case AppRoutes.splash:
       default:
         return MaterialPageRoute(builder: (_) => const SplashPage());

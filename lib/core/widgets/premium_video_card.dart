@@ -89,11 +89,14 @@ class PremiumVideoCard extends StatelessWidget {
                         color: AppTheme.primaryColor.withValues(alpha: 0.5),
                         blurRadius: 15,
                         spreadRadius: 2,
-                      )
+                      ),
                     ],
                   ),
-                  child: const Icon(Icons.play_arrow,
-                      color: Colors.white, size: 32),
+                  child: const Icon(
+                    Icons.play_arrow,
+                    color: Colors.white,
+                    size: 32,
+                  ),
                 ),
               ),
               // Duration Badge
@@ -102,8 +105,10 @@ class PremiumVideoCard extends StatelessWidget {
                 right: 8,
                 child: AppTheme.glassmorphicContainer(
                   borderRadius: 8,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   child: Text(
                     video.duration,
                     style: const TextStyle(

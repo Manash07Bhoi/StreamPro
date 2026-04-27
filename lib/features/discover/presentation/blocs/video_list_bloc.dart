@@ -25,10 +25,11 @@ class VideoListLoaded extends VideoListState {
   final List<VideoEntity> videos;
   final List<VideoEntity> trending;
   final List<VideoEntity> recommended;
-  VideoListLoaded(
-      {required this.videos,
-      required this.trending,
-      required this.recommended});
+  VideoListLoaded({
+    required this.videos,
+    required this.trending,
+    required this.recommended,
+  });
 }
 
 class VideoListError extends VideoListState {
@@ -83,8 +84,13 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
         final chunk2 = await repository.getVideosPaged(1, 10);
         final chunk3 = await repository.getVideosPaged(2, 5);
 
-        emit(VideoListLoaded(
-            videos: chunk3, trending: chunk1, recommended: chunk2));
+        emit(
+          VideoListLoaded(
+            videos: chunk3,
+            trending: chunk1,
+            recommended: chunk2,
+          ),
+        );
       } catch (e) {
         emit(VideoListError('Failed to load videos.'));
       }
@@ -101,10 +107,10 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
   }
 
   Future<void> _fetchPage(
-      int pageKey, PagingController<int, VideoEntity> controller) async {
+    int pageKey,
+    PagingController<int, VideoEntity> controller,
+  ) async {
     try {
-      // Add slight delay to simulate network request and show shimmer
-      await Future.delayed(const Duration(milliseconds: 500));
       final newItems = await repository.getVideosPaged(pageKey, _pageSize);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {

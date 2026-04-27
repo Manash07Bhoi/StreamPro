@@ -16,8 +16,9 @@ class CategoryFeedPage extends StatefulWidget {
 }
 
 class _CategoryFeedPageState extends State<CategoryFeedPage> {
-  final PagingController<int, VideoEntity> _pagingController =
-      PagingController(firstPageKey: 0);
+  final PagingController<int, VideoEntity> _pagingController = PagingController(
+    firstPageKey: 0,
+  );
   final _repository = getIt<VideoRepository>();
   static const _pageSize = 10;
 
@@ -31,8 +32,9 @@ class _CategoryFeedPageState extends State<CategoryFeedPage> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final allInCategory =
-          await _repository.getVideosByCategory(widget.category);
+      final allInCategory = await _repository.getVideosByCategory(
+        widget.category,
+      );
       final start = pageKey * _pageSize;
       if (start >= allInCategory.length) {
         _pagingController.appendLastPage([]);

@@ -41,9 +41,7 @@ class AppTheme {
         color: surfaceColor,
         elevation: 4,
         shadowColor: Colors.black54,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: surfaceColor,
@@ -52,12 +50,11 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 10,
       ),
-      textTheme: GoogleFonts.poppinsTextTheme(
-        ThemeData.dark().textTheme,
-      ).copyWith(
-        bodyLarge: GoogleFonts.poppins(color: Colors.white),
-        bodyMedium: GoogleFonts.poppins(color: Colors.white70),
-      ),
+      textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme)
+          .copyWith(
+            bodyLarge: GoogleFonts.poppins(color: Colors.white),
+            bodyMedium: GoogleFonts.poppins(color: Colors.white70),
+          ),
     );
   }
 
@@ -74,10 +71,10 @@ class AppTheme {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha:(0.05)),
+            color: Colors.white.withValues(alpha: (0.05)),
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
-              color: Colors.white.withValues(alpha:(0.1)),
+              color: Colors.white.withValues(alpha: (0.1)),
               width: 1.0,
             ),
           ),

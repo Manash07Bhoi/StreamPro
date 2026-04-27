@@ -14,11 +14,13 @@ class MainDrawer extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding:
-                const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
-            decoration: const BoxDecoration(
-              gradient: AppTheme.primaryGradient,
+            padding: const EdgeInsets.only(
+              top: 60,
+              bottom: 20,
+              left: 20,
+              right: 20,
             ),
+            decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
             child: const Row(
               children: [
                 CircleAvatar(
@@ -53,8 +55,11 @@ class MainDrawer extends StatelessWidget {
             title: 'Categories',
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.category,
-                  arguments: 'Action');
+              Navigator.pushNamed(
+                context,
+                AppRoutes.category,
+                arguments: 'Action',
+              );
             },
           ),
           _buildVpnDrawerItem(context),
@@ -74,10 +79,7 @@ class MainDrawer extends StatelessWidget {
           const Spacer(),
           const Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text(
-              'v1.0.0',
-              style: TextStyle(color: Colors.grey),
-            ),
+            child: Text('v1.0.0', style: TextStyle(color: Colors.grey)),
           ),
         ],
       ),
@@ -105,8 +107,10 @@ class MainDrawer extends StatelessWidget {
             Icons.security,
             color: isConnected ? Colors.green : Colors.red,
           ),
-          title:
-              const Text('VPN Status', style: TextStyle(color: Colors.white)),
+          title: const Text(
+            'VPN Status',
+            style: TextStyle(color: Colors.white),
+          ),
           subtitle: Text(
             isConnected ? 'Connected (${state.country})' : 'Disconnected',
             style: TextStyle(color: isConnected ? Colors.green : Colors.red),

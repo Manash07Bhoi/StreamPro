@@ -46,16 +46,19 @@ class _SettingsPageState extends State<SettingsPage> {
             const Text(
               'General',
               style: TextStyle(
-                  color: Color(0xFFC026D3),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
+                color: Color(0xFFC026D3),
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
             const SizedBox(height: 10),
             ListTile(
               leading: const Icon(Icons.palette),
               title: const Text('Theme'),
-              trailing:
-                  const Text('Dark', style: TextStyle(color: Colors.grey)),
+              trailing: const Text(
+                'Dark',
+                style: TextStyle(color: Colors.grey),
+              ),
               onTap: () {},
             ),
             ListTile(

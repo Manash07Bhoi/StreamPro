@@ -8,8 +8,9 @@ class VpnPlatformChannel {
 
   Future<bool> connectVpn(String config) async {
     try {
-      final bool result =
-          await _channel.invokeMethod('connect', {'config': config});
+      final bool result = await _channel.invokeMethod('connect', {
+        'config': config,
+      });
       return result;
     } on PlatformException catch (e) {
       // Log error here

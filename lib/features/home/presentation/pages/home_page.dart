@@ -68,9 +68,13 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Discover'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.trending_up), label: 'Trending'),
+            icon: Icon(Icons.trending_up),
+            label: 'Trending',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.video_library), label: 'Library'),
+            icon: Icon(Icons.video_library),
+            label: 'Library',
+          ),
         ],
       ),
     );

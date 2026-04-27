@@ -26,11 +26,14 @@ class TrendingView extends StatelessWidget {
             child: TabBarView(
               children: [
                 _buildRankedList(
-                    context.read<VideoListBloc>().trendingDailyController),
+                  context.read<VideoListBloc>().trendingDailyController,
+                ),
                 _buildRankedList(
-                    context.read<VideoListBloc>().trendingWeeklyController),
+                  context.read<VideoListBloc>().trendingWeeklyController,
+                ),
                 _buildRankedList(
-                    context.read<VideoListBloc>().trendingAllTimeController),
+                  context.read<VideoListBloc>().trendingAllTimeController,
+                ),
               ],
             ),
           ),
@@ -40,39 +43,36 @@ class TrendingView extends StatelessWidget {
   }
 
   Widget _buildRankedList(PagingController<int, VideoEntity> pagingController) {
-    return Builder(builder: (context) {
-      return PagedListView<int, VideoEntity>(
-        padding: const EdgeInsets.all(16),
-        pagingController: pagingController,
-        builderDelegate: PagedChildBuilderDelegate<VideoEntity>(
-          itemBuilder: (context, video, index) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '${index + 1}',
-                  style: const TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white24,
+    return Builder(
+      builder: (context) {
+        return PagedListView<int, VideoEntity>(
+          padding: const EdgeInsets.all(16),
+          pagingController: pagingController,
+          builderDelegate: PagedChildBuilderDelegate<VideoEntity>(
+            itemBuilder: (context, video, index) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '${index + 1}',
+                    style: const TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white24,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: PremiumVideoCard(
-                    video: video,
-                    height: 120,
-                  ),
-                ),
-              ],
-            );
-          },
-          firstPageProgressIndicatorBuilder: (_) =>
-              const Center(child: CircularProgressIndicator()),
-          newPageProgressIndicatorBuilder: (_) =>
-              const Center(child: CircularProgressIndicator()),
-        ),
-      );
-    });
+                  const SizedBox(width: 16),
+                  Expanded(child: PremiumVideoCard(video: video, height: 120)),
+                ],
+              );
+            },
+            firstPageProgressIndicatorBuilder: (_) =>
+                const Center(child: CircularProgressIndicator()),
+            newPageProgressIndicatorBuilder: (_) =>
+                const Center(child: CircularProgressIndicator()),
+          ),
+        );
+      },
+    );
   }
 }

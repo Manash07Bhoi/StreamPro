@@ -44,8 +44,9 @@ class _DiscoverViewState extends State<DiscoverView> {
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            pagingController:
-                context.read<VideoListBloc>().searchPagingController,
+            pagingController: context
+                .read<VideoListBloc>()
+                .searchPagingController,
             builderDelegate: PagedChildBuilderDelegate<VideoEntity>(
               itemBuilder: (context, video, index) {
                 // Staggered heights
@@ -66,8 +67,10 @@ class _DiscoverViewState extends State<DiscoverView> {
                   children: [
                     Icon(Icons.search_off, size: 80, color: Colors.white24),
                     SizedBox(height: 16),
-                    Text('No premium videos found.',
-                        style: TextStyle(color: Colors.white54, fontSize: 18)),
+                    Text(
+                      'No premium videos found.',
+                      style: TextStyle(color: Colors.white54, fontSize: 18),
+                    ),
                   ],
                 ),
               ),

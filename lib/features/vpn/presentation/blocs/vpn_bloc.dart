@@ -34,7 +34,7 @@ class VpnBloc extends Bloc<VpnEvent, VpnState> {
     'USA',
     'Germany',
     'Japan',
-    'UK'
+    'UK',
   ];
 
   VpnBloc() : super(VpnDisconnected()) {
@@ -42,7 +42,8 @@ class VpnBloc extends Bloc<VpnEvent, VpnState> {
       emit(VpnConnecting());
       // Simulate connection time
       await Future.delayed(const Duration(seconds: 2));
-      final selectedCountry = event.country ??
+      final selectedCountry =
+          event.country ??
           _optimalCountries[Random().nextInt(_optimalCountries.length)];
       await _saveConfig(selectedCountry);
       emit(VpnConnected(selectedCountry));
@@ -51,7 +52,8 @@ class VpnBloc extends Bloc<VpnEvent, VpnState> {
     on<AutoConnectVpnEvent>((event, emit) async {
       emit(VpnConnecting());
       await Future.delayed(
-          const Duration(seconds: 1)); // Quick optimal selection
+        const Duration(seconds: 1),
+      ); // Quick optimal selection
       final bestCountry =
           _optimalCountries[Random().nextInt(_optimalCountries.length)];
       await _saveConfig(bestCountry);

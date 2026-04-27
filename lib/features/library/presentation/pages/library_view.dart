@@ -56,8 +56,11 @@ class _LibraryViewState extends State<LibraryView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.video_library_outlined,
-                    size: 80, color: Colors.white24),
+                Icon(
+                  Icons.video_library_outlined,
+                  size: 80,
+                  color: Colors.white24,
+                ),
                 SizedBox(height: 16),
                 Text(
                   'No videos found here yet.',
