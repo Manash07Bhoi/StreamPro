@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import '../../../../core/mixins/safe_pop_mixin.dart';
 import '../../../../core/models/video_entity.dart';
 import '../../../../core/widgets/premium_video_card.dart';
 import '../../../discover/data/repositories/video_repository.dart';
@@ -15,7 +15,7 @@ class CategoryFeedPage extends StatefulWidget {
   State<CategoryFeedPage> createState() => _CategoryFeedPageState();
 }
 
-class _CategoryFeedPageState extends State<CategoryFeedPage> {
+class _CategoryFeedPageState extends State<CategoryFeedPage> with SafePopMixin {
   final PagingController<int, VideoEntity> _pagingController =
       PagingController(firstPageKey: 0);
   final _repository = getIt<VideoRepository>();
@@ -61,36 +61,20 @@ class _CategoryFeedPageState extends State<CategoryFeedPage> {
     super.dispose();
   }
 
-  bool _canPop = false;
-
-  void _safePop() {
-    if (_canPop) return;
-    HapticFeedback.selectionClick();
-    setState(() {
-      _canPop = true;
-    });
-    // Let the frame build with canPop: true, then pop
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: _canPop,
+      canPop: canPop,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        _safePop();
+        safePop();
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.category),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new),
-            onPressed: _safePop,
+            onPressed: safePop,
           ),
         ),
         body: PagedListView<int, VideoEntity>(

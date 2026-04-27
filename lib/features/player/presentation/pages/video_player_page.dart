@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import '../../../../core/mixins/safe_pop_mixin.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/models/video_entity.dart';
 import '../../../../core/routes/app_routes.dart';
@@ -17,7 +18,7 @@ class VideoPlayerPage extends StatefulWidget {
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, SafePopMixin {
   InAppWebViewController? webViewController;
   bool _showControls = true;
   bool _isBookmarked = false;
@@ -85,22 +86,6 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
     super.dispose();
   }
 
-  bool _canPop = false;
-
-  void _safePop() {
-    if (_canPop) return;
-    HapticFeedback.selectionClick();
-    setState(() {
-      _canPop = true;
-    });
-    // Let the frame build with canPop: true, then pop
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // Generate a basic HTML wrapper for the embed code to ensure it scales correctly
@@ -121,10 +106,10 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
     """;
 
     return PopScope(
-        canPop: _canPop,
+        canPop: canPop,
         onPopInvokedWithResult: (didPop, result) {
           if (didPop) return;
-          _safePop();
+          safePop();
         },
         child: Scaffold(
           backgroundColor: Colors.black,
@@ -186,7 +171,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage>
                                   IconButton(
                                     icon: const Icon(Icons.arrow_back_ios_new,
                                         color: Colors.white),
-                                    onPressed: _safePop,
+                                    onPressed: safePop,
                                   ),
                                   Expanded(
                                     child: Text(
