@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../../../../core/mixins/safe_pop_mixin.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -8,36 +8,21 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
-  bool _canPop = false;
-
-  void _safePop() {
-    if (_canPop) return;
-    HapticFeedback.selectionClick();
-    setState(() {
-      _canPop = true;
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
-    });
-  }
-
+class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: _canPop,
+      canPop: canPop,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        _safePop();
+        safePop();
       },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new),
-            onPressed: _safePop,
+            onPressed: safePop,
           ),
         ),
         body: ListView(

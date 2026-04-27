@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/mixins/safe_pop_mixin.dart';
 import '../blocs/vpn_bloc.dart';
 
 class VpnStatusScreen extends StatefulWidget {
@@ -10,7 +10,7 @@ class VpnStatusScreen extends StatefulWidget {
   State<VpnStatusScreen> createState() => _VpnStatusScreenState();
 }
 
-class _VpnStatusScreenState extends State<VpnStatusScreen> {
+class _VpnStatusScreenState extends State<VpnStatusScreen> with SafePopMixin {
   final List<Map<String, String>> _countries = const [
     {'name': 'USA', 'flag': '🇺🇸'},
     {'name': 'Germany', 'flag': '🇩🇪'},
@@ -19,35 +19,20 @@ class _VpnStatusScreenState extends State<VpnStatusScreen> {
     {'name': 'UK', 'flag': '🇬🇧'},
   ];
 
-  bool _canPop = false;
-
-  void _safePop() {
-    if (_canPop) return;
-    HapticFeedback.selectionClick();
-    setState(() {
-      _canPop = true;
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        canPop: _canPop,
+        canPop: canPop,
         onPopInvokedWithResult: (didPop, result) {
           if (didPop) return;
-          _safePop();
+          safePop();
         },
         child: Scaffold(
           appBar: AppBar(
             title: const Text('VPN Status'),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new),
-              onPressed: _safePop,
+              onPressed: safePop,
             ),
           ),
           body: BlocBuilder<VpnBloc, VpnState>(
