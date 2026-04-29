@@ -1,0 +1,172 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/di/injection.dart';
+import '../blocs/profile_bloc.dart';
+
+class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({super.key});
+
+  @override
+  State<EditProfilePage> createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  late TextEditingController _nameController;
+  final List<String> _selectedInterests = [];
+
+  final List<String> _allInterests = [
+    'Action', 'Comedy', 'Drama', 'Documentary', 'Music', 'Sports',
+    'Technology', 'Travel', 'Animation', 'Horror', 'Romance',
+    'Thriller', 'Science', 'Gaming', 'Cooking'
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    // In a real implementation, we would extract the current state from the BLoC to populate these fields.
+    // Assuming the bloc is already loaded since we navigated from ProfilePage.
+    final profileBloc = sl<ProfileBloc>();
+    if (profileBloc.state is ProfileLoaded) {
+      final profile = (profileBloc.state as ProfileLoaded).profile;
+      _nameController.text = profile.displayName;
+      _selectedInterests.addAll(profile.interests);
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  void _saveProfile() {
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Display name cannot be empty')));
+      return;
+    }
+
+    final profileBloc = sl<ProfileBloc>();
+    profileBloc.add(UpdateDisplayName(_nameController.text.trim()));
+    profileBloc.add(UpdateInterests(List.from(_selectedInterests)));
+
+    context.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0A0A0A),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0A0A0A),
+        title: const Text('Edit Profile', style: TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w500)),
+        actions: [
+          TextButton(
+            onPressed: _saveProfile,
+            child: const Text('Save', style: TextStyle(color: Color(0xFFC026D3), fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  // TODO: Implement image picker logic
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Image picker coming soon')));
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF242424),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFFC026D3), width: 2),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.person, size: 50, color: Color(0xFF6B7280)),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFC026D3),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            const Text('Display Name', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _nameController,
+              style: const TextStyle(fontFamily: 'Poppins', color: Colors.white),
+              maxLength: 30,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1A1A1A),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFFC026D3)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text('Interests', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 12.0,
+              children: _allInterests.map((interest) {
+                final isSelected = _selectedInterests.contains(interest);
+                return FilterChip(
+                  label: Text(interest),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      if (selected) {
+                        _selectedInterests.add(interest);
+                      } else {
+                        _selectedInterests.remove(interest);
+                      }
+                    });
+                  },
+                  backgroundColor: const Color(0xFF1A1A1A),
+                  selectedColor: const Color(0xFFC026D3).withValues(alpha:0.2),
+                  labelStyle: TextStyle(
+                    color: isSelected ? Colors.white : const Color(0xFF9CA3AF),
+                    fontFamily: 'Poppins',
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: isSelected ? const Color(0xFFC026D3) : Colors.transparent,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

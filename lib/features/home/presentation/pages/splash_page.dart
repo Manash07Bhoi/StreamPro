@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../features/settings/data/repositories/app_config_repository.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -33,7 +36,16 @@ class _SplashPageState extends State<SplashPage>
   Future<void> _navigateToHome() async {
     await Future.delayed(const Duration(milliseconds: 1800));
     if (mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      final configRepo = sl<AppConfigRepository>();
+      final config = configRepo.getConfig();
+
+      if (!config.hasAcceptedTerms) {
+        context.go('/age-gate');
+      } else if (config.isFirstLaunch) {
+        context.go('/onboarding');
+      } else {
+        context.go(AppRoutes.home);
+      }
     }
   }
 

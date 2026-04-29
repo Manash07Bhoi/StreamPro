@@ -75,13 +75,13 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     on<LoadVideosEvent>((event, emit) async {
       emit(VideoListLoading());
       try {
-        await repository.initSampleData();
+        await repository.initializeSeedData();
 
-        // For Home tab carousel and horizontal lists we load a small chunk via getVideosPaged
+        // For Home tab carousel and horizontal lists we load a small chunk via getPaginatedVideos
         // Avoid bulk loading everything.
-        final chunk1 = await repository.getVideosPaged(0, 10);
-        final chunk2 = await repository.getVideosPaged(1, 10);
-        final chunk3 = await repository.getVideosPaged(2, 5);
+        final chunk1 = await repository.getPaginatedVideos(0, 10);
+        final chunk2 = await repository.getPaginatedVideos(1, 10);
+        final chunk3 = await repository.getPaginatedVideos(2, 5);
 
         emit(VideoListLoaded(
             videos: chunk3, trending: chunk1, recommended: chunk2));
@@ -105,7 +105,7 @@ class VideoListBloc extends Bloc<VideoListEvent, VideoListState> {
     try {
       // Add slight delay to simulate network request and show shimmer
       await Future.delayed(const Duration(milliseconds: 500));
-      final newItems = await repository.getVideosPaged(pageKey, _pageSize);
+      final newItems = await repository.getPaginatedVideos(pageKey, _pageSize);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         controller.appendLastPage(newItems);
