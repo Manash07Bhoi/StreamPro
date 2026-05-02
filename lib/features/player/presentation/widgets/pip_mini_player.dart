@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/pip_bloc.dart';
@@ -46,12 +47,12 @@ class _PipMiniPlayerState extends State<PipMiniPlayer> {
                 width: 180,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF121212),
+                  color: AppColors.colorSurface,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(color: Colors.black.withValues(alpha:0.5), blurRadius: 10, offset: const Offset(0, 4)),
                   ],
-                  border: Border.all(color: const Color(0xFF242424)),
+                  border: Border.all(color: AppColors.colorSurface3),
                 ),
                 child: Stack(
                   children: [

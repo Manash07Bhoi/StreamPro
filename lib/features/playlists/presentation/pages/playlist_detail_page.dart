@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -54,8 +55,8 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
   Widget build(BuildContext context) {
     if (playlist == null) {
       return Scaffold(
-        backgroundColor: const Color(0xFF0A0A0A),
-        appBar: AppBar(backgroundColor: const Color(0xFF0A0A0A)),
+        backgroundColor: AppColors.colorBackground,
+        appBar: AppBar(backgroundColor: AppColors.colorBackground),
         body: const Center(child: Text('Playlist not found', style: TextStyle(color: Colors.white))),
       );
     }
@@ -67,9 +68,9 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF0A0A0A),
+          backgroundColor: AppColors.colorBackground,
           title: Text(playlist!.name, style: const TextStyle(fontFamily: 'Poppins', fontSize: 16)),
           actions: [
             IconButton(icon: const Icon(Icons.edit), onPressed: () {}), // Edit playlist not implemented
@@ -95,7 +96,7 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
             ),
             SliverFillRemaining(
               child: items.isEmpty
-                  ? const Center(child: Text('No videos in this playlist', style: TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins')))
+                  ? const Center(child: Text('No videos in this playlist', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')))
                   : ReorderableListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: items.length,
@@ -127,7 +128,7 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
                       imageUrl: 'https://picsum.photos/seed/${playlist!.coverVideoId}/640/360',
                       fit: BoxFit.cover,
                     )
-                  : Container(color: const Color(0xFF242424)),
+                  : Container(color: AppColors.colorSurface3),
             ),
             Container(
               height: 220,
@@ -135,7 +136,7 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [const Color(0xFF0A0A0A), Colors.transparent],
+                  colors: [AppColors.colorBackground, Colors.transparent],
                   stops: const [0.0, 0.8],
                 ),
               ),
@@ -152,12 +153,12 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
                     const SizedBox(height: 8),
                     Text(
                       playlist!.description!,
-                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF)),
+                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
                       textAlign: TextAlign.center,
                     ),
                   ],
                   const SizedBox(height: 8),
-                  Text('${playlist!.videoCount} videos', style: const TextStyle(fontFamily: 'Poppins', color: Color(0xFF6B7280))),
+                  Text('${playlist!.videoCount} videos', style: const TextStyle(fontFamily: 'Poppins', color: AppColors.colorTextMuted)),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -166,7 +167,7 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]),
+                            gradient: const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: ElevatedButton.icon(
@@ -182,9 +183,9 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF1A1A1A),
+                            color: AppColors.colorSurface2,
                             borderRadius: BorderRadius.circular(24),
-                            border: Border.all(color: const Color(0xFFC026D3)),
+                            border: Border.all(color: AppColors.colorPrimary),
                           ),
                           child: ElevatedButton.icon(
                             onPressed: () {},
@@ -220,7 +221,7 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
             onPressed: (_) {
               context.read<PlaylistBloc>().add(RemoveVideoFromPlaylist(playlist!.id, item.videoId));
             },
-            backgroundColor: const Color(0xFFEF4444),
+            backgroundColor: AppColors.colorError,
             foregroundColor: Colors.white,
             icon: Icons.delete,
             label: 'Remove',
@@ -241,10 +242,10 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
           ),
         ),
         title: Text(video.title, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
-        subtitle: Text(video.duration, style: const TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins', fontSize: 12)),
+        subtitle: Text(video.duration, style: const TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins', fontSize: 12)),
         trailing: const ReorderableDragStartListener(
           index: 0, // Ignored by builder but required by widget
-          child: Icon(Icons.drag_handle, color: Color(0xFF6B7280)),
+          child: Icon(Icons.drag_handle, color: AppColors.colorTextMuted),
         ),
         onTap: () {
           context.push('/player', extra: video);

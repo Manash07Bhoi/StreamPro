@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class BrightnessHud extends StatelessWidget {
@@ -34,7 +35,7 @@ class BrightnessHud extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: brightness,
                       backgroundColor: Colors.white24,
-                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFC026D3)),
+                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.colorPrimary),
                       minHeight: 8,
                     ),
                   ),

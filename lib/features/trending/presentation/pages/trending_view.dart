@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -61,9 +62,9 @@ class _TrendingViewContentState extends State<_TrendingViewContent> with SingleT
             Tab(text: 'Today'),
             Tab(text: 'This Week'),
           ],
-          indicatorColor: const Color(0xFFC026D3),
-          labelColor: const Color(0xFFC026D3),
-          unselectedLabelColor: const Color(0xFF9CA3AF),
+          indicatorColor: AppColors.colorPrimary,
+          labelColor: AppColors.colorPrimary,
+          unselectedLabelColor: AppColors.colorTextSecondary,
           labelStyle: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
           unselectedLabelStyle: const TextStyle(fontFamily: 'Poppins'),
         ),
@@ -86,16 +87,16 @@ class _TrendingViewContentState extends State<_TrendingViewContent> with SingleT
         context.read<TrendingBloc>().add(RefreshTrending(isToday));
         await Future.delayed(const Duration(milliseconds: 800));
       },
-      color: const Color(0xFFC026D3),
-      backgroundColor: const Color(0xFF1A1A1A),
+      color: AppColors.colorPrimary,
+      backgroundColor: AppColors.colorSurface2,
       child: BlocBuilder<TrendingBloc, TrendingState>(
         builder: (context, state) {
           if (state is TrendingLoading || state is TrendingInitial) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
           } else if (state is TrendingLoaded) {
             // Ensure we are rendering the state corresponding to the active tab if they got out of sync, though listener should handle it
             if (state.isToday != isToday) {
-               return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+               return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
             }
 
             final videos = state.videos;
@@ -175,7 +176,7 @@ class _TrendingRowItemState extends State<_TrendingRowItem> {
               width: 48,
               child: ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
-                  colors: [Color(0xFFC026D3), Color(0xFFDB2777)],
+                  colors: [AppColors.colorPrimary, AppColors.colorSecondary],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ).createShader(bounds),
@@ -213,17 +214,17 @@ class _TrendingRowItemState extends State<_TrendingRowItem> {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.remove_red_eye_outlined, size: 12, color: Color(0xFF9CA3AF)),
+                      const Icon(Icons.remove_red_eye_outlined, size: 12, color: AppColors.colorTextSecondary),
                       const SizedBox(width: 4),
                       Text(
                         _formatViewCount(widget.video.viewCount),
-                        style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Color(0xFF9CA3AF)),
+                        style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: AppColors.colorTextSecondary),
                       ),
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF242424),
+                          color: AppColors.colorSurface3,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -239,7 +240,7 @@ class _TrendingRowItemState extends State<_TrendingRowItem> {
             IconButton(
               icon: Icon(
                 _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                color: _isBookmarked ? const Color(0xFFC026D3) : const Color(0xFF9CA3AF),
+                color: _isBookmarked ? AppColors.colorPrimary : AppColors.colorTextSecondary,
               ),
               onPressed: _toggleBookmark,
             ),

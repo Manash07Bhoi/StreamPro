@@ -1,3 +1,4 @@
+import '../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -10,8 +11,8 @@ class ShimmerVideoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: const Color(0xFF1A1A1A),
-      highlightColor: const Color(0xFF2A2A2A),
+      baseColor: AppColors.colorSurface2,
+      highlightColor: AppColors.colorSurface3,
       period: const Duration(milliseconds: 1500),
       child: Container(
         width: width,
@@ -58,8 +59,8 @@ class ShimmerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: const Color(0xFF1A1A1A),
-      highlightColor: const Color(0xFF2A2A2A),
+      baseColor: AppColors.colorSurface2,
+      highlightColor: AppColors.colorSurface3,
       period: const Duration(milliseconds: 1500),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

@@ -1,3 +1,4 @@
+import '../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
@@ -179,8 +180,8 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                       memCacheWidth: 320,
                       memCacheHeight: 180,
                       placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: const Color(0xFF1A1A1A),
-                        highlightColor: const Color(0xFF2A2A2A),
+                        baseColor: AppColors.colorSurface2,
+                        highlightColor: AppColors.colorSurface3,
                         child: Container(color: Colors.black),
                       ),
                       errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -228,7 +229,7 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                             margin: const EdgeInsets.only(right: 4),
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]),
+                              gradient: const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: const Text('NEW', style: TextStyle(fontFamily: 'Poppins', fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -237,9 +238,9 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF1A1A1A),
+                              color: AppColors.colorSurface2,
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: const Color(0xFFEF4444)),
+                              border: Border.all(color: AppColors.colorError),
                             ),
                             child: Text(rating, style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Colors.white)),
                           ),
@@ -258,11 +259,11 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                             margin: const EdgeInsets.only(right: 4),
                             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF1A1A1A),
+                              color: AppColors.colorSurface2,
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: const Color(0xFFF59E0B)),
+                              border: Border.all(color: AppColors.colorWarning),
                             ),
-                            child: const Text('HD', style: TextStyle(fontFamily: 'Poppins', fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
+                            child: const Text('HD', style: TextStyle(fontFamily: 'Poppins', fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.colorWarning)),
                           ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -291,7 +292,7 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                               children: [
                                 Text(
                                   widget.video.channelName,
-                                  style: const TextStyle(fontFamily: 'Poppins', color: Color(0xFF9CA3AF), fontSize: 10),
+                                  style: const TextStyle(fontFamily: 'Poppins', color: AppColors.colorTextSecondary, fontSize: 10),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -305,7 +306,7 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                                 const SizedBox(height: 2),
                                 Text(
                                   '${_formatViewCount(widget.video.viewCount)} • ${widget.video.category}',
-                                  style: const TextStyle(fontFamily: 'Poppins', color: Color(0xFF6B7280), fontSize: 10),
+                                  style: const TextStyle(fontFamily: 'Poppins', color: AppColors.colorTextMuted, fontSize: 10),
                                 ),
                               ],
                             ),
@@ -329,7 +330,7 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                                 },
                                 child: Icon(
                                   _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                                  color: _isBookmarked ? const Color(0xFFC026D3) : Colors.white,
+                                  color: _isBookmarked ? AppColors.colorPrimary : Colors.white,
                                   size: 20,
                                 ),
                               ),
@@ -350,12 +351,12 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                         builder: (context, constraints) {
                           return Stack(
                             children: [
-                              Container(height: 3, color: const Color(0xFF242424)),
+                              Container(height: 3, color: AppColors.colorSurface3),
                               Container(
                                 height: 3,
                                 width: constraints.maxWidth * _progressPercent,
                                 decoration: const BoxDecoration(
-                                  gradient: LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]),
+                                  gradient: LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
                                 ),
                               ),
                             ],

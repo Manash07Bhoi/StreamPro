@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -23,9 +24,9 @@ class _ProfilePageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('My Profile', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
         actions: [
           IconButton(
@@ -37,7 +38,7 @@ class _ProfilePageContent extends StatelessWidget {
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           if (state is ProfileLoading || state is ProfileInitial) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
           } else if (state is ProfileLoaded || state is ProfileSaving || state is ProfileSaved) {
             final profile = (state is ProfileLoaded) ? state.profile : (state is ProfileSaving ? state.profile : (state as ProfileSaved).profile);
 
@@ -54,7 +55,7 @@ class _ProfilePageContent extends StatelessWidget {
                           height: 80,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]),
+                            gradient: LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
                           ),
                           child: profile.avatarUrl != null && profile.avatarUrl!.isNotEmpty
                               ? ClipOval(
@@ -86,9 +87,9 @@ class _ProfilePageContent extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: const Color(0xFFC026D3)),
+                            border: Border.all(color: AppColors.colorPrimary),
                           ),
-                          child: const Text('Free Member', style: TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFFC026D3))),
+                          child: const Text('Free Member', style: TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorPrimary)),
                         ),
                         const SizedBox(height: 32),
 
@@ -111,7 +112,7 @@ class _ProfilePageContent extends StatelessWidget {
                               const Text('My Interests', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
                               TextButton(
                                 onPressed: () => context.push('/profile/edit'),
-                                child: const Text('Edit', style: TextStyle(fontFamily: 'Poppins', color: Color(0xFFC026D3))),
+                                child: const Text('Edit', style: TextStyle(fontFamily: 'Poppins', color: AppColors.colorPrimary)),
                               ),
                             ],
                           ),
@@ -125,7 +126,7 @@ class _ProfilePageContent extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return Chip(
                                   label: Text(profile.interests[index], style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Colors.white)),
-                                  backgroundColor: const Color(0xFF242424),
+                                  backgroundColor: AppColors.colorSurface3,
                                   side: BorderSide.none,
                                 );
                               },
@@ -182,7 +183,7 @@ class _ProfilePageContent extends StatelessWidget {
       children: [
         Text(value, style: const TextStyle(fontFamily: 'Poppins', fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFF9CA3AF))),
+        Text(label, style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
       ],
     );
   }
@@ -193,13 +194,13 @@ class _ProfilePageContent extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: const Color(0xFF242424),
+          color: AppColors.colorSurface3,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(icon, color: Colors.white, size: 20),
       ),
       title: Text(title, style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Colors.white)),
-      trailing: const Icon(Icons.chevron_right, color: Color(0xFF6B7280), size: 20),
+      trailing: const Icon(Icons.chevron_right, color: AppColors.colorTextMuted, size: 20),
       onTap: onTap,
     );
   }

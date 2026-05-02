@@ -1,3 +1,4 @@
+import 'core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/di/injection.dart';
@@ -39,7 +40,7 @@ void main() async {
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color(0xFF0A0A0A),
+      systemNavigationBarColor: AppColors.colorBackground,
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );

@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection.dart';
@@ -58,7 +59,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -68,7 +69,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 if (_currentPage < 2)
                   TextButton(
                     onPressed: _finishOnboarding,
-                    child: const Text('Skip', style: TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins')),
+                    child: const Text('Skip', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
                   )
                 else
                   const SizedBox(height: 48), // Spacer to match button height
@@ -114,7 +115,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       height: 8,
       width: _currentPage == index ? 24 : 8,
       decoration: BoxDecoration(
-        color: _currentPage == index ? const Color(0xFFC026D3) : const Color(0xFF242424),
+        color: _currentPage == index ? AppColors.colorPrimary : AppColors.colorSurface3,
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -131,13 +132,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           gradient: isEnabled
-              ? const LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)])
-              : const LinearGradient(colors: [Color(0xFF242424), Color(0xFF242424)]),
+              ? const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary])
+              : const LinearGradient(colors: [AppColors.colorSurface3, AppColors.colorSurface3]),
         ),
         child: Text(
           _currentPage == 2 ? 'Get Started' : 'Next',
           style: TextStyle(
-            color: isEnabled ? Colors.white : const Color(0xFF6B7280),
+            color: isEnabled ? Colors.white : AppColors.colorTextMuted,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w600,
           ),
@@ -156,11 +157,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
             height: 240,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFF1A1A1A),
+              color: AppColors.colorSurface2,
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Center(
-              child: Icon(Icons.play_circle_fill, size: 80, color: Color(0xFFC026D3)), // Placeholder for Lottie
+              child: Icon(Icons.play_circle_fill, size: 80, color: AppColors.colorPrimary), // Placeholder for Lottie
             ),
           ),
           const SizedBox(height: 48),
@@ -172,7 +173,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           const SizedBox(height: 16),
           const Text(
             'Discover thousands of premium videos across every genre — completely free.',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 16, color: Color(0xFF9CA3AF)),
+            style: TextStyle(fontFamily: 'Poppins', fontSize: 16, color: AppColors.colorTextSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -190,11 +191,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
             height: 240,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFF1A1A1A),
+              color: AppColors.colorSurface2,
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Center(
-              child: Icon(Icons.video_library, size: 80, color: Color(0xFFC026D3)), // Placeholder for Lottie
+              child: Icon(Icons.video_library, size: 80, color: AppColors.colorPrimary), // Placeholder for Lottie
             ),
           ),
           const SizedBox(height: 48),
@@ -206,7 +207,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           const SizedBox(height: 16),
           const Text(
             'Bookmark favorites, create playlists, and pick up right where you left off.',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 16, color: Color(0xFF9CA3AF)),
+            style: TextStyle(fontFamily: 'Poppins', fontSize: 16, color: AppColors.colorTextSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -228,7 +229,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           const SizedBox(height: 8),
           const Text(
             'Select at least 3 to personalize your feed.',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF)),
+            style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -250,17 +251,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     }
                   });
                 },
-                backgroundColor: const Color(0xFF242424),
+                backgroundColor: AppColors.colorSurface3,
                 selectedColor: Colors.transparent, // Background will be gradient border simulation later
                 labelStyle: TextStyle(
-                  color: isSelected ? Colors.white : const Color(0xFF9CA3AF),
+                  color: isSelected ? Colors.white : AppColors.colorTextSecondary,
                   fontFamily: 'Poppins',
                   fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: BorderSide(
-                    color: isSelected ? const Color(0xFFC026D3) : Colors.transparent,
+                    color: isSelected ? AppColors.colorPrimary : Colors.transparent,
                     width: 1.5,
                   ),
                 ),

@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +13,7 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppColors.colorBackground,
       child: Column(
         children: [
           BlocBuilder<ProfileBloc, ProfileState>(
@@ -29,7 +30,7 @@ class MainDrawer extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
                 decoration: const BoxDecoration(
-                  gradient: AppTheme.primaryGradient,
+                  gradient: AppColors.primaryGradient,
                 ),
                 child: Row(
                   children: [
@@ -142,7 +143,7 @@ class MainDrawer extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(color: Color(0xFF242424), height: 1),
+          const Divider(color: AppColors.colorSurface3, height: 1),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
             child: Row(
@@ -155,19 +156,19 @@ class MainDrawer extends StatelessWidget {
                         Navigator.pop(context);
                         context.push('/privacy');
                       },
-                      child: const Text('Privacy Policy', style: TextStyle(color: Color(0xFF9CA3AF), fontSize: 12, fontFamily: 'Poppins', decoration: TextDecoration.underline)),
+                      child: const Text('Privacy Policy', style: TextStyle(color: AppColors.colorTextSecondary, fontSize: 12, fontFamily: 'Poppins', decoration: TextDecoration.underline)),
                     ),
-                    const Text('  •  ', style: TextStyle(color: Color(0xFF6B7280), fontSize: 12)),
+                    const Text('  •  ', style: TextStyle(color: AppColors.colorTextMuted, fontSize: 12)),
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                         context.push('/terms');
                       },
-                      child: const Text('Terms of Service', style: TextStyle(color: Color(0xFF9CA3AF), fontSize: 12, fontFamily: 'Poppins', decoration: TextDecoration.underline)),
+                      child: const Text('Terms of Service', style: TextStyle(color: AppColors.colorTextSecondary, fontSize: 12, fontFamily: 'Poppins', decoration: TextDecoration.underline)),
                     ),
                   ],
                 ),
-                const Text('v1.0.0', style: TextStyle(color: Color(0xFF6B7280), fontSize: 12, fontFamily: 'Poppins')),
+                const Text('v1.0.0', style: TextStyle(color: AppColors.colorTextMuted, fontSize: 12, fontFamily: 'Poppins')),
               ],
             ),
           ),
@@ -183,7 +184,7 @@ class MainDrawer extends StatelessWidget {
   }) {
     // Basic active state simulation could be added here by passing current route
     return ListTile(
-      leading: Icon(icon, color: const Color(0xFF9CA3AF)),
+      leading: Icon(icon, color: AppColors.colorTextSecondary),
       title: Text(title, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 14)),
       onTap: onTap,
     );

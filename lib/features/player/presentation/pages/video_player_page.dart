@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -157,7 +158,7 @@ class _VideoPlayerPageContentState extends State<_VideoPlayerPageContent>
             child: BlocBuilder<PlayerBloc, PlayerState>(
               builder: (context, state) {
                 if (state is! PlayerReady) {
-                  return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+                  return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
                 }
 
                 return PlayerGestureDetector(
@@ -210,7 +211,7 @@ class _VideoPlayerPageContentState extends State<_VideoPlayerPageContent>
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFC026D3),
+                              color: AppColors.colorPrimary,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text('${state.speed}x', style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.bold)),

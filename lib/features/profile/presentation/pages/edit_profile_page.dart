@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -57,14 +58,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('Edit Profile', style: TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w500)),
         actions: [
           TextButton(
             onPressed: _saveProfile,
-            child: const Text('Save', style: TextStyle(color: Color(0xFFC026D3), fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+            child: const Text('Save', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -85,12 +86,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF242424),
+                        color: AppColors.colorSurface3,
                         shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFC026D3), width: 2),
+                        border: Border.all(color: AppColors.colorPrimary, width: 2),
                       ),
                       child: const Center(
-                        child: Icon(Icons.person, size: 50, color: Color(0xFF6B7280)),
+                        child: Icon(Icons.person, size: 50, color: AppColors.colorTextMuted),
                       ),
                     ),
                     Positioned(
@@ -99,7 +100,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: const BoxDecoration(
-                          color: Color(0xFFC026D3),
+                          color: AppColors.colorPrimary,
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
@@ -110,7 +111,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
             const SizedBox(height: 32),
-            const Text('Display Name', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+            const Text('Display Name', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
             const SizedBox(height: 8),
             TextField(
               controller: _nameController,
@@ -118,19 +119,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
               maxLength: 30,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: const Color(0xFF1A1A1A),
+                fillColor: AppColors.colorSurface2,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFC026D3)),
+                  borderSide: const BorderSide(color: AppColors.colorPrimary),
                 ),
               ),
             ),
             const SizedBox(height: 24),
-            const Text('Interests', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+            const Text('Interests', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
             const SizedBox(height: 16),
             Wrap(
               spacing: 8.0,
@@ -149,16 +150,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       }
                     });
                   },
-                  backgroundColor: const Color(0xFF1A1A1A),
-                  selectedColor: const Color(0xFFC026D3).withValues(alpha:0.2),
+                  backgroundColor: AppColors.colorSurface2,
+                  selectedColor: AppColors.colorPrimary.withValues(alpha:0.2),
                   labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : const Color(0xFF9CA3AF),
+                    color: isSelected ? Colors.white : AppColors.colorTextSecondary,
                     fontFamily: 'Poppins',
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(
-                      color: isSelected ? const Color(0xFFC026D3) : Colors.transparent,
+                      color: isSelected ? AppColors.colorPrimary : Colors.transparent,
                     ),
                   ),
                 );

@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -23,23 +24,23 @@ class _NotificationsPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('Notifications', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
         actions: [
           TextButton(
             onPressed: () {
               context.read<NotificationBloc>().add(MarkAllNotificationsRead());
             },
-            child: const Text('Mark All Read', style: TextStyle(color: Color(0xFFC026D3), fontFamily: 'Poppins')),
+            child: const Text('Mark All Read', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins')),
           ),
         ],
       ),
       body: BlocBuilder<NotificationBloc, NotificationState>(
         builder: (context, state) {
           if (state is NotificationLoading || state is NotificationInitial) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
           } else if (state is NotificationLoaded) {
             final notifications = state.notifications;
 
@@ -48,11 +49,11 @@ class _NotificationsPageContent extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.notifications_off_outlined, size: 80, color: Color(0xFF242424)),
+                    const Icon(Icons.notifications_off_outlined, size: 80, color: AppColors.colorSurface3),
                     const SizedBox(height: 16),
                     const Text('All Caught Up!', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
                     const SizedBox(height: 8),
-                    const Text('No new notifications right now.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+                    const Text('No new notifications right now.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
                   ],
                 ),
               );
@@ -70,14 +71,14 @@ class _NotificationsPageContent extends StatelessWidget {
                     context.read<NotificationBloc>().add(DeleteNotification(notification.id));
                   },
                   background: Container(
-                    color: const Color(0xFFEF4444),
+                    color: AppColors.colorError,
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: 24.0),
                     child: const Icon(Icons.delete, color: Colors.white),
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16.0),
-                    tileColor: notification.isRead ? const Color(0xFF0A0A0A) : const Color(0xFF1A1A1A),
+                    tileColor: notification.isRead ? AppColors.colorBackground : AppColors.colorSurface2,
                     leading: _buildIconForType(notification.type),
                     title: Text(
                       notification.title,
@@ -94,14 +95,14 @@ class _NotificationsPageContent extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           notification.body,
-                          style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFF9CA3AF)),
+                          style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           _formatTimeAgo(notification.createdAt),
-                          style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Color(0xFF6B7280)),
+                          style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: AppColors.colorTextMuted),
                         ),
                       ],
                     ),
@@ -152,16 +153,16 @@ class _NotificationsPageContent extends StatelessWidget {
         break;
       case 'trending':
         iconData = Icons.local_fire_department;
-        gradientColors = [const Color(0xFFF59E0B), const Color(0xFFD97706)];
+        gradientColors = [AppColors.colorWarning, AppColors.colorWarning];
         break;
       case 'reminder':
         iconData = Icons.download;
-        gradientColors = [const Color(0xFF10B981), const Color(0xFF059669)];
+        gradientColors = [AppColors.colorSuccess, AppColors.colorSuccess];
         break;
       case 'system':
       default:
         iconData = Icons.info;
-        gradientColors = [const Color(0xFFC026D3), const Color(0xFFDB2777)];
+        gradientColors = [AppColors.colorPrimary, AppColors.colorSecondary];
         break;
     }
 

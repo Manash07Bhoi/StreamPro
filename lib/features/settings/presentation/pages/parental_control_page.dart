@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
@@ -73,9 +74,9 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('Parental Controls', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
       ),
       body: BlocConsumer<SettingsBloc, SettingsState>(
@@ -89,14 +90,14 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
               ? (sl<SettingsBloc>().state as SettingsLoaded).config
               : (sl<SettingsBloc>().state is SettingsActionSuccess ? (sl<SettingsBloc>().state as SettingsActionSuccess).config : null);
 
-          if (config == null) return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+          if (config == null) return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
 
           if (config.parentalControlEnabled) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.check_circle, size: 80, color: Color(0xFF10B981)),
+                  const Icon(Icons.check_circle, size: 80, color: AppColors.colorSuccess),
                   const SizedBox(height: 16),
                   const Text('Parental Controls Active', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
                   const SizedBox(height: 32),
@@ -105,7 +106,7 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
                       // Placeholder for entering current PIN to disable
                       context.read<SettingsBloc>().add(DisableParentalControl(config.parentalPin));
                     },
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
+                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.colorError),
                     child: const Text('Disable Parental Controls', style: TextStyle(fontFamily: 'Poppins', color: Colors.white)),
                   ),
                 ],
@@ -123,7 +124,7 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
               const SizedBox(height: 16),
               const Text(
                 'This PIN will be required to watch R-rated content.',
-                style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF)),
+                style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
@@ -138,14 +139,14 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
                     height: 16,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isFilled ? const Color(0xFFC026D3) : const Color(0xFF242424),
+                      color: isFilled ? AppColors.colorPrimary : AppColors.colorSurface3,
                     ),
                   );
                 }),
               ),
               if (_errorText.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                Text(_errorText, style: const TextStyle(fontFamily: 'Poppins', color: Color(0xFFEF4444))),
+                Text(_errorText, style: const TextStyle(fontFamily: 'Poppins', color: AppColors.colorError)),
               ],
               const SizedBox(height: 64),
               _buildNumpad(),
@@ -192,7 +193,7 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
             fontFamily: 'Poppins',
             fontSize: 28,
             fontWeight: FontWeight.w500,
-            color: isIcon ? const Color(0xFF9CA3AF) : Colors.white,
+            color: isIcon ? AppColors.colorTextSecondary : Colors.white,
           ),
         ),
       ),

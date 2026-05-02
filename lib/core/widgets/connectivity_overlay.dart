@@ -1,3 +1,4 @@
+import '../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/connectivity_bloc.dart';
@@ -16,7 +17,7 @@ class ConnectivityOverlay extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Back Online ✓', style: TextStyle(fontFamily: 'Poppins')),
-              backgroundColor: Color(0xFF10B981),
+              backgroundColor: AppColors.colorSuccess,
               duration: Duration(seconds: 2),
             ),
           );
@@ -37,7 +38,7 @@ class ConnectivityOverlay extends StatelessWidget {
                         Lottie.asset(
                           'assets/lottie/offline_state.json',
                           height: 200,
-                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.wifi_off, size: 80, color: Color(0xFFEF4444)),
+                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.wifi_off, size: 80, color: AppColors.colorError),
                         ),
                         const SizedBox(height: 24),
                         const Text(
@@ -47,7 +48,7 @@ class ConnectivityOverlay extends StatelessWidget {
                         const SizedBox(height: 16),
                         const Text(
                           'Check your connection and try again.',
-                          style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF)),
+                          style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
                         ),
                         const SizedBox(height: 32),
                         OutlinedButton(
@@ -56,7 +57,7 @@ class ConnectivityOverlay extends StatelessWidget {
                              context.read<ConnectivityBloc>().add(StartMonitoring());
                           },
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFFC026D3)),
+                            side: const BorderSide(color: AppColors.colorPrimary),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                           ),
                           child: const Text('Try Again', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),

@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -37,7 +38,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
         builder: (context, scrollController) {
           return Container(
             decoration: const BoxDecoration(
-              color: Color(0xFF121212),
+              color: AppColors.colorSurface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             ),
             child: Column(
@@ -49,7 +50,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF242424),
+                      color: AppColors.colorSurface3,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -71,20 +72,20 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close, color: Color(0xFF9CA3AF)),
+                        icon: const Icon(Icons.close, color: AppColors.colorTextSecondary),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],
                   ),
                 ),
-                const Divider(color: Color(0xFF242424), height: 1),
+                const Divider(color: AppColors.colorSurface3, height: 1),
 
                 // Comments List
                 Expanded(
                   child: BlocBuilder<CommentBloc, CommentState>(
                     builder: (context, state) {
                       if (state is CommentLoading || state is CommentInitial) {
-                        return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+                        return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
                       } else if (state is CommentLoaded || state is CommentPosting) {
                         final comments = state is CommentLoaded ? state.comments : (state as CommentPosting).currentComments;
 
@@ -93,11 +94,11 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.chat_bubble_outline, size: 64, color: Color(0xFF242424)),
+                                const Icon(Icons.chat_bubble_outline, size: 64, color: AppColors.colorSurface3),
                                 const SizedBox(height: 16),
                                 const Text('No Comments Yet', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
                                 const SizedBox(height: 8),
-                                const Text('Be the first to comment on this video.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+                                const Text('Be the first to comment on this video.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
                               ],
                             ),
                           );
@@ -130,14 +131,14 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                         bottom: MediaQuery.of(context).viewInsets.bottom + 12,
                       ),
                       decoration: const BoxDecoration(
-                        color: Color(0xFF1A1A1A),
-                        border: Border(top: BorderSide(color: Color(0xFF242424))),
+                        color: AppColors.colorSurface2,
+                        border: Border(top: BorderSide(color: AppColors.colorSurface3)),
                       ),
                       child: Row(
                         children: [
                           const CircleAvatar(
                             radius: 16,
-                            backgroundColor: Color(0xFF242424),
+                            backgroundColor: AppColors.colorSurface3,
                             child: Icon(Icons.person, size: 20, color: Colors.white54),
                           ),
                           const SizedBox(width: 12),
@@ -149,13 +150,13 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                               buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
                               decoration: InputDecoration(
                                 hintText: 'Add a comment...',
-                                hintStyle: const TextStyle(color: Color(0xFF6B7280), fontFamily: 'Poppins', fontSize: 14),
+                                hintStyle: const TextStyle(color: AppColors.colorTextMuted, fontFamily: 'Poppins', fontSize: 14),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
                                   borderSide: BorderSide.none,
                                 ),
                                 filled: true,
-                                fillColor: const Color(0xFF242424),
+                                fillColor: AppColors.colorSurface3,
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                               ),
                             ),
@@ -165,11 +166,11 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                             const SizedBox(
                               width: 24,
                               height: 24,
-                              child: CircularProgressIndicator(color: Color(0xFFC026D3), strokeWidth: 2),
+                              child: CircularProgressIndicator(color: AppColors.colorPrimary, strokeWidth: 2),
                             )
                           else
                             IconButton(
-                              icon: const Icon(Icons.send, color: Color(0xFFC026D3)),
+                              icon: const Icon(Icons.send, color: AppColors.colorPrimary),
                               onPressed: () {
                                 if (_commentController.text.trim().isNotEmpty) {
                                   context.read<CommentBloc>().add(PostComment(widget.video.id, _commentController.text));
@@ -198,7 +199,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
         children: [
           CircleAvatar(
             radius: 20,
-            backgroundColor: const Color(0xFF242424),
+            backgroundColor: AppColors.colorSurface3,
             backgroundImage: comment.authorAvatar.isNotEmpty ? CachedNetworkImageProvider(comment.authorAvatar) : null,
             child: comment.authorAvatar.isEmpty ? const Icon(Icons.person, color: Colors.white54) : null,
           ),
@@ -218,7 +219,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF242424),
+                          color: AppColors.colorSurface3,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: const Text('You', style: TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Colors.white)),
@@ -227,7 +228,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                     const SizedBox(width: 8),
                     Text(
                       _formatTimeAgo(comment.postedAt),
-                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFF6B7280)),
+                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextMuted),
                     ),
                   ],
                 ),
@@ -240,7 +241,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                   },
                   child: Text(
                     comment.text,
-                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFFE5E7EB)),
+                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextPrimary),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -252,14 +253,14 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                       },
                       child: Row(
                         children: [
-                          const Icon(Icons.thumb_up_alt_outlined, size: 14, color: Color(0xFF9CA3AF)),
+                          const Icon(Icons.thumb_up_alt_outlined, size: 14, color: AppColors.colorTextSecondary),
                           const SizedBox(width: 4),
-                          Text(comment.likeCount.toString(), style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFF9CA3AF))),
+                          Text(comment.likeCount.toString(), style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
                         ],
                       ),
                     ),
                     const SizedBox(width: 24),
-                    const Text('Reply', style: TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFF9CA3AF))),
+                    const Text('Reply', style: TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
                   ],
                 ),
               ],
@@ -274,20 +275,20 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A1A),
+        backgroundColor: AppColors.colorSurface2,
         title: const Text('Delete Comment', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
-        content: const Text('Are you sure you want to delete this comment?', style: TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins')),
+        content: const Text('Are you sure you want to delete this comment?', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins')),
+            child: const Text('Cancel', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               blocContext.read<CommentBloc>().add(DeleteComment(comment.id));
             },
-            child: const Text('Delete', style: TextStyle(color: Color(0xFFEF4444), fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+            child: const Text('Delete', style: TextStyle(color: AppColors.colorError, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
           ),
         ],
       ),

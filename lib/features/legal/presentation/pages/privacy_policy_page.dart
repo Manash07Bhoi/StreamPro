@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../features/settings/data/repositories/app_config_repository.dart';
@@ -14,9 +15,9 @@ class PrivacyPolicyPage extends StatelessWidget {
     final bool showAcceptButton = !config.hasAcceptedPrivacy;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('Privacy Policy', style: TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w500)),
         leading: showAcceptButton ? const SizedBox.shrink() : BackButton(onPressed: () => context.pop()),
         automaticallyImplyLeading: !showAcceptButton,
@@ -26,7 +27,7 @@ class PrivacyPolicyPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Last Updated: January 1, 2026', style: TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Color(0xFF6B7280))),
+            const Text('Last Updated: January 1, 2026', style: TextStyle(fontFamily: 'Poppins', fontSize: 10, color: AppColors.colorTextMuted)),
             const SizedBox(height: 24),
             _buildSection('Introduction', 'This Privacy Policy explains how StreamPro collects, uses, and discloses information about you.'),
             _buildSection('Information We Collect', 'We collect information you provide directly to us, such as when you create an account, update your profile, or interact with the app.'),
@@ -41,7 +42,7 @@ class PrivacyPolicyPage extends StatelessWidget {
         ),
       ),
       bottomSheet: showAcceptButton ? Container(
-        color: const Color(0xFF121212),
+        color: AppColors.colorSurface,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.08))),
@@ -52,7 +53,7 @@ class PrivacyPolicyPage extends StatelessWidget {
             height: 52,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              gradient: const LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]),
+              gradient: const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
             ),
             child: ElevatedButton(
               onPressed: () {
@@ -80,7 +81,7 @@ class PrivacyPolicyPage extends StatelessWidget {
         children: [
           Text(title, style: const TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white)),
           const SizedBox(height: 8),
-          Text(body, style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF), height: 1.6)),
+          Text(body, style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary, height: 1.6)),
         ],
       ),
     );
