@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -117,7 +118,7 @@ class PlayerControlsOverlay extends StatelessWidget {
           child: Container(
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]),
+              gradient: LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -147,19 +148,19 @@ class PlayerControlsOverlay extends StatelessWidget {
               _buildActionButton(
                 icon: reaction == 'like' ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
                 label: video.likeCount.toString(),
-                color: reaction == 'like' ? const Color(0xFFC026D3) : Colors.white,
+                color: reaction == 'like' ? AppColors.colorPrimary : Colors.white,
                 onTap: onToggleLike,
               ),
               _buildActionButton(
                 icon: reaction == 'dislike' ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
                 label: 'Dislike',
-                color: reaction == 'dislike' ? const Color(0xFFEF4444) : Colors.white,
+                color: reaction == 'dislike' ? AppColors.colorError : Colors.white,
                 onTap: onToggleDislike,
               ),
               _buildActionButton(
                 icon: isBookmarked ? Icons.bookmark : Icons.bookmark_border,
                 label: 'Save',
-                color: isBookmarked ? const Color(0xFFC026D3) : Colors.white,
+                color: isBookmarked ? AppColors.colorPrimary : Colors.white,
                 onTap: onToggleBookmark,
               ),
               _buildActionButton(
@@ -192,8 +193,8 @@ class PlayerControlsOverlay extends StatelessWidget {
                          context.read<PlayerBloc>().add(SeekTo((value * video.durationSeconds).round()));
                       }
                     },
-                    activeColor: const Color(0xFFC026D3),
-                    inactiveColor: const Color(0xFF242424),
+                    activeColor: AppColors.colorPrimary,
+                    inactiveColor: AppColors.colorSurface3,
                   ),
                 ),
               ),
@@ -213,7 +214,7 @@ class PlayerControlsOverlay extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
             child: GestureDetector(
               onTap: onRevealComments,
-              child: const Text('↑ Related & Comments', style: TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins', fontSize: 12)),
+              child: const Text('↑ Related & Comments', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins', fontSize: 12)),
             ),
           ),
         ),

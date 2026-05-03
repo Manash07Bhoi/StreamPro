@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -40,9 +41,9 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
         safePop();
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF0A0A0A),
+          backgroundColor: AppColors.colorBackground,
           title: const Text('Settings', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new),
@@ -52,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
         body: BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, state) {
             if (state is SettingsLoading || state is SettingsInitial) {
-              return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+              return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
             }
 
             // We use the latest config, even if in error state, assuming we have one from Loaded/Success
@@ -84,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
                 _buildListTile(
                   icon: Icons.admin_panel_settings_outlined,
                   title: 'Parental Controls',
-                  trailing: Text(config.parentalControlEnabled ? 'On' : 'Off', style: TextStyle(color: config.parentalControlEnabled ? const Color(0xFFC026D3) : const Color(0xFF6B7280))),
+                  trailing: Text(config.parentalControlEnabled ? 'On' : 'Off', style: TextStyle(color: config.parentalControlEnabled ? AppColors.colorPrimary : AppColors.colorTextMuted)),
                   onTap: () => context.push('/settings/parental'),
                 ),
                 _buildListTile(
@@ -135,7 +136,7 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
                 _buildListTile(
                   icon: Icons.info_outline,
                   title: 'App Version',
-                  trailing: Text('StreamPro $_appVersion', style: const TextStyle(color: Color(0xFF6B7280))),
+                  trailing: Text('StreamPro $_appVersion', style: const TextStyle(color: AppColors.colorTextMuted)),
                   onTap: () {},
                 ),
                 _buildListTile(
@@ -178,7 +179,7 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
       child: Text(
         title,
         style: const TextStyle(
-          color: Color(0xFFC026D3),
+          color: AppColors.colorPrimary,
           fontWeight: FontWeight.w600,
           fontFamily: 'Poppins',
           fontSize: 14,
@@ -196,10 +197,10 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
   }) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-      leading: Icon(icon, color: const Color(0xFF9CA3AF)),
+      leading: Icon(icon, color: AppColors.colorTextSecondary),
       title: Text(title, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 16)),
-      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(color: Color(0xFF6B7280), fontFamily: 'Poppins', fontSize: 12)) : null,
-      trailing: trailing ?? const Icon(Icons.chevron_right, color: Color(0xFF6B7280)),
+      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(color: AppColors.colorTextMuted, fontFamily: 'Poppins', fontSize: 12)) : null,
+      trailing: trailing ?? const Icon(Icons.chevron_right, color: AppColors.colorTextMuted),
       onTap: onTap,
     );
   }
@@ -212,13 +213,13 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
   }) {
     return SwitchListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-      secondary: Icon(icon, color: const Color(0xFF9CA3AF)),
+      secondary: Icon(icon, color: AppColors.colorTextSecondary),
       title: Text(title, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 16)),
       value: value,
       onChanged: onChanged,
-      activeThumbColor: const Color(0xFFC026D3),
-      inactiveThumbColor: const Color(0xFF6B7280),
-      inactiveTrackColor: const Color(0xFF242424),
+      activeThumbColor: AppColors.colorPrimary,
+      inactiveThumbColor: AppColors.colorTextMuted,
+      inactiveTrackColor: AppColors.colorSurface3,
     );
   }
 
@@ -226,13 +227,13 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A1A),
+        backgroundColor: AppColors.colorSurface2,
         title: Text(title, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
-        content: Text(content, style: const TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins')),
+        content: Text(content, style: const TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
         actions: [
           TextButton(
             onPressed: () => context.pop(),
-            child: const Text('Cancel', style: TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins')),
+            child: const Text('Cancel', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
           ),
           TextButton(
             onPressed: () {
@@ -240,10 +241,10 @@ class _SettingsPageState extends State<SettingsPage> with SafePopMixin {
               onConfirm();
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text('$title completed', style: const TextStyle(fontFamily: 'Poppins')),
-                backgroundColor: const Color(0xFF10B981),
+                backgroundColor: AppColors.colorSuccess,
               ));
             },
-            child: const Text('Confirm', style: TextStyle(color: Color(0xFFEF4444), fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+            child: const Text('Confirm', style: TextStyle(color: AppColors.colorError, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,9 +8,9 @@ class HelpFaqPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('Help & FAQ', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
       ),
       body: ListView(
@@ -43,8 +44,8 @@ class HelpFaqPage extends StatelessWidget {
                 // url_launcher mailto placeholder
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Contact support action')));
               },
-              icon: const Icon(Icons.email_outlined, color: Color(0xFFC026D3)),
-              label: const Text('Still need help? Contact Us', style: TextStyle(fontFamily: 'Poppins', color: Color(0xFFC026D3))),
+              icon: const Icon(Icons.email_outlined, color: AppColors.colorPrimary),
+              label: const Text('Still need help? Contact Us', style: TextStyle(fontFamily: 'Poppins', color: AppColors.colorPrimary)),
             ),
           ),
           const SizedBox(height: 32),
@@ -61,14 +62,14 @@ class HelpFaqPage extends StatelessWidget {
           padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, top: 8.0),
           child: Text(
             title,
-            style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFFC026D3)),
+            style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.colorPrimary),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF121212),
+            color: AppColors.colorSurface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFF242424)),
+            border: Border.all(color: AppColors.colorSurface3),
           ),
           child: Column(
             children: children,
@@ -84,7 +85,7 @@ class HelpFaqPage extends StatelessWidget {
         dividerColor: Colors.transparent,
         unselectedWidgetColor: Colors.white54,
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFC026D3),
+          primary: AppColors.colorPrimary,
         ),
       ),
       child: ExpansionTile(
@@ -97,7 +98,7 @@ class HelpFaqPage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
             child: Text(
               answer,
-              style: const TextStyle(fontFamily: 'Poppins', fontSize: 13, color: Color(0xFF9CA3AF), height: 1.5),
+              style: const TextStyle(fontFamily: 'Poppins', fontSize: 13, color: AppColors.colorTextSecondary, height: 1.5),
             ),
           ),
         ],

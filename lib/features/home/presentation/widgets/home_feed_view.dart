@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -38,12 +39,12 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
         // Simple wait for refresh to complete visually
         await Future.delayed(const Duration(milliseconds: 800));
       },
-      color: const Color(0xFFC026D3),
-      backgroundColor: const Color(0xFF1A1A1A),
+      color: AppColors.colorPrimary,
+      backgroundColor: AppColors.colorSurface2,
       child: BlocBuilder<HomeFeedBloc, HomeFeedState>(
         builder: (context, state) {
           if (state is HomeFeedLoading || state is HomeFeedInitial) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
           } else if (state is HomeFeedLoaded) {
             return CustomScrollView(
               slivers: [
@@ -110,7 +111,7 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('Top Rated', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
-                          TextButton(onPressed: () {}, child: const Text('See All', style: TextStyle(color: Color(0xFFC026D3), fontFamily: 'Poppins'))),
+                          TextButton(onPressed: () {}, child: const Text('See All', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins'))),
                         ],
                       ),
                     ),
@@ -168,7 +169,7 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, const Color(0xFF0A0A0A).withValues(alpha:0.9)],
+                        colors: [Colors.transparent, AppColors.colorBackground.withValues(alpha:0.9)],
                         stops: const [0.3, 1.0],
                       ),
                     ),
@@ -185,10 +186,10 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFC026D3).withValues(alpha:0.2),
+                                color: AppColors.colorPrimary.withValues(alpha:0.2),
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: Text(video.category, style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Color(0xFFC026D3))),
+                              child: Text(video.category, style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: AppColors.colorPrimary)),
                             ),
                             const SizedBox(width: 8),
                             Container(
@@ -213,7 +214,7 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
                           height: 36,
                           width: 120,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]),
+                            gradient: const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
                             borderRadius: BorderRadius.circular(18),
                           ),
                           child: const Center(child: Text('Watch Now', style: TextStyle(fontFamily: 'Poppins', fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white))),
@@ -235,7 +236,7 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(3),
-                color: _currentHeroIndex == entry.key ? const Color(0xFFC026D3) : const Color(0xFF242424),
+                color: _currentHeroIndex == entry.key ? AppColors.colorPrimary : AppColors.colorSurface3,
               ),
             );
           }).toList(),
@@ -254,7 +255,7 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: const TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
-              TextButton(onPressed: () {}, child: const Text('See All', style: TextStyle(color: Color(0xFFC026D3), fontFamily: 'Poppins'))),
+              TextButton(onPressed: () {}, child: const Text('See All', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins'))),
             ],
           ),
         ),
@@ -301,15 +302,15 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
               onSelected: (_) {
                  context.read<HomeFeedBloc>().add(ChangeSelectedCategory(isSelected ? null : category));
               },
-              backgroundColor: const Color(0xFF1A1A1A),
-              selectedColor: const Color(0xFFC026D3).withValues(alpha:0.2),
+              backgroundColor: AppColors.colorSurface2,
+              selectedColor: AppColors.colorPrimary.withValues(alpha:0.2),
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : const Color(0xFF9CA3AF),
+                color: isSelected ? Colors.white : AppColors.colorTextSecondary,
                 fontFamily: 'Poppins',
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
-                side: BorderSide(color: isSelected ? const Color(0xFFC026D3) : Colors.transparent),
+                side: BorderSide(color: isSelected ? AppColors.colorPrimary : Colors.transparent),
               ),
             );
           },
@@ -329,7 +330,7 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
               width: 30,
               child: Text(
                 rank.toString(),
-                style: const TextStyle(fontFamily: 'Poppins', fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFFC026D3)),
+                style: const TextStyle(fontFamily: 'Poppins', fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.colorPrimary),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -351,7 +352,7 @@ class _HomeFeedContentState extends State<_HomeFeedContent> {
         ),
       ),
       title: Text(video.title, style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500), maxLines: 2, overflow: TextOverflow.ellipsis),
-      subtitle: Text('${video.viewCount} views', style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFF9CA3AF))),
+      subtitle: Text('${video.viewCount} views', style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
       onTap: () => context.push('/player', extra: video),
     );
   }

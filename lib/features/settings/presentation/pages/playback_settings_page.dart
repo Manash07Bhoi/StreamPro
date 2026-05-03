@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
@@ -10,9 +11,9 @@ class PlaybackSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('Playback Settings', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
       ),
       body: BlocBuilder<SettingsBloc, SettingsState>(
@@ -22,7 +23,7 @@ class PlaybackSettingsPage extends StatelessWidget {
               : (sl<SettingsBloc>().state is SettingsActionSuccess ? (sl<SettingsBloc>().state as SettingsActionSuccess).config : null);
 
           if (config == null) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
           }
 
           return ListView(
@@ -33,10 +34,10 @@ class PlaybackSettingsPage extends StatelessWidget {
                 title: const Text('Default Video Quality', style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 16)),
                 trailing: DropdownButton<String>(
                   value: config.videoQuality,
-                  dropdownColor: const Color(0xFF1A1A1A),
+                  dropdownColor: AppColors.colorSurface2,
                   underline: const SizedBox(),
-                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF9CA3AF)),
-                  style: const TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins'),
+                  icon: const Icon(Icons.arrow_drop_down, color: AppColors.colorTextSecondary),
+                  style: const TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins'),
                   items: ['auto', '1080p', '720p', '480p', '360p']
                       .map((q) => DropdownMenuItem(
                             value: q,
@@ -53,39 +54,39 @@ class PlaybackSettingsPage extends StatelessWidget {
               SwitchListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 title: const Text('Auto-Play Videos', style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 16)),
-                subtitle: const Text('Play videos automatically when opened', style: TextStyle(color: Color(0xFF6B7280), fontFamily: 'Poppins', fontSize: 12)),
+                subtitle: const Text('Play videos automatically when opened', style: TextStyle(color: AppColors.colorTextMuted, fontFamily: 'Poppins', fontSize: 12)),
                 value: config.autoPlayEnabled,
                 onChanged: (val) => context.read<SettingsBloc>().add(ToggleAutoPlay()),
-                activeThumbColor: const Color(0xFFC026D3),
-                inactiveThumbColor: const Color(0xFF6B7280),
-                inactiveTrackColor: const Color(0xFF242424),
+                activeThumbColor: AppColors.colorPrimary,
+                inactiveThumbColor: AppColors.colorTextMuted,
+                inactiveTrackColor: AppColors.colorSurface3,
               ),
               SwitchListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 title: const Text('Auto-Play Next Video', style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 16)),
                 value: config.autoPlayNextEnabled,
                 onChanged: (val) => context.read<SettingsBloc>().add(ToggleAutoPlayNext()),
-                activeThumbColor: const Color(0xFFC026D3),
-                inactiveThumbColor: const Color(0xFF6B7280),
-                inactiveTrackColor: const Color(0xFF242424),
+                activeThumbColor: AppColors.colorPrimary,
+                inactiveThumbColor: AppColors.colorTextMuted,
+                inactiveTrackColor: AppColors.colorSurface3,
               ),
               SwitchListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 title: const Text('Loop Video', style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 16)),
                 value: config.loopVideoEnabled,
                 onChanged: (val) => context.read<SettingsBloc>().add(ToggleLoopVideo()),
-                activeThumbColor: const Color(0xFFC026D3),
-                inactiveThumbColor: const Color(0xFF6B7280),
-                inactiveTrackColor: const Color(0xFF242424),
+                activeThumbColor: AppColors.colorPrimary,
+                inactiveThumbColor: AppColors.colorTextMuted,
+                inactiveTrackColor: AppColors.colorSurface3,
               ),
               SwitchListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 title: const Text('Show Subtitles', style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 16)),
                 value: config.showSubtitles,
                 onChanged: (val) => context.read<SettingsBloc>().add(ToggleSubtitles()),
-                activeThumbColor: const Color(0xFFC026D3),
-                inactiveThumbColor: const Color(0xFF6B7280),
-                inactiveTrackColor: const Color(0xFF242424),
+                activeThumbColor: AppColors.colorPrimary,
+                inactiveThumbColor: AppColors.colorTextMuted,
+                inactiveTrackColor: AppColors.colorSurface3,
               ),
             ],
           );

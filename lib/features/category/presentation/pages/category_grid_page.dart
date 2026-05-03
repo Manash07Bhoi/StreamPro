@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -5,12 +6,12 @@ class CategoryGridPage extends StatelessWidget {
   const CategoryGridPage({super.key});
 
   final List<Map<String, dynamic>> _categories = const [
-    {'name': 'Action', 'icon': Icons.flash_on, 'color1': Color(0xFFEF4444), 'color2': Color(0xFFB91C1C)},
-    {'name': 'Comedy', 'icon': Icons.sentiment_very_satisfied, 'color1': Color(0xFFF59E0B), 'color2': Color(0xFFD97706)},
-    {'name': 'Drama', 'icon': Icons.theater_comedy, 'color1': Color(0xFF8B5CF6), 'color2': Color(0xFF6D28D9)},
-    {'name': 'Documentary', 'icon': Icons.public, 'color1': Color(0xFF10B981), 'color2': Color(0xFF059669)},
-    {'name': 'Music', 'icon': Icons.music_note, 'color1': Color(0xFFEC4899), 'color2': Color(0xFFBE185D)},
-    {'name': 'Sports', 'icon': Icons.sports_basketball, 'color1': Color(0xFFF97316), 'color2': Color(0xFFC2410C)},
+    {'name': 'Action', 'icon': Icons.flash_on, 'color1': AppColors.colorError, 'color2': AppColors.colorError},
+    {'name': 'Comedy', 'icon': Icons.sentiment_very_satisfied, 'color1': AppColors.colorWarning, 'color2': AppColors.colorWarning},
+    {'name': 'Drama', 'icon': Icons.theater_comedy, 'color1': AppColors.colorPrimary, 'color2': AppColors.colorSecondary},
+    {'name': 'Documentary', 'icon': Icons.public, 'color1': AppColors.colorSuccess, 'color2': AppColors.colorSuccess},
+    {'name': 'Music', 'icon': Icons.music_note, 'color1': AppColors.colorSecondary, 'color2': AppColors.colorSecondary},
+    {'name': 'Sports', 'icon': Icons.sports_basketball, 'color1': AppColors.colorWarning, 'color2': AppColors.colorWarning},
     {'name': 'Technology', 'icon': Icons.computer, 'color1': Color(0xFF3B82F6), 'color2': Color(0xFF1D4ED8)},
     {'name': 'Travel', 'icon': Icons.flight_takeoff, 'color1': Color(0xFF14B8A6), 'color2': Color(0xFF0F766E)},
   ];
@@ -18,9 +19,9 @@ class CategoryGridPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('Browse Categories', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
       ),
       body: GridView.builder(

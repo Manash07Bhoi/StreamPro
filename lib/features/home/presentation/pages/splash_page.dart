@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routes/app_routes.dart';
@@ -68,7 +69,7 @@ class _SplashPageState extends State<SplashPage>
               children: [
                 ShaderMask(
                   shaderCallback: (bounds) => const LinearGradient(
-                    colors: [Color(0xFFC026D3), Color(0xFFDB2777)],
+                    colors: [AppColors.colorPrimary, AppColors.colorSecondary],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ).createShader(bounds),
@@ -88,7 +89,7 @@ class _SplashPageState extends State<SplashPage>
                 ),
                 const SizedBox(height: 40),
                 const CircularProgressIndicator(
-                  color: Color(0xFFC026D3),
+                  color: AppColors.colorPrimary,
                 ),
               ],
             ),

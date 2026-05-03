@@ -1,44 +1,34 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart';
 
 class AppTheme {
-  static const Color primaryColor = Color(0xFFC026D3);
-  static const Color secondaryColor = Color(0xFFDB2777);
-  static const Color backgroundColor = Color(0xFF0A0A0A);
-  static const Color surfaceColor = Color(0xFF121212);
-
-  // Gradient helper
-  static const LinearGradient primaryGradient = LinearGradient(
-    colors: [primaryColor, secondaryColor],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      primaryColor: primaryColor,
-      scaffoldBackgroundColor: backgroundColor,
+      primaryColor: AppColors.colorPrimary,
+      scaffoldBackgroundColor: AppColors.colorBackground,
       colorScheme: const ColorScheme.dark(
-        primary: primaryColor,
-        secondary: secondaryColor,
-        surface: surfaceColor,
+        primary: AppColors.colorPrimary,
+        secondary: AppColors.colorSecondary,
+        surface: AppColors.colorSurface,
+        error: AppColors.colorError,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: backgroundColor,
+        backgroundColor: AppColors.colorBackground,
         elevation: 0,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: AppColors.colorTextPrimary),
         titleTextStyle: GoogleFonts.poppins(
-          color: Colors.white,
+          color: AppColors.colorTextPrimary,
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
       ),
       cardTheme: CardThemeData(
-        color: surfaceColor,
+        color: AppColors.colorSurface,
         elevation: 4,
         shadowColor: Colors.black54,
         shape: RoundedRectangleBorder(
@@ -46,8 +36,8 @@ class AppTheme {
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: surfaceColor,
-        selectedItemColor: primaryColor,
+        backgroundColor: AppColors.colorSurface,
+        selectedItemColor: AppColors.colorPrimary,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         elevation: 10,
@@ -55,8 +45,69 @@ class AppTheme {
       textTheme: GoogleFonts.poppinsTextTheme(
         ThemeData.dark().textTheme,
       ).copyWith(
-        bodyLarge: GoogleFonts.poppins(color: Colors.white),
-        bodyMedium: GoogleFonts.poppins(color: Colors.white70),
+        displayLarge: GoogleFonts.poppins(
+          fontWeight: FontWeight.w700,
+          fontSize: 32,
+          letterSpacing: -0.5,
+          color: AppColors.colorTextPrimary,
+        ),
+        displayMedium: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 26,
+          color: AppColors.colorTextPrimary,
+        ),
+        headlineLarge: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 22,
+          color: AppColors.colorTextPrimary,
+        ),
+        headlineMedium: GoogleFonts.poppins(
+          fontWeight: FontWeight.w500,
+          fontSize: 18,
+          color: AppColors.colorTextPrimary,
+        ),
+        titleLarge: GoogleFonts.poppins(
+          fontWeight: FontWeight.w500,
+          fontSize: 16,
+          color: AppColors.colorTextPrimary,
+        ),
+        titleMedium: GoogleFonts.poppins(
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+          color: AppColors.colorTextPrimary,
+        ),
+        bodyLarge: GoogleFonts.poppins(
+          fontWeight: FontWeight.w400,
+          fontSize: 16,
+          color: AppColors.colorTextPrimary,
+        ),
+        bodyMedium: GoogleFonts.poppins(
+          fontWeight: FontWeight.w400,
+          fontSize: 14,
+          color: AppColors.colorTextSecondary,
+        ),
+        bodySmall: GoogleFonts.poppins(
+          fontWeight: FontWeight.w400,
+          fontSize: 12,
+          color: AppColors.colorTextSecondary,
+        ),
+        labelLarge: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          letterSpacing: 0.1,
+          color: AppColors.colorTextPrimary,
+        ),
+        labelMedium: GoogleFonts.poppins(
+          fontWeight: FontWeight.w500,
+          fontSize: 12,
+          color: AppColors.colorTextPrimary,
+        ),
+        labelSmall: GoogleFonts.poppins(
+          fontWeight: FontWeight.w500,
+          fontSize: 10,
+          letterSpacing: 0.5,
+          color: AppColors.colorTextPrimary,
+        ),
       ),
     );
   }
@@ -70,14 +121,14 @@ class AppTheme {
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha:(0.05)),
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
-              color: Colors.white.withValues(alpha:(0.1)),
+              color: AppColors.colorBorder,
               width: 1.0,
             ),
           ),

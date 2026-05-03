@@ -1,3 +1,4 @@
+import '../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -25,7 +26,7 @@ class ErrorStateWidget extends StatelessWidget {
               'assets/lottie/error_state.json',
               height: 150,
               repeat: false,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.error_outline_rounded, size: 64, color: Color(0xFFEF4444)),
+              errorBuilder: (context, error, stackTrace) => const Icon(Icons.error_outline_rounded, size: 64, color: AppColors.colorError),
             ),
             const SizedBox(height: 24),
             const Text(
@@ -37,14 +38,14 @@ class ErrorStateWidget extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF)),
+              style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
             ),
             if (showRetry) ...[
               const SizedBox(height: 24),
               OutlinedButton(
                 onPressed: onRetry,
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Color(0xFFC026D3)),
+                  side: const BorderSide(color: AppColors.colorPrimary),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 ),
                 child: const Text('Try Again', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),

@@ -1,3 +1,4 @@
+import '../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -84,7 +85,7 @@ class EmptyStateWidget extends StatelessWidget {
                 lottieAsset,
                 height: 200,
                 repeat: false,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.hourglass_empty, size: 80, color: Color(0xFF242424)),
+                errorBuilder: (context, error, stackTrace) => const Icon(Icons.hourglass_empty, size: 80, color: AppColors.colorSurface3),
               ),
               const SizedBox(height: 24),
               Text(
@@ -98,7 +99,7 @@ class EmptyStateWidget extends StatelessWidget {
                 child: Text(
                   message,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF)),
+                  style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
                 ),
               ),
               if (actionLabel != null && onAction != null) ...[
@@ -106,7 +107,7 @@ class EmptyStateWidget extends StatelessWidget {
                 OutlinedButton(
                   onPressed: onAction,
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFC026D3)),
+                    side: const BorderSide(color: AppColors.colorPrimary),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),
                   child: Text(actionLabel!, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins')),

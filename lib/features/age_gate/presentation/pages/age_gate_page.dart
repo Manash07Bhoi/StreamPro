@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -82,15 +83,15 @@ class _AgeGatePageState extends State<AgeGatePage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A1A),
+        backgroundColor: AppColors.colorSurface2,
         title: const Text('Access Restricted', style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
-        content: const Text('This app requires users to be at least 13 years of age.', style: TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins')),
+        content: const Text('This app requires users to be at least 13 years of age.', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
         actions: [
           TextButton(
             onPressed: () {
               SystemNavigator.pop();
             },
-            child: const Text('Exit App', style: TextStyle(color: Color(0xFFC026D3), fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+            child: const Text('Exit App', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -102,7 +103,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 48.0),
@@ -128,7 +129,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                     ),
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
-                        colors: [Color(0xFFC026D3), Color(0xFFDB2777)],
+                        colors: [AppColors.colorPrimary, AppColors.colorSecondary],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ).createShader(bounds),
@@ -159,7 +160,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 14,
-                    color: Color(0xFF9CA3AF),
+                    color: AppColors.colorTextSecondary,
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -186,7 +187,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                               fontFamily: 'Poppins',
                               fontSize: isSelected ? 24 : 18,
                               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                              color: isSelected ? Colors.white : const Color(0xFF6B7280),
+                              color: isSelected ? Colors.white : AppColors.colorTextMuted,
                             ),
                           ),
                         );
@@ -201,7 +202,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                   style: const TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 14,
-                    color: Color(0xFF9CA3AF),
+                    color: AppColors.colorTextSecondary,
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -211,7 +212,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFC026D3), Color(0xFFDB2777)],
+                      colors: [AppColors.colorPrimary, AppColors.colorSecondary],
                     ),
                   ),
                   child: ElevatedButton(
@@ -241,7 +242,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                     'I am under 13',
                     style: TextStyle(
                       fontFamily: 'Poppins',
-                      color: Color(0xFF6B7280),
+                      color: AppColors.colorTextMuted,
                     ),
                   ),
                 ),
@@ -256,7 +257,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 12,
-                          color: Color(0xFF9CA3AF),
+                          color: AppColors.colorTextSecondary,
                         ),
                       ),
                       GestureDetector(
@@ -269,7 +270,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 12,
-                            color: Color(0xFFC026D3),
+                            color: AppColors.colorPrimary,
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -279,7 +280,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 12,
-                          color: Color(0xFF9CA3AF),
+                          color: AppColors.colorTextSecondary,
                         ),
                       ),
                       GestureDetector(
@@ -291,7 +292,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 12,
-                            color: Color(0xFFC026D3),
+                            color: AppColors.colorPrimary,
                             decoration: TextDecoration.underline,
                           ),
                         ),

@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -35,7 +36,7 @@ class _DiscoverViewState extends State<DiscoverView> {
                     if (state is SearchIdle) {
                       return _buildIdleState(context, state.recentSearches);
                     } else if (state is SearchLoading) {
-                      return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+                      return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
                     } else if (state is SearchResultsLoaded) {
                       return _buildResultsGrid(state.results);
                     } else if (state is SearchEmpty) {
@@ -63,9 +64,9 @@ class _DiscoverViewState extends State<DiscoverView> {
             child: Container(
               height: 52,
               decoration: BoxDecoration(
-                color: const Color(0xFF242424),
+                color: AppColors.colorSurface3,
                 borderRadius: BorderRadius.circular(16),
-                border: _searchFocus.hasFocus ? Border.all(color: const Color(0xFFC026D3), width: 1.5) : null,
+                border: _searchFocus.hasFocus ? Border.all(color: AppColors.colorPrimary, width: 1.5) : null,
               ),
               child: TextField(
                 controller: _searchController,
@@ -73,21 +74,21 @@ class _DiscoverViewState extends State<DiscoverView> {
                 style: const TextStyle(fontFamily: 'Poppins', color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Search premium videos...',
-                  hintStyle: const TextStyle(color: Color(0xFF6B7280), fontFamily: 'Poppins'),
+                  hintStyle: const TextStyle(color: AppColors.colorTextMuted, fontFamily: 'Poppins'),
                   prefixIcon: ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]).createShader(bounds),
+                    shaderCallback: (bounds) => const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]).createShader(bounds),
                     child: const Icon(Icons.search, color: Colors.white),
                   ),
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.close, color: Color(0xFF9CA3AF)),
+                          icon: const Icon(Icons.close, color: AppColors.colorTextSecondary),
                           onPressed: () {
                             _searchController.clear();
                             context.read<SearchBloc>().add(SearchQueryChanged(''));
                           },
                         )
                       : IconButton(
-                          icon: const Icon(Icons.mic, color: Color(0xFF9CA3AF)),
+                          icon: const Icon(Icons.mic, color: AppColors.colorTextSecondary),
                           onPressed: () {
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Voice search coming soon')));
                           },
@@ -123,7 +124,7 @@ class _DiscoverViewState extends State<DiscoverView> {
                       top: 8,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(color: Color(0xFFC026D3), shape: BoxShape.circle),
+                        decoration: const BoxDecoration(color: AppColors.colorPrimary, shape: BoxShape.circle),
                         child: Text(filterCount.toString(), style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold)),
                       ),
                     ),
@@ -166,13 +167,13 @@ class _DiscoverViewState extends State<DiscoverView> {
   Widget _buildFilterChip(BuildContext context, String label) {
     return Chip(
       label: Text(label, style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Colors.white)),
-      backgroundColor: const Color(0xFF242424),
-      side: const BorderSide(color: Color(0xFFC026D3)),
+      backgroundColor: AppColors.colorSurface3,
+      side: const BorderSide(color: AppColors.colorPrimary),
       onDeleted: () {
          // To fully implement single deletion requires updating the SearchFilters object
          context.read<SearchBloc>().add(SearchFiltersReset());
       },
-      deleteIconColor: const Color(0xFF9CA3AF),
+      deleteIconColor: AppColors.colorTextSecondary,
     );
   }
 
@@ -187,7 +188,7 @@ class _DiscoverViewState extends State<DiscoverView> {
               const Text('Recent Searches', style: TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
               TextButton(
                 onPressed: () => context.read<SearchBloc>().add(ClearSearchHistory()),
-                child: const Text('Clear All', style: TextStyle(fontFamily: 'Poppins', color: Color(0xFFC026D3))),
+                child: const Text('Clear All', style: TextStyle(fontFamily: 'Poppins', color: AppColors.colorPrimary)),
               ),
             ],
           ),
@@ -196,8 +197,8 @@ class _DiscoverViewState extends State<DiscoverView> {
             runSpacing: 8.0,
             children: recentSearches.map((entry) => InputChip(
               label: Text(entry.query, style: const TextStyle(fontFamily: 'Poppins', color: Colors.white)),
-              backgroundColor: const Color(0xFF1A1A1A),
-              deleteIcon: const Icon(Icons.close, size: 16, color: Color(0xFF9CA3AF)),
+              backgroundColor: AppColors.colorSurface2,
+              deleteIcon: const Icon(Icons.close, size: 16, color: AppColors.colorTextSecondary),
               onDeleted: () => context.read<SearchBloc>().add(RemoveSearchHistoryEntry(entry.id)),
               onPressed: () {
                 _searchController.text = entry.query;
@@ -218,15 +219,15 @@ class _DiscoverViewState extends State<DiscoverView> {
           mainAxisSpacing: 12,
           childAspectRatio: 16 / 9,
           children: const [
-            _CategoryCardMock(title: 'Action', color1: Color(0xFFEF4444), color2: Color(0xFFB91C1C), icon: Icons.flash_on),
-            _CategoryCardMock(title: 'Comedy', color1: Color(0xFFF59E0B), color2: Color(0xFFD97706), icon: Icons.sentiment_very_satisfied),
-            _CategoryCardMock(title: 'Drama', color1: Color(0xFF8B5CF6), color2: Color(0xFF6D28D9), icon: Icons.theater_comedy),
-            _CategoryCardMock(title: 'Documentary', color1: Color(0xFF10B981), color2: Color(0xFF059669), icon: Icons.public),
+            _CategoryCardMock(title: 'Action', color1: AppColors.colorError, color2: AppColors.colorError, icon: Icons.flash_on),
+            _CategoryCardMock(title: 'Comedy', color1: AppColors.colorWarning, color2: AppColors.colorWarning, icon: Icons.sentiment_very_satisfied),
+            _CategoryCardMock(title: 'Drama', color1: AppColors.colorPrimary, color2: AppColors.colorSecondary, icon: Icons.theater_comedy),
+            _CategoryCardMock(title: 'Documentary', color1: AppColors.colorSuccess, color2: AppColors.colorSuccess, icon: Icons.public),
           ],
         ),
         TextButton(
           onPressed: () => context.push('/categories'),
-          child: const Text('View All Categories', style: TextStyle(fontFamily: 'Poppins', color: Color(0xFFC026D3))),
+          child: const Text('View All Categories', style: TextStyle(fontFamily: 'Poppins', color: AppColors.colorPrimary)),
         ),
       ],
     );
@@ -255,16 +256,16 @@ class _DiscoverViewState extends State<DiscoverView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.search_off, size: 80, color: Color(0xFF242424)),
+          const Icon(Icons.search_off, size: 80, color: AppColors.colorSurface3),
           const SizedBox(height: 16),
           const Text('No Results Found', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
           const SizedBox(height: 8),
-          const Text('Try different keywords or browse by category.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+          const Text('Try different keywords or browse by category.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
           const SizedBox(height: 24),
           OutlinedButton(
             onPressed: () => context.push('/categories'),
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Color(0xFFC026D3)),
+              side: const BorderSide(color: AppColors.colorPrimary),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             ),
             child: const Text('Browse Categories', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
@@ -279,7 +280,7 @@ class _DiscoverViewState extends State<DiscoverView> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppColors.colorSurface2,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (bottomSheetContext) => Padding(
         padding: const EdgeInsets.all(24.0),
@@ -296,7 +297,7 @@ class _DiscoverViewState extends State<DiscoverView> {
                     searchBloc.add(SearchFiltersReset());
                     Navigator.pop(bottomSheetContext);
                   },
-                  child: const Text('Reset', style: TextStyle(color: Color(0xFF9CA3AF), fontFamily: 'Poppins')),
+                  child: const Text('Reset', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
                 ),
               ],
             ),
@@ -310,10 +311,10 @@ class _DiscoverViewState extends State<DiscoverView> {
                 label: Text(e),
                 selected: e == 'Relevant', // Mock state
                 onSelected: (_) {},
-                backgroundColor: const Color(0xFF242424),
-                selectedColor: const Color(0xFFC026D3).withValues(alpha:0.2),
-                side: BorderSide(color: e == 'Relevant' ? const Color(0xFFC026D3) : Colors.transparent),
-                labelStyle: TextStyle(color: e == 'Relevant' ? Colors.white : const Color(0xFF9CA3AF), fontFamily: 'Poppins'),
+                backgroundColor: AppColors.colorSurface3,
+                selectedColor: AppColors.colorPrimary.withValues(alpha:0.2),
+                side: BorderSide(color: e == 'Relevant' ? AppColors.colorPrimary : Colors.transparent),
+                labelStyle: TextStyle(color: e == 'Relevant' ? Colors.white : AppColors.colorTextSecondary, fontFamily: 'Poppins'),
               )).toList(),
             ),
             const SizedBox(height: 32),
@@ -327,7 +328,7 @@ class _DiscoverViewState extends State<DiscoverView> {
                   Navigator.pop(bottomSheetContext);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFC026D3),
+                  backgroundColor: AppColors.colorPrimary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
                 child: const Text('Apply Filters', style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600, color: Colors.white)),

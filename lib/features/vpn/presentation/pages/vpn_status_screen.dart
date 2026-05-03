@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/mixins/safe_pop_mixin.dart';
@@ -94,7 +95,7 @@ class _VpnStatusScreenState extends State<VpnStatusScreen> with SafePopMixin {
                             style: TextStyle(fontSize: 18)),
                         Switch(
                           value: isConnected || isConnecting,
-                          activeThumbColor: const Color(0xFFC026D3),
+                          activeThumbColor: AppColors.colorPrimary,
                           onChanged: (val) {
                             if (val) {
                               context
@@ -113,7 +114,7 @@ class _VpnStatusScreenState extends State<VpnStatusScreen> with SafePopMixin {
                     const Padding(
                       padding: EdgeInsets.all(16.0),
                       child:
-                          CircularProgressIndicator(color: Color(0xFFC026D3)),
+                          CircularProgressIndicator(color: AppColors.colorPrimary),
                     ),
 
                   const SizedBox(height: 20),

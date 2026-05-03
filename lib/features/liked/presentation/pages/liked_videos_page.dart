@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -73,14 +74,14 @@ class _LikedVideosPageState extends State<LikedVideosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('Liked Videos', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
-            Text('$_totalLikes videos', style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFF9CA3AF))),
+            Text('$_totalLikes videos', style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
           ],
         ),
       ),
@@ -94,8 +95,8 @@ class _LikedVideosPageState extends State<LikedVideosPage> {
               padding: const EdgeInsets.all(12),
               builderDelegate: PagedChildBuilderDelegate<VideoEntity>(
                 itemBuilder: (context, item, index) => PremiumVideoCard(video: item, width: double.infinity, height: 200),
-                firstPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3))),
-                newPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3))),
+                firstPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary)),
+                newPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary)),
                 noItemsFoundIndicatorBuilder: (_) => _buildEmptyState(),
               ),
             ),
@@ -107,11 +108,11 @@ class _LikedVideosPageState extends State<LikedVideosPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.favorite_border, size: 80, color: Color(0xFF242424)),
+          const Icon(Icons.favorite_border, size: 80, color: AppColors.colorSurface3),
           const SizedBox(height: 16),
           const Text('No Liked Videos', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
           const SizedBox(height: 8),
-          const Text('Double-tap a video or tap the heart to like it.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+          const Text('Double-tap a video or tap the heart to like it.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
         ],
       ),
     );

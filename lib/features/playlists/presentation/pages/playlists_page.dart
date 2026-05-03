@@ -1,3 +1,4 @@
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -24,9 +25,9 @@ class _PlaylistsPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: AppColors.colorBackground,
         title: const Text('My Playlists', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
         actions: [
           IconButton(
@@ -38,7 +39,7 @@ class _PlaylistsPageContent extends StatelessWidget {
       body: BlocBuilder<PlaylistBloc, PlaylistState>(
         builder: (context, state) {
           if (state is PlaylistLoading || state is PlaylistInitial) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFC026D3)));
+            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
           } else if (state is PlaylistLoaded || state is PlaylistActionSuccess) {
             final playlists = (state is PlaylistLoaded) ? state.playlists : (state as PlaylistActionSuccess).playlists;
 
@@ -47,17 +48,17 @@ class _PlaylistsPageContent extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.featured_play_list_outlined, size: 80, color: Color(0xFF242424)),
+                    const Icon(Icons.featured_play_list_outlined, size: 80, color: AppColors.colorSurface3),
                     const SizedBox(height: 16),
                     const Text('No Playlists', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
                     const SizedBox(height: 8),
-                    const Text('Create a playlist to organize your favorites.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Color(0xFF9CA3AF))),
+                    const Text('Create a playlist to organize your favorites.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () => _showCreatePlaylistSheet(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1A1A1A),
-                        side: const BorderSide(color: Color(0xFFC026D3)),
+                        backgroundColor: AppColors.colorSurface2,
+                        side: const BorderSide(color: AppColors.colorPrimary),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       ),
                       child: const Text('Create Playlist', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
@@ -96,7 +97,7 @@ class _PlaylistsPageContent extends StatelessWidget {
       onTap: () => context.push('/playlists/${playlist.id}'),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF121212),
+          color: AppColors.colorSurface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: accentColor, width: 1.5),
         ),
@@ -113,12 +114,12 @@ class _PlaylistsPageContent extends StatelessWidget {
                         ? CachedNetworkImage(
                             imageUrl: 'https://picsum.photos/seed/${playlist.coverVideoId}/640/360',
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => const ColoredBox(color: Color(0xFF242424)),
-                            errorWidget: (context, url, error) => const ColoredBox(color: Color(0xFF242424)),
+                            placeholder: (context, url) => const ColoredBox(color: AppColors.colorSurface3),
+                            errorWidget: (context, url, error) => const ColoredBox(color: AppColors.colorSurface3),
                           )
                         : Container(
-                            color: const Color(0xFF242424),
-                            child: const Center(child: Icon(Icons.music_video, color: Color(0xFF6B7280), size: 40)),
+                            color: AppColors.colorSurface3,
+                            child: const Center(child: Icon(Icons.music_video, color: AppColors.colorTextMuted, size: 40)),
                           ),
                     Positioned(
                       bottom: 0,
@@ -153,7 +154,7 @@ class _PlaylistsPageContent extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     '${playlist.videoCount} videos',
-                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Color(0xFF9CA3AF)),
+                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary),
                   ),
                 ],
               ),
@@ -168,7 +169,7 @@ class _PlaylistsPageContent extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppColors.colorSurface2,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (bottomSheetContext) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom),
@@ -237,11 +238,11 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
             maxLength: 50,
             decoration: InputDecoration(
               labelText: 'Playlist Name',
-              labelStyle: const TextStyle(color: Color(0xFF9CA3AF)),
+              labelStyle: const TextStyle(color: AppColors.colorTextSecondary),
               filled: true,
-              fillColor: const Color(0xFF242424),
+              fillColor: AppColors.colorSurface3,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFC026D3))),
+              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.colorPrimary)),
             ),
           ),
           const SizedBox(height: 16),
@@ -252,11 +253,11 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
             maxLines: 2,
             decoration: InputDecoration(
               labelText: 'Description (Optional)',
-              labelStyle: const TextStyle(color: Color(0xFF9CA3AF)),
+              labelStyle: const TextStyle(color: AppColors.colorTextSecondary),
               filled: true,
-              fillColor: const Color(0xFF242424),
+              fillColor: AppColors.colorSurface3,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFC026D3))),
+              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.colorPrimary)),
             ),
           ),
           const SizedBox(height: 24),
@@ -306,7 +307,7 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
               ),
               child: Ink(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [Color(0xFFC026D3), Color(0xFFDB2777)]),
+                  gradient: const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Container(
