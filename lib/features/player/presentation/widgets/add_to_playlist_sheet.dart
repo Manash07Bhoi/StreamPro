@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/models/video_entity.dart';
 import '../../../../core/di/injection.dart';
 import '../../../library/presentation/blocs/playlist_bloc.dart';
+import '../../../library/data/repositories/playlist_repository.dart';
 
 class AddToPlaylistSheet extends StatelessWidget {
   final VideoEntity video;
@@ -17,7 +18,8 @@ class AddToPlaylistSheet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.colorSurface2,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (_) => BlocProvider.value(
         value: sl<PlaylistBloc>()..add(LoadPlaylists()),
         child: AddToPlaylistSheet(video: video),
@@ -56,10 +58,15 @@ class AddToPlaylistSheet extends StatelessWidget {
                 children: [
                   const Text(
                     'Add to Playlist',
-                    style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.colorTextSecondary),
+                    icon: const Icon(Icons.close,
+                        color: AppColors.colorTextSecondary),
                     onPressed: () => context.pop(),
                   ),
                 ],
@@ -72,13 +79,21 @@ class AddToPlaylistSheet extends StatelessWidget {
               child: BlocBuilder<PlaylistBloc, PlaylistState>(
                 builder: (context, state) {
                   if (state is PlaylistLoading) {
-                    return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
-                  } else if (state is PlaylistLoaded || state is PlaylistActionSuccess) {
-                    final playlists = state is PlaylistLoaded ? state.playlists : (state as PlaylistActionSuccess).playlists;
+                    return const Center(
+                        child: CircularProgressIndicator(
+                            color: AppColors.colorPrimary));
+                  } else if (state is PlaylistLoaded ||
+                      state is PlaylistActionSuccess) {
+                    final playlists = state is PlaylistLoaded
+                        ? state.playlists
+                        : (state as PlaylistActionSuccess).playlists;
 
                     if (playlists.isEmpty) {
                       return const Center(
-                        child: Text('No playlists found.', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
+                        child: Text('No playlists found.',
+                            style: TextStyle(
+                                color: AppColors.colorTextSecondary,
+                                fontFamily: 'Poppins')),
                       );
                     }
 
@@ -87,8 +102,8 @@ class AddToPlaylistSheet extends StatelessWidget {
                       itemCount: playlists.length,
                       itemBuilder: (context, index) {
                         final playlist = playlists[index];
-                        // Placeholder check. Real implementation needs repo method to check if video exists in playlist
-                        final isAdded = false;
+                        final items = context.read<PlaylistRepository>().getPlaylistItems(playlist.id);
+                        final isAdded = items.any((item) => item.videoId == video.id);
 
                         return ListTile(
                           leading: ClipRRect(
@@ -97,17 +112,35 @@ class AddToPlaylistSheet extends StatelessWidget {
                               width: 40,
                               height: 40,
                               child: playlist.coverVideoId.isNotEmpty
-                                  ? CachedNetworkImage(imageUrl: 'https://picsum.photos/seed/${playlist.coverVideoId}/640/360', fit: BoxFit.cover)
-                                  : Container(color: AppColors.colorSurface3, child: const Icon(Icons.playlist_play, color: Colors.white54)),
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          'https://picsum.photos/seed/${playlist.coverVideoId}/640/360',
+                                      fit: BoxFit.cover)
+                                  : Container(
+                                      color: AppColors.colorSurface3,
+                                      child: const Icon(Icons.playlist_play,
+                                          color: Colors.white54)),
                             ),
                           ),
-                          title: Text(playlist.name, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins')),
-                          subtitle: Text('${playlist.videoCount} videos', style: const TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins', fontSize: 12)),
-                          trailing: isAdded ? const Icon(Icons.check, color: AppColors.colorPrimary) : null,
+                          title: Text(playlist.name,
+                              style: const TextStyle(
+                                  color: Colors.white, fontFamily: 'Poppins')),
+                          subtitle: Text('${playlist.videoCount} videos',
+                              style: const TextStyle(
+                                  color: AppColors.colorTextSecondary,
+                                  fontFamily: 'Poppins',
+                                  fontSize: 12)),
+                          trailing: isAdded
+                              ? const Icon(Icons.check,
+                                  color: AppColors.colorPrimary)
+                              : null,
                           onTap: () {
-                            context.read<PlaylistBloc>().add(AddVideoToPlaylist(playlist.id, video.id));
+                            context
+                                .read<PlaylistBloc>()
+                                .add(AddVideoToPlaylist(playlist.id, video.id));
                             context.pop();
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added to ${playlist.name}')));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Added to ${playlist.name}')));
                           },
                         );
                       },
@@ -125,11 +158,15 @@ class AddToPlaylistSheet extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton.icon(
                   onPressed: () {
-                     context.pop();
-                     context.push('/playlists'); // Then user can create
+                    context.pop();
+                    context.push('/playlists'); // Then user can create
                   },
                   icon: const Icon(Icons.add, color: AppColors.colorPrimary),
-                  label: const Text('Create New Playlist', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+                  label: const Text('Create New Playlist',
+                      style: TextStyle(
+                          color: AppColors.colorPrimary,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600)),
                 ),
               ),
             ),

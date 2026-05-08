@@ -26,7 +26,8 @@ class NotificationRepository {
         title: '🔥 Hot Right Now',
         body: 'Check out today\'s top trending videos.',
         isRead: false,
-        createdAt: DateTime.now().subtract(const Duration(hours: 2)).toIso8601String(),
+        createdAt:
+            DateTime.now().subtract(const Duration(hours: 2)).toIso8601String(),
         actionRoute: '/home', // Redirects to trending
       ),
       AppNotification(
@@ -35,7 +36,8 @@ class NotificationRepository {
         title: 'New Releases',
         body: 'Fresh content has just been added to your favorite categories.',
         isRead: false,
-        createdAt: DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
+        createdAt:
+            DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
       ),
       AppNotification(
         id: const Uuid().v4(),
@@ -43,7 +45,8 @@ class NotificationRepository {
         title: 'Don\'t forget your downloads',
         body: 'You have videos ready to watch offline.',
         isRead: false,
-        createdAt: DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+        createdAt:
+            DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
         actionRoute: '/downloads',
       ),
       AppNotification(
@@ -52,7 +55,8 @@ class NotificationRepository {
         title: 'Complete your profile',
         body: 'Add an avatar and customize your interests.',
         isRead: true,
-        createdAt: DateTime.now().subtract(const Duration(days: 3)).toIso8601String(),
+        createdAt:
+            DateTime.now().subtract(const Duration(days: 3)).toIso8601String(),
         actionRoute: '/profile',
       ),
     ];
@@ -71,7 +75,9 @@ class NotificationRepository {
 
   List<AppNotification> getAllNotifications({int limit = 50}) {
     final box = Hive.box<AppNotification>(notificationsBoxName);
-    final sorted = box.values.toList()..sort((a, b) => DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+    final sorted = box.values.toList()
+      ..sort((a, b) =>
+          DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
     return sorted.take(limit).toList();
   }
 

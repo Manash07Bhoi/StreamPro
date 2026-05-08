@@ -28,7 +28,8 @@ class _TrendingViewContent extends StatefulWidget {
   State<_TrendingViewContent> createState() => _TrendingViewContentState();
 }
 
-class _TrendingViewContentState extends State<_TrendingViewContent> with SingleTickerProviderStateMixin {
+class _TrendingViewContentState extends State<_TrendingViewContent>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -65,7 +66,8 @@ class _TrendingViewContentState extends State<_TrendingViewContent> with SingleT
           indicatorColor: AppColors.colorPrimary,
           labelColor: AppColors.colorPrimary,
           unselectedLabelColor: AppColors.colorTextSecondary,
-          labelStyle: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
+          labelStyle: const TextStyle(
+              fontFamily: 'Poppins', fontWeight: FontWeight.w600),
           unselectedLabelStyle: const TextStyle(fontFamily: 'Poppins'),
         ),
         Expanded(
@@ -92,16 +94,22 @@ class _TrendingViewContentState extends State<_TrendingViewContent> with SingleT
       child: BlocBuilder<TrendingBloc, TrendingState>(
         builder: (context, state) {
           if (state is TrendingLoading || state is TrendingInitial) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+            return const Center(
+                child:
+                    CircularProgressIndicator(color: AppColors.colorPrimary));
           } else if (state is TrendingLoaded) {
             // Ensure we are rendering the state corresponding to the active tab if they got out of sync, though listener should handle it
             if (state.isToday != isToday) {
-               return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+              return const Center(
+                  child:
+                      CircularProgressIndicator(color: AppColors.colorPrimary));
             }
 
             final videos = state.videos;
             if (videos.isEmpty) {
-               return const Center(child: Text('No trending videos found.', style: TextStyle(color: Colors.white)));
+              return const Center(
+                  child: Text('No trending videos found.',
+                      style: TextStyle(color: Colors.white)));
             }
 
             return ListView.separated(
@@ -113,7 +121,9 @@ class _TrendingViewContentState extends State<_TrendingViewContent> with SingleT
               },
             );
           } else if (state is TrendingError) {
-             return Center(child: Text(state.message, style: const TextStyle(color: Colors.red)));
+            return Center(
+                child: Text(state.message,
+                    style: const TextStyle(color: Colors.red)));
           }
           return const SizedBox.shrink();
         },
@@ -182,7 +192,11 @@ class _TrendingRowItemState extends State<_TrendingRowItem> {
                 ).createShader(bounds),
                 child: Text(
                   widget.rank.toString(),
-                  style: const TextStyle(fontFamily: 'Poppins', fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -207,29 +221,41 @@ class _TrendingRowItemState extends State<_TrendingRowItem> {
                 children: [
                   Text(
                     widget.video.title,
-                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.remove_red_eye_outlined, size: 12, color: AppColors.colorTextSecondary),
+                      const Icon(Icons.remove_red_eye_outlined,
+                          size: 12, color: AppColors.colorTextSecondary),
                       const SizedBox(width: 4),
                       Text(
                         _formatViewCount(widget.video.viewCount),
-                        style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: AppColors.colorTextSecondary),
+                        style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 10,
+                            color: AppColors.colorTextSecondary),
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppColors.colorSurface3,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           widget.video.duration,
-                          style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Colors.white),
+                          style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 10,
+                              color: Colors.white),
                         ),
                       ),
                     ],
@@ -240,7 +266,9 @@ class _TrendingRowItemState extends State<_TrendingRowItem> {
             IconButton(
               icon: Icon(
                 _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                color: _isBookmarked ? AppColors.colorPrimary : AppColors.colorTextSecondary,
+                color: _isBookmarked
+                    ? AppColors.colorPrimary
+                    : AppColors.colorTextSecondary,
               ),
               onPressed: _toggleBookmark,
             ),

@@ -15,7 +15,8 @@ class PipChannel {
 
   Future<void> enterPip({required int width, required int height}) async {
     try {
-      await _channel.invokeMethod('enterPip', {'width': width, 'height': height});
+      await _channel
+          .invokeMethod('enterPip', {'width': width, 'height': height});
     } on PlatformException catch (e) {
       debugPrint('PiP error: ${e.message}');
     }

@@ -43,7 +43,10 @@ class PipActive extends PipState {
   final int currentSeconds;
   final bool isMinimized;
 
-  PipActive({required this.video, required this.currentSeconds, this.isMinimized = false});
+  PipActive(
+      {required this.video,
+      required this.currentSeconds,
+      this.isMinimized = false});
 
   @override
   List<Object> get props => [video.id, currentSeconds, isMinimized];
@@ -53,7 +56,10 @@ class PipActive extends PipState {
 class PipBloc extends Bloc<PipEvent, PipState> {
   PipBloc() : super(PipInactive()) {
     on<ActivatePip>((event, emit) {
-      emit(PipActive(video: event.video, currentSeconds: event.currentSeconds, isMinimized: true));
+      emit(PipActive(
+          video: event.video,
+          currentSeconds: event.currentSeconds,
+          isMinimized: true));
     });
 
     on<DeactivatePip>((event, emit) {
@@ -68,7 +74,10 @@ class PipBloc extends Bloc<PipEvent, PipState> {
     on<PipProgressUpdated>((event, emit) {
       if (state is PipActive) {
         final current = state as PipActive;
-        emit(PipActive(video: current.video, currentSeconds: event.currentSeconds, isMinimized: current.isMinimized));
+        emit(PipActive(
+            video: current.video,
+            currentSeconds: event.currentSeconds,
+            isMinimized: current.isMinimized));
       }
     });
   }

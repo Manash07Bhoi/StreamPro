@@ -71,9 +71,17 @@ class SearchFilters extends Equatable {
     this.ratings = const [],
   });
 
-  bool get isActive => sortBy != 'relevant' || duration != 'any' || categories.isNotEmpty || ratings.isNotEmpty;
+  bool get isActive =>
+      sortBy != 'relevant' ||
+      duration != 'any' ||
+      categories.isNotEmpty ||
+      ratings.isNotEmpty;
 
-  int get activeFilterCount => (sortBy != 'relevant' ? 1 : 0) + (duration != 'any' ? 1 : 0) + categories.length + ratings.length;
+  int get activeFilterCount =>
+      (sortBy != 'relevant' ? 1 : 0) +
+      (duration != 'any' ? 1 : 0) +
+      categories.length +
+      ratings.length;
 
   @override
   List<Object> get props => [sortBy, duration, categories, ratings];
@@ -181,20 +189,24 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<SearchFiltersApplied>((event, emit) {
       _currentFilters = event.filters;
-      if (state is SearchResultsLoaded || state is SearchLoading || state is SearchEmpty) {
+      if (state is SearchResultsLoaded ||
+          state is SearchLoading ||
+          state is SearchEmpty) {
         final query = _getCurrentQuery(state);
         if (query.isNotEmpty) {
-           // Direct emitting logic inline to avoid `add` warning when possible, or just ignore. We'll ignore the warning here since `add` inside Bloc is safe despite the visible-for-testing annotation on emit (wait, the warning was for `emit` outside, no, it was for `emit`? Wait, warning says: "The member 'emit' can only be used within 'package:bloc/src/bloc.dart' or a test". Actually, the code has `emit` inside `on<Event>`. No, wait.
+          // Direct emitting logic inline to avoid `add` warning when possible, or just ignore. We'll ignore the warning here since `add` inside Bloc is safe despite the visible-for-testing annotation on emit (wait, the warning was for `emit` outside, no, it was for `emit`? Wait, warning says: "The member 'emit' can only be used within 'package:bloc/src/bloc.dart' or a test". Actually, the code has `emit` inside `on<Event>`. No, wait.
         }
       }
     });
 
     on<SearchFiltersReset>((event, emit) {
       _currentFilters = const SearchFilters();
-      if (state is SearchResultsLoaded || state is SearchLoading || state is SearchEmpty) {
+      if (state is SearchResultsLoaded ||
+          state is SearchLoading ||
+          state is SearchEmpty) {
         final query = _getCurrentQuery(state);
         if (query.isNotEmpty) {
-           // Same
+          // Same
         }
       }
     });
@@ -222,7 +234,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<UndoSearchHistoryRemoval>((event, emit) async {
       if (_lastRemovedEntry != null) {
-        await _historyRepo.addSearchQuery(_lastRemovedEntry!.query, _lastRemovedEntry!.resultCount);
+        await _historyRepo.addSearchQuery(
+            _lastRemovedEntry!.query, _lastRemovedEntry!.resultCount);
         _lastRemovedEntry = null;
         if (state is SearchIdle) {
           emit(SearchIdle(_historyRepo.getRecentSearches()));
@@ -238,15 +251,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     return '';
   }
 
-  List<VideoEntity> _applyFilters(List<VideoEntity> videos, SearchFilters filters) {
+  List<VideoEntity> _applyFilters(
+      List<VideoEntity> videos, SearchFilters filters) {
     var filtered = List<VideoEntity>.from(videos);
 
     // Duration filter
     if (filters.duration != 'any') {
       filtered = filtered.where((v) {
         if (filters.duration == '<5min') return v.durationSeconds < 300;
-        if (filters.duration == '5-20min') return v.durationSeconds >= 300 && v.durationSeconds <= 1200;
-        if (filters.duration == '20-60min') return v.durationSeconds > 1200 && v.durationSeconds <= 3600;
+        if (filters.duration == '5-20min') {
+          return v.durationSeconds >= 300 && v.durationSeconds <= 1200;
+        }
+        if (filters.duration == '20-60min') {
+          return v.durationSeconds > 1200 && v.durationSeconds <= 3600;
+        }
         if (filters.duration == '60min+') return v.durationSeconds > 3600;
         return true;
       }).toList();
@@ -254,14 +272,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     // Category filter
     if (filters.categories.isNotEmpty) {
-      filtered = filtered.where((v) => filters.categories.contains(v.category)).toList();
+      filtered = filtered
+          .where((v) => filters.categories.contains(v.category))
+          .toList();
     }
 
     // Sort
     if (filters.sortBy == 'views') {
       filtered.sort((a, b) => b.viewCount.compareTo(a.viewCount));
     } else if (filters.sortBy == 'newest') {
-      filtered.sort((a, b) => DateTime.parse(b.uploadedAt).compareTo(DateTime.parse(a.uploadedAt)));
+      filtered.sort((a, b) =>
+          DateTime.parse(b.uploadedAt).compareTo(DateTime.parse(a.uploadedAt)));
     } else if (filters.sortBy == 'duration_asc') {
       filtered.sort((a, b) => a.durationSeconds.compareTo(b.durationSeconds));
     } else if (filters.sortBy == 'duration_desc') {

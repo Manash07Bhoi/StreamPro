@@ -19,9 +19,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final List<String> _selectedInterests = [];
 
   final List<String> _allInterests = [
-    'Action', 'Comedy', 'Drama', 'Documentary', 'Music', 'Sports',
-    'Technology', 'Travel', 'Animation', 'Horror', 'Romance',
-    'Thriller', 'Science', 'Gaming', 'Cooking'
+    'Action',
+    'Comedy',
+    'Drama',
+    'Documentary',
+    'Music',
+    'Sports',
+    'Technology',
+    'Travel',
+    'Animation',
+    'Horror',
+    'Romance',
+    'Thriller',
+    'Science',
+    'Gaming',
+    'Cooking'
   ];
 
   @override
@@ -69,7 +81,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 if (_currentPage < 2)
                   TextButton(
                     onPressed: _finishOnboarding,
-                    child: const Text('Skip', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
+                    child: const Text('Skip',
+                        style: TextStyle(
+                            color: AppColors.colorTextSecondary,
+                            fontFamily: 'Poppins')),
                   )
                 else
                   const SizedBox(height: 48), // Spacer to match button height
@@ -115,7 +130,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
       height: 8,
       width: _currentPage == index ? 24 : 8,
       decoration: BoxDecoration(
-        color: _currentPage == index ? AppColors.colorPrimary : AppColors.colorSurface3,
+        color: _currentPage == index
+            ? AppColors.colorPrimary
+            : AppColors.colorSurface3,
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -132,8 +149,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           gradient: isEnabled
-              ? const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary])
-              : const LinearGradient(colors: [AppColors.colorSurface3, AppColors.colorSurface3]),
+              ? const LinearGradient(
+                  colors: [AppColors.colorPrimary, AppColors.colorSecondary])
+              : const LinearGradient(
+                  colors: [AppColors.colorSurface3, AppColors.colorSurface3]),
         ),
         child: Text(
           _currentPage == 2 ? 'Get Started' : 'Next',
@@ -161,19 +180,28 @@ class _OnboardingPageState extends State<OnboardingPage> {
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Center(
-              child: Icon(Icons.play_circle_fill, size: 80, color: AppColors.colorPrimary), // Placeholder for Lottie
+              child: Icon(Icons.play_circle_fill,
+                  size: 80,
+                  color: AppColors.colorPrimary), // Placeholder for Lottie
             ),
           ),
           const SizedBox(height: 48),
           const Text(
             'Stream Anything, Anytime',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 26, fontWeight: FontWeight.w600, color: Colors.white),
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 26,
+                fontWeight: FontWeight.w600,
+                color: Colors.white),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           const Text(
             'Discover thousands of premium videos across every genre — completely free.',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 16, color: AppColors.colorTextSecondary),
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                color: AppColors.colorTextSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -195,19 +223,28 @@ class _OnboardingPageState extends State<OnboardingPage> {
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Center(
-              child: Icon(Icons.video_library, size: 80, color: AppColors.colorPrimary), // Placeholder for Lottie
+              child: Icon(Icons.video_library,
+                  size: 80,
+                  color: AppColors.colorPrimary), // Placeholder for Lottie
             ),
           ),
           const SizedBox(height: 48),
           const Text(
             'Your Personal Library',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 26, fontWeight: FontWeight.w600, color: Colors.white),
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 26,
+                fontWeight: FontWeight.w600,
+                color: Colors.white),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           const Text(
             'Bookmark favorites, create playlists, and pick up right where you left off.',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 16, color: AppColors.colorTextSecondary),
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                color: AppColors.colorTextSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -223,13 +260,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
         children: [
           const Text(
             'What Do You Love?',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 26, fontWeight: FontWeight.w600, color: Colors.white),
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 26,
+                fontWeight: FontWeight.w600,
+                color: Colors.white),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           const Text(
             'Select at least 3 to personalize your feed.',
-            style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 14,
+                color: AppColors.colorTextSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -252,16 +296,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   });
                 },
                 backgroundColor: AppColors.colorSurface3,
-                selectedColor: Colors.transparent, // Background will be gradient border simulation later
+                selectedColor: Colors
+                    .transparent, // Background will be gradient border simulation later
                 labelStyle: TextStyle(
-                  color: isSelected ? Colors.white : AppColors.colorTextSecondary,
+                  color:
+                      isSelected ? Colors.white : AppColors.colorTextSecondary,
                   fontFamily: 'Poppins',
                   fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: BorderSide(
-                    color: isSelected ? AppColors.colorPrimary : Colors.transparent,
+                    color: isSelected
+                        ? AppColors.colorPrimary
+                        : Colors.transparent,
                     width: 1.5,
                   ),
                 ),

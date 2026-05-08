@@ -185,7 +185,8 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   Timer? _progressTimer;
   Timer? _controlsTimer;
 
-  PlayerBloc(this._historyRepo, this._brightnessChannel, this._volumeChannel) : super(PlayerInitial()) {
+  PlayerBloc(this._historyRepo, this._brightnessChannel, this._volumeChannel)
+      : super(PlayerInitial()) {
     on<InitializePlayer>((event, emit) async {
       emit(PlayerLoading());
 
@@ -226,10 +227,15 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         final currentState = state as PlayerReady;
         int newSeconds = currentState.currentSeconds + event.deltaSeconds;
         if (newSeconds < 0) newSeconds = 0;
-        if (newSeconds > currentState.totalSeconds) newSeconds = currentState.totalSeconds;
+        if (newSeconds > currentState.totalSeconds) {
+          newSeconds = currentState.totalSeconds;
+        }
 
-        final progress = currentState.totalSeconds > 0 ? newSeconds / currentState.totalSeconds : 0.0;
-        emit(currentState.copyWith(currentSeconds: newSeconds, progressPercent: progress));
+        final progress = currentState.totalSeconds > 0
+            ? newSeconds / currentState.totalSeconds
+            : 0.0;
+        emit(currentState.copyWith(
+            currentSeconds: newSeconds, progressPercent: progress));
         _resetControlsTimer();
       }
     });
@@ -239,10 +245,15 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         final currentState = state as PlayerReady;
         int newSeconds = event.seconds;
         if (newSeconds < 0) newSeconds = 0;
-        if (newSeconds > currentState.totalSeconds) newSeconds = currentState.totalSeconds;
+        if (newSeconds > currentState.totalSeconds) {
+          newSeconds = currentState.totalSeconds;
+        }
 
-        final progress = currentState.totalSeconds > 0 ? newSeconds / currentState.totalSeconds : 0.0;
-        emit(currentState.copyWith(currentSeconds: newSeconds, progressPercent: progress));
+        final progress = currentState.totalSeconds > 0
+            ? newSeconds / currentState.totalSeconds
+            : 0.0;
+        emit(currentState.copyWith(
+            currentSeconds: newSeconds, progressPercent: progress));
         _resetControlsTimer();
       }
     });
@@ -273,7 +284,8 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     on<ToggleFitMode>((event, emit) {
       if (state is PlayerReady) {
-        emit((state as PlayerReady).copyWith(isFillMode: !(state as PlayerReady).isFillMode));
+        emit((state as PlayerReady)
+            .copyWith(isFillMode: !(state as PlayerReady).isFillMode));
       }
     });
 
@@ -311,9 +323,14 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
         // Mark as completed if > 90%
         if (progress >= 0.9) {
-           await _historyRepo.addOrUpdateHistory(currentState.video.id, watchedDurationSeconds: event.currentSeconds, progressPercent: progress);
-        } else if (event.currentSeconds % 5 == 0) { // save every 5s
-           await _historyRepo.addOrUpdateHistory(currentState.video.id, watchedDurationSeconds: event.currentSeconds, progressPercent: progress);
+          await _historyRepo.addOrUpdateHistory(currentState.video.id,
+              watchedDurationSeconds: event.currentSeconds,
+              progressPercent: progress);
+        } else if (event.currentSeconds % 5 == 0) {
+          // save every 5s
+          await _historyRepo.addOrUpdateHistory(currentState.video.id,
+              watchedDurationSeconds: event.currentSeconds,
+              progressPercent: progress);
         }
 
         emit(currentState.copyWith(
@@ -331,7 +348,8 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         final currentState = this.state as PlayerReady;
         if (!currentState.isPlaying) return;
 
-        int nextSeconds = currentState.currentSeconds + (1 * currentState.speed).round();
+        int nextSeconds =
+            currentState.currentSeconds + (1 * currentState.speed).round();
         if (nextSeconds >= currentState.totalSeconds) {
           nextSeconds = currentState.totalSeconds;
           timer.cancel();

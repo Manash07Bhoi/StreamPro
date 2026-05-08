@@ -15,7 +15,8 @@ class BrightnessChannel {
 
   Future<void> setBrightness(double brightness) async {
     try {
-      await _channel.invokeMethod('setBrightness', {'brightness': brightness.clamp(0.05, 1.0)});
+      await _channel.invokeMethod(
+          'setBrightness', {'brightness': brightness.clamp(0.05, 1.0)});
     } on PlatformException catch (e) {
       debugPrint('Brightness error: ${e.message}');
     }

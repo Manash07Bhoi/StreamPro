@@ -29,12 +29,18 @@ class _DownloadsPageContent extends StatelessWidget {
       backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
         backgroundColor: AppColors.colorBackground,
-        title: const Text('My Downloads', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
+        title: const Text('My Downloads',
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w500)),
       ),
       body: BlocBuilder<DownloadBloc, DownloadState>(
         builder: (context, state) {
           if (state is DownloadLoading || state is DownloadInitial) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+            return const Center(
+                child:
+                    CircularProgressIndicator(color: AppColors.colorPrimary));
           } else if (state is DownloadLoaded) {
             return Column(
               children: [
@@ -45,16 +51,20 @@ class _DownloadsPageContent extends StatelessWidget {
                       : ListView.separated(
                           padding: const EdgeInsets.all(16.0),
                           itemCount: state.downloads.length,
-                          separatorBuilder: (context, index) => const SizedBox(height: 16),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 16),
                           itemBuilder: (context, index) {
-                            return _buildDownloadItem(context, state.downloads[index]);
+                            return _buildDownloadItem(
+                                context, state.downloads[index]);
                           },
                         ),
                 ),
               ],
             );
           } else if (state is DownloadError) {
-             return Center(child: Text(state.message, style: const TextStyle(color: Colors.red)));
+            return Center(
+                child: Text(state.message,
+                    style: const TextStyle(color: Colors.red)));
           }
           return const SizedBox.shrink();
         },
@@ -63,7 +73,8 @@ class _DownloadsPageContent extends StatelessWidget {
         onPressed: () => context.go('/home'),
         backgroundColor: AppColors.colorPrimary,
         icon: const Icon(Icons.download, color: Colors.white),
-        label: const Text('Download New Videos', style: TextStyle(fontFamily: 'Poppins', color: Colors.white)),
+        label: const Text('Download New Videos',
+            style: TextStyle(fontFamily: 'Poppins', color: Colors.white)),
       ),
     );
   }
@@ -87,8 +98,17 @@ class _DownloadsPageContent extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Device Storage', style: TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
-              Text('${usedStorageGB.toStringAsFixed(1)} GB of 10 GB used', style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
+              const Text('Device Storage',
+                  style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white)),
+              Text('${usedStorageGB.toStringAsFixed(1)} GB of 10 GB used',
+                  style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      color: AppColors.colorTextSecondary)),
             ],
           ),
           const SizedBox(height: 12),
@@ -97,7 +117,8 @@ class _DownloadsPageContent extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               backgroundColor: AppColors.colorSurface3,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.colorPrimary),
+              valueColor:
+                  const AlwaysStoppedAnimation<Color>(AppColors.colorPrimary),
               minHeight: 8,
             ),
           ),
@@ -107,15 +128,25 @@ class _DownloadsPageContent extends StatelessWidget {
   }
 
   Widget _buildEmptyState() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.download_for_offline, size: 80, color: AppColors.colorSurface3),
-          const SizedBox(height: 16),
-          const Text('No Downloads', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
-          const SizedBox(height: 8),
-          const Text('Download videos to watch them offline.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+          Icon(Icons.download_for_offline,
+              size: 80, color: AppColors.colorSurface3),
+          SizedBox(height: 16),
+          Text('No Downloads',
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white)),
+          SizedBox(height: 8),
+          Text('Download videos to watch them offline.',
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: AppColors.colorTextSecondary)),
         ],
       ),
     );
@@ -132,7 +163,8 @@ class _DownloadsPageContent extends StatelessWidget {
         break;
       case 'downloading':
         badgeColor = AppColors.colorWarning;
-        badgeText = '${(record.progressPercent * 100).toStringAsFixed(0)}% Downloading';
+        badgeText =
+            '${(record.progressPercent * 100).toStringAsFixed(0)}% Downloading';
         break;
       case 'failed':
         badgeColor = AppColors.colorError;
@@ -177,7 +209,8 @@ class _DownloadsPageContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+              borderRadius:
+                  const BorderRadius.horizontal(left: Radius.circular(12)),
               child: SizedBox(
                 width: 140,
                 height: 80,
@@ -185,9 +218,11 @@ class _DownloadsPageContent extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     CachedNetworkImage(
-                      imageUrl: 'https://picsum.photos/seed/${record.videoId}/640/360', // Mocking thumbnail based on id
+                      imageUrl:
+                          'https://picsum.photos/seed/${record.videoId}/640/360', // Mocking thumbnail based on id
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => const ColoredBox(color: AppColors.colorSurface3),
+                      placeholder: (context, url) =>
+                          const ColoredBox(color: AppColors.colorSurface3),
                     ),
                     if (record.status == 'downloading')
                       Positioned(
@@ -197,7 +232,8 @@ class _DownloadsPageContent extends StatelessWidget {
                         child: LinearProgressIndicator(
                           value: record.progressPercent,
                           backgroundColor: Colors.black54,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.colorWarning),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.colorWarning),
                           minHeight: 4,
                         ),
                       ),
@@ -213,7 +249,11 @@ class _DownloadsPageContent extends StatelessWidget {
                   children: [
                     Text(
                       'Video Title for ${record.videoId}', // In a real app we'd fetch the title from video_box
-                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                      style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -221,14 +261,19 @@ class _DownloadsPageContent extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: badgeColor.withValues(alpha:0.2),
+                            color: badgeColor.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             badgeText,
-                            style: TextStyle(fontFamily: 'Poppins', fontSize: 10, color: badgeColor, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 10,
+                                color: badgeColor,
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],
@@ -236,13 +281,19 @@ class _DownloadsPageContent extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       '${record.quality} • ${fileMB.toStringAsFixed(0)} MB',
-                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary),
+                      style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 12,
+                          color: AppColors.colorTextSecondary),
                     ),
                     if (record.status == 'completed') ...[
                       const SizedBox(height: 2),
                       Text(
                         'Expires in $daysLeft days',
-                        style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: AppColors.colorWarning),
+                        style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 10,
+                            color: AppColors.colorWarning),
                       ),
                     ],
                   ],

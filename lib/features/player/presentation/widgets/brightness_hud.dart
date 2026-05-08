@@ -15,7 +15,7 @@ class BrightnessHud extends StatelessWidget {
         width: 40,
         height: 160,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha:0.5),
+          color: Colors.black.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -35,7 +35,8 @@ class BrightnessHud extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: brightness,
                       backgroundColor: Colors.white24,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.colorPrimary),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.colorPrimary),
                       minHeight: 8,
                     ),
                   ),
@@ -46,7 +47,8 @@ class BrightnessHud extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
                 '${(brightness * 100).toInt()}%',
-                style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: 'Poppins'),
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 10, fontFamily: 'Poppins'),
               ),
             ),
           ],

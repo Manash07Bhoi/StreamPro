@@ -7,7 +7,8 @@ class PlaylistRepository {
   static const String playlistsBoxName = 'playlists_box';
   static const String playlistItemsBoxName = 'playlist_items_box';
 
-  Future<Playlist> createPlaylist(String name, {String? description, String color = '#C026D3'}) async {
+  Future<Playlist> createPlaylist(String name,
+      {String? description, String color = '#C026D3'}) async {
     final box = Hive.box<Playlist>(playlistsBoxName);
 
     final newPlaylist = Playlist(
@@ -48,7 +49,8 @@ class PlaylistRepository {
 
     // Delete associated items
     final itemsBox = Hive.box<PlaylistItem>(playlistItemsBoxName);
-    final itemsToDelete = itemsBox.values.where((item) => item.playlistId == playlistId).toList();
+    final itemsToDelete =
+        itemsBox.values.where((item) => item.playlistId == playlistId).toList();
     for (var item in itemsToDelete) {
       await itemsBox.delete(item.id);
     }
@@ -56,7 +58,9 @@ class PlaylistRepository {
 
   List<Playlist> getAllPlaylists() {
     final box = Hive.box<Playlist>(playlistsBoxName);
-    return box.values.toList()..sort((a, b) => DateTime.parse(b.updatedAt).compareTo(DateTime.parse(a.updatedAt)));
+    return box.values.toList()
+      ..sort((a, b) =>
+          DateTime.parse(b.updatedAt).compareTo(DateTime.parse(a.updatedAt)));
   }
 
   Playlist? getPlaylist(String playlistId) {
@@ -94,7 +98,8 @@ class PlaylistRepository {
         description: playlist.description,
         createdAt: playlist.createdAt,
         updatedAt: DateTime.now().toIso8601String(),
-        coverVideoId: playlist.coverVideoId.isEmpty ? videoId : playlist.coverVideoId,
+        coverVideoId:
+            playlist.coverVideoId.isEmpty ? videoId : playlist.coverVideoId,
         videoCount: playlist.videoCount + 1,
         isPublic: playlist.isPublic,
         color: playlist.color,
@@ -103,12 +108,14 @@ class PlaylistRepository {
     }
   }
 
-  Future<void> removeVideoFromPlaylist(String playlistId, String videoId) async {
+  Future<void> removeVideoFromPlaylist(
+      String playlistId, String videoId) async {
     final box = Hive.box<PlaylistItem>(playlistItemsBoxName);
 
     PlaylistItem? itemToRemove;
     try {
-      itemToRemove = box.values.firstWhere((e) => e.playlistId == playlistId && e.videoId == videoId);
+      itemToRemove = box.values.firstWhere(
+          (e) => e.playlistId == playlistId && e.videoId == videoId);
     } catch (e) {
       itemToRemove = null;
     }
@@ -152,7 +159,8 @@ class PlaylistRepository {
     }
   }
 
-  Future<void> reorderPlaylistItem(String playlistId, int oldIndex, int newIndex) async {
+  Future<void> reorderPlaylistItem(
+      String playlistId, int oldIndex, int newIndex) async {
     final box = Hive.box<PlaylistItem>(playlistItemsBoxName);
     final items = getPlaylistItems(playlistId);
 
@@ -179,31 +187,35 @@ class PlaylistRepository {
     // Update cover video if needed
     final playlistBox = Hive.box<Playlist>(playlistsBoxName);
     final playlist = playlistBox.get(playlistId);
-    if (playlist != null && items.isNotEmpty && playlist.coverVideoId != items.first.videoId) {
-        final updated = Playlist(
-          id: playlist.id,
-          name: playlist.name,
-          description: playlist.description,
-          createdAt: playlist.createdAt,
-          updatedAt: DateTime.now().toIso8601String(),
-          coverVideoId: items.first.videoId,
-          videoCount: playlist.videoCount,
-          isPublic: playlist.isPublic,
-          color: playlist.color,
-        );
-        await playlistBox.put(updated.id, updated);
+    if (playlist != null &&
+        items.isNotEmpty &&
+        playlist.coverVideoId != items.first.videoId) {
+      final updated = Playlist(
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        createdAt: playlist.createdAt,
+        updatedAt: DateTime.now().toIso8601String(),
+        coverVideoId: items.first.videoId,
+        videoCount: playlist.videoCount,
+        isPublic: playlist.isPublic,
+        color: playlist.color,
+      );
+      await playlistBox.put(updated.id, updated);
     }
   }
 
   List<PlaylistItem> getPlaylistItems(String playlistId) {
     final box = Hive.box<PlaylistItem>(playlistItemsBoxName);
-    return box.values.where((item) => item.playlistId == playlistId).toList()..sort((a, b) => a.position.compareTo(b.position));
+    return box.values.where((item) => item.playlistId == playlistId).toList()
+      ..sort((a, b) => a.position.compareTo(b.position));
   }
 
   bool isVideoInPlaylist(String playlistId, String videoId) {
     final box = Hive.box<PlaylistItem>(playlistItemsBoxName);
     try {
-      box.values.firstWhere((e) => e.playlistId == playlistId && e.videoId == videoId);
+      box.values.firstWhere(
+          (e) => e.playlistId == playlistId && e.videoId == videoId);
       return true;
     } catch (e) {
       return false;
@@ -212,7 +224,10 @@ class PlaylistRepository {
 
   List<Playlist> getPlaylistsContainingVideo(String videoId) {
     final box = Hive.box<PlaylistItem>(playlistItemsBoxName);
-    final playlistIds = box.values.where((item) => item.videoId == videoId).map((item) => item.playlistId).toSet();
+    final playlistIds = box.values
+        .where((item) => item.videoId == videoId)
+        .map((item) => item.playlistId)
+        .toSet();
 
     final playlistBox = Hive.box<Playlist>(playlistsBoxName);
     return playlistBox.values.where((p) => playlistIds.contains(p.id)).toList();

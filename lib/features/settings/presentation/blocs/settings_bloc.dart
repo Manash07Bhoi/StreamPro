@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/models/app_config.dart';
 import '../../data/repositories/app_config_repository.dart';
-import '../../../library/data/repositories/history_repository.dart';
-import '../../../library/data/repositories/download_repository.dart';
 
 // Events
 abstract class SettingsEvent extends Equatable {}
@@ -211,7 +209,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         // Need sl for cross-repo call, assuming it's available or we pass it
         // Since we are not doing a full rewrite of DI here, we'll try to instantiate or use a singleton locator
         // We will just update state for now and trigger actual clear via UI calling HistoryRepository
-        emit(SettingsActionSuccess('Watch history cleared', _repository.getConfig()));
+        emit(SettingsActionSuccess(
+            'Watch history cleared', _repository.getConfig()));
         emit(SettingsLoaded(_repository.getConfig()));
       } catch (e) {
         emit(SettingsError('Failed to clear watch history: $e'));
@@ -220,7 +219,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     on<ClearAllDownloads>((event, emit) async {
       try {
-        emit(SettingsActionSuccess('All downloads cleared', _repository.getConfig()));
+        emit(SettingsActionSuccess(
+            'All downloads cleared', _repository.getConfig()));
         emit(SettingsLoaded(_repository.getConfig()));
       } catch (e) {
         emit(SettingsError('Failed to clear downloads: $e'));
@@ -230,7 +230,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ClearImageCache>((event, emit) async {
       try {
         // CachedNetworkImage.evictFromCache placeholder
-        emit(SettingsActionSuccess('Image cache cleared', _repository.getConfig()));
+        emit(SettingsActionSuccess(
+            'Image cache cleared', _repository.getConfig()));
         emit(SettingsLoaded(_repository.getConfig()));
       } catch (e) {
         emit(SettingsError('Failed to clear cache: $e'));
@@ -241,7 +242,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       try {
         await _repository.updateField('parentalPin', event.pin);
         await _repository.updateField('parentalControlEnabled', true);
-        emit(SettingsActionSuccess('Parental controls enabled', _repository.getConfig()));
+        emit(SettingsActionSuccess(
+            'Parental controls enabled', _repository.getConfig()));
         emit(SettingsLoaded(_repository.getConfig()));
       } catch (e) {
         emit(SettingsError('Failed to enable parental controls: $e'));
@@ -255,7 +257,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           _pinAttempts = 3;
           await _repository.updateField('parentalPin', '');
           await _repository.updateField('parentalControlEnabled', false);
-          emit(SettingsActionSuccess('Parental controls disabled', _repository.getConfig()));
+          emit(SettingsActionSuccess(
+              'Parental controls disabled', _repository.getConfig()));
           emit(SettingsLoaded(_repository.getConfig()));
         } else {
           _pinAttempts--;
@@ -278,7 +281,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         final currentPin = _repository.getConfig().parentalPin;
         if (event.oldPin == currentPin) {
           await _repository.updateField('parentalPin', event.newPin);
-          emit(SettingsActionSuccess('PIN changed successfully', _repository.getConfig()));
+          emit(SettingsActionSuccess(
+              'PIN changed successfully', _repository.getConfig()));
           emit(SettingsLoaded(_repository.getConfig()));
         } else {
           emit(ParentalPinError('Incorrect current PIN', 3));
@@ -292,7 +296,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ResetAllSettings>((event, emit) async {
       try {
         await _repository.resetToDefaults();
-        emit(SettingsActionSuccess('Settings reset to defaults', _repository.getConfig()));
+        emit(SettingsActionSuccess(
+            'Settings reset to defaults', _repository.getConfig()));
         emit(SettingsLoaded(_repository.getConfig()));
       } catch (e) {
         emit(SettingsError('Failed to reset settings: $e'));

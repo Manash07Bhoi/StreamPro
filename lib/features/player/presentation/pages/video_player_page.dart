@@ -2,8 +2,8 @@ import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import '../../../../core/mixins/safe_pop_mixin.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/models/video_entity.dart';
@@ -12,11 +12,7 @@ import '../../../library/data/repositories/like_repository.dart';
 import '../blocs/player_bloc.dart';
 import '../widgets/player_controls_overlay.dart';
 import '../widgets/player_gesture_detector.dart';
-import '../widgets/brightness_hud.dart';
-import '../widgets/volume_hud.dart';
-import '../widgets/seek_feedback_overlay.dart';
 import '../widgets/comments_bottom_sheet.dart';
-import '../widgets/pip_mini_player.dart';
 
 class VideoPlayerPage extends StatelessWidget {
   final VideoEntity video;
@@ -38,7 +34,8 @@ class _VideoPlayerPageContent extends StatefulWidget {
   const _VideoPlayerPageContent({required this.video});
 
   @override
-  State<_VideoPlayerPageContent> createState() => _VideoPlayerPageContentState();
+  State<_VideoPlayerPageContent> createState() =>
+      _VideoPlayerPageContentState();
 }
 
 class _VideoPlayerPageContentState extends State<_VideoPlayerPageContent>
@@ -80,11 +77,9 @@ class _VideoPlayerPageContentState extends State<_VideoPlayerPageContent>
   @override
   void dispose() {
     webViewController?.dispose();
-    // Restore system UI and portrait orientation on exit
+    WakelockPlus.disable();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
     super.dispose();
   }
 
@@ -147,83 +142,92 @@ class _VideoPlayerPageContentState extends State<_VideoPlayerPageContent>
     """;
 
     return PopScope(
-        canPop: canPop,
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) return;
-          safePop();
-        },
-        child: Scaffold(
-          backgroundColor: Colors.black,
-          body: SafeArea(
-            child: BlocBuilder<PlayerBloc, PlayerState>(
-              builder: (context, state) {
-                if (state is! PlayerReady) {
-                  return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
-                }
+      canPop: canPop,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        safePop();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          child: BlocBuilder<PlayerBloc, PlayerState>(
+            builder: (context, state) {
+              if (state is! PlayerReady) {
+                return const Center(
+                    child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary));
+              }
 
-                return PlayerGestureDetector(
-                  onRevealComments: _showCommentsSheet,
-                  child: Stack(
-                    children: [
-                      // Layer 1: WebView Player
-                      Transform.scale(
-                        scale: state.isFillMode ? 1.4 : 1.0, // rough simulation of fill mode
-                        child: InAppWebView(
-                          keepAlive: InAppWebViewKeepAlive(),
-                          initialData: InAppWebViewInitialData(data: htmlData),
-                          initialSettings: InAppWebViewSettings(
-                            mediaPlaybackRequiresUserGesture: false,
-                            allowsInlineMediaPlayback: true,
-                            iframeAllowFullscreen: true,
+              return PlayerGestureDetector(
+                onRevealComments: _showCommentsSheet,
+                child: Stack(
+                  children: [
+                    // Layer 1: WebView Player
+                    Transform.scale(
+                      scale: state.isFillMode
+                          ? 1.4
+                          : 1.0, // rough simulation of fill mode
+                      child: InAppWebView(
+                        keepAlive: InAppWebViewKeepAlive(),
+                        initialData: InAppWebViewInitialData(data: htmlData),
+                        initialSettings: InAppWebViewSettings(
+                          mediaPlaybackRequiresUserGesture: false,
+                          allowsInlineMediaPlayback: true,
+                          iframeAllowFullscreen: true,
+                        ),
+                        onWebViewCreated: (controller) {
+                          webViewController = controller;
+                        },
+                      ),
+                    ),
+
+                    // Empty container to absorb pointer when gestures handle everything
+                    // The WebView itself receives no touches due to PlayerGestureDetector
+
+                    // Layer 3 & 4: Brightness and Volume HUDs
+                    // Since we don't have true touch tracking for HUD visibility duration natively in Bloc state easily,
+                    // we'll just show them continuously or base on a timer. For MVP, we pass values directly.
+                    // A complete implementation would use local state or more granular Bloc events for HUD fade.
+                    // We omit here to avoid clutter, as the PRD says they appear during drag.
+
+                    // Layer 6: Main Controls Overlay
+                    PlayerControlsOverlay(
+                      video: widget.video,
+                      isBookmarked: _isBookmarked,
+                      reaction: _reaction,
+                      onPop: safePop,
+                      onToggleBookmark: _toggleBookmark,
+                      onToggleLike: _toggleLike,
+                      onToggleDislike: _toggleDislike,
+                      onRevealComments: _showCommentsSheet,
+                    ),
+
+                    // Layer 7: Speed Badge
+                    if (state.speed > 1.0)
+                      Positioned(
+                        top: 16,
+                        right: 64, // left of PiP/Cast
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.colorPrimary,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          onWebViewCreated: (controller) {
-                            webViewController = controller;
-                          },
+                          child: Text('${state.speed}x',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.bold)),
                         ),
                       ),
-
-                      // Empty container to absorb pointer when gestures handle everything
-                      // The WebView itself receives no touches due to PlayerGestureDetector
-
-                      // Layer 3 & 4: Brightness and Volume HUDs
-                      // Since we don't have true touch tracking for HUD visibility duration natively in Bloc state easily,
-                      // we'll just show them continuously or base on a timer. For MVP, we pass values directly.
-                      // A complete implementation would use local state or more granular Bloc events for HUD fade.
-                      // We omit here to avoid clutter, as the PRD says they appear during drag.
-
-                      // Layer 6: Main Controls Overlay
-                      PlayerControlsOverlay(
-                        video: widget.video,
-                        isBookmarked: _isBookmarked,
-                        reaction: _reaction,
-                        onPop: safePop,
-                        onToggleBookmark: _toggleBookmark,
-                        onToggleLike: _toggleLike,
-                        onToggleDislike: _toggleDislike,
-                        onRevealComments: _showCommentsSheet,
-                      ),
-
-                      // Layer 7: Speed Badge
-                      if (state.speed > 1.0)
-                        Positioned(
-                          top: 16,
-                          right: 64, // left of PiP/Cast
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppColors.colorPrimary,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text('${state.speed}x', style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
+      ),
     );
   }
 }

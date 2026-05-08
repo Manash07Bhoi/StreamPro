@@ -8,6 +8,9 @@ import '../models/video_entity.dart';
 import '../../core/di/injection.dart';
 import '../../features/library/data/repositories/bookmark_repository.dart';
 import '../../features/library/data/repositories/history_repository.dart';
+import '../../features/library/presentation/blocs/like_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'long_press_context_menu.dart';
 
 class PremiumVideoCard extends StatefulWidget {
   final VideoEntity video;
@@ -29,7 +32,8 @@ class PremiumVideoCard extends StatefulWidget {
   State<PremiumVideoCard> createState() => _PremiumVideoCardState();
 }
 
-class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerProviderStateMixin {
+class _PremiumVideoCardState extends State<PremiumVideoCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
   bool _isBookmarked = false;
@@ -91,15 +95,17 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
   void _onDoubleTap() {
     HapticFeedback.mediumImpact();
     // Quick Like
-    // In a real app we would call LikeBloc, but since we haven't implemented it fully, we'll just show animation
-    // sl<LikeBloc>().add(SetReaction(widget.video.id, 'like'));
+    context.read<LikeBloc>().add(SetReaction(widget.video.id, 'like'));
     _showFloatingHeart();
   }
 
   void _onLongPress() {
     HapticFeedback.heavyImpact();
-    // Show context menu (placeholder for now, will implement in Sprint 4)
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Long press context menu for ${widget.video.title}')));
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => LongPressContextMenu(video: widget.video),
+    );
   }
 
   void _showFloatingHeart() {
@@ -125,7 +131,8 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
               scale: scale,
               child: Opacity(
                 opacity: scale > 1.0 ? 1.0 - (scale - 1.0) * 5 : 1.0,
-                child: const Icon(Icons.favorite, color: Colors.white, size: 64),
+                child:
+                    const Icon(Icons.favorite, color: Colors.white, size: 64),
               ),
             );
           },
@@ -160,7 +167,7 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -184,16 +191,18 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                         highlightColor: AppColors.colorSurface3,
                         child: Container(color: Colors.black),
                       ),
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                   ),
 
                   // Completed Overlay
                   if (_isCompleted)
                     Container(
-                      color: Colors.black.withValues(alpha:0.6),
+                      color: Colors.black.withValues(alpha: 0.6),
                       child: const Center(
-                        child: Icon(Icons.check_circle, color: Colors.white, size: 48),
+                        child: Icon(Icons.check_circle,
+                            color: Colors.white, size: 48),
                       ),
                     ),
 
@@ -211,7 +220,7 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Colors.black.withValues(alpha:0.9),
+                              Colors.black.withValues(alpha: 0.9),
                             ],
                           ),
                         ),
@@ -227,22 +236,36 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                         if (showNew)
                           Container(
                             margin: const EdgeInsets.only(right: 4),
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
+                              gradient: const LinearGradient(colors: [
+                                AppColors.colorPrimary,
+                                AppColors.colorSecondary
+                              ]),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: const Text('NEW', style: TextStyle(fontFamily: 'Poppins', fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                            child: const Text('NEW',
+                                style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
                           ),
                         if (widget.video.requiresAgeVerification)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: AppColors.colorSurface2,
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(color: AppColors.colorError),
                             ),
-                            child: Text(rating, style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Colors.white)),
+                            child: Text(rating,
+                                style: const TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 10,
+                                    color: Colors.white)),
                           ),
                       ],
                     ),
@@ -257,21 +280,33 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                         if (showHD)
                           Container(
                             margin: const EdgeInsets.only(right: 4),
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 2),
                             decoration: BoxDecoration(
                               color: AppColors.colorSurface2,
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(color: AppColors.colorWarning),
                             ),
-                            child: const Text('HD', style: TextStyle(fontFamily: 'Poppins', fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.colorWarning)),
+                            child: const Text('HD',
+                                style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.colorWarning)),
                           ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha:0.6),
+                            color: Colors.black.withValues(alpha: 0.6),
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          child: Text(widget.video.duration, style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                          child: Text(widget.video.duration,
+                              style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
                         ),
                       ],
                     ),
@@ -280,7 +315,9 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                   // Title, Category, and Bottom Actions
                   if (!_isCompleted)
                     Positioned(
-                      bottom: widget.showProgress && _progressPercent > 0.0 ? 8 : 12,
+                      bottom: widget.showProgress && _progressPercent > 0.0
+                          ? 8
+                          : 12,
                       left: 12,
                       right: 12,
                       child: Row(
@@ -292,21 +329,31 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                               children: [
                                 Text(
                                   widget.video.channelName,
-                                  style: const TextStyle(fontFamily: 'Poppins', color: AppColors.colorTextSecondary, fontSize: 10),
+                                  style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      color: AppColors.colorTextSecondary,
+                                      fontSize: 10),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   widget.video.title,
-                                  style: const TextStyle(fontFamily: 'Poppins', color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   '${_formatViewCount(widget.video.viewCount)} • ${widget.video.category}',
-                                  style: const TextStyle(fontFamily: 'Poppins', color: AppColors.colorTextMuted, fontSize: 10),
+                                  style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      color: AppColors.colorTextMuted,
+                                      fontSize: 10),
                                 ),
                               ],
                             ),
@@ -329,8 +376,12 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                                   HapticFeedback.selectionClick();
                                 },
                                 child: Icon(
-                                  _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                                  color: _isBookmarked ? AppColors.colorPrimary : Colors.white,
+                                  _isBookmarked
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_border,
+                                  color: _isBookmarked
+                                      ? AppColors.colorPrimary
+                                      : Colors.white,
                                   size: 20,
                                 ),
                               ),
@@ -342,27 +393,31 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
                     ),
 
                   // Progress Bar overlay
-                  if (widget.showProgress && _progressPercent > 0.0 && !_isCompleted)
+                  if (widget.showProgress &&
+                      _progressPercent > 0.0 &&
+                      !_isCompleted)
                     Positioned(
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Stack(
-                            children: [
-                              Container(height: 3, color: AppColors.colorSurface3),
-                              Container(
-                                height: 3,
-                                width: constraints.maxWidth * _progressPercent,
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
-                                ),
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        return Stack(
+                          children: [
+                            Container(
+                                height: 3, color: AppColors.colorSurface3),
+                            Container(
+                              height: 3,
+                              width: constraints.maxWidth * _progressPercent,
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(colors: [
+                                  AppColors.colorPrimary,
+                                  AppColors.colorSecondary
+                                ]),
                               ),
-                            ],
-                          );
-                        }
-                      ),
+                            ),
+                          ],
+                        );
+                      }),
                     ),
                 ],
               ),
@@ -374,7 +429,9 @@ class _PremiumVideoCardState extends State<PremiumVideoCard> with SingleTickerPr
   }
 
   String _formatViewCount(int count) {
-    if (count >= 1000000) return '${(count / 1000000).toStringAsFixed(1)}M views';
+    if (count >= 1000000) {
+      return '${(count / 1000000).toStringAsFixed(1)}M views';
+    }
     if (count >= 1000) return '${(count / 1000).toStringAsFixed(0)}K views';
     return '$count views';
   }

@@ -27,6 +27,9 @@ import '../di/injection.dart';
 import '../../features/settings/data/repositories/app_config_repository.dart';
 
 // Import placeholders for screens not yet implemented but defined in PRD
+import '../pages/not_found_page.dart';
+import '../../features/settings/presentation/pages/playback_settings_page.dart';
+import '../../features/settings/presentation/pages/parental_control_page.dart';
 import 'route_placeholders.dart';
 
 final appRouter = GoRouter(
@@ -34,16 +37,27 @@ final appRouter = GoRouter(
   debugLogDiagnostics: true,
   redirect: (context, state) {
     final config = sl<AppConfigRepository>().getConfig();
-    final isOnSplash = state.matchedLocation == AppRoutes.splash;
-    final isOnLegal = state.matchedLocation == '/age-gate' ||
-        state.matchedLocation == '/terms' ||
-        state.matchedLocation == '/privacy';
+    final location = state.matchedLocation;
 
-    // If first time user hits any deep link, gate them first
-    if (!config.hasAcceptedTerms && !isOnLegal && !isOnSplash) {
+    final isOnLegalFlow = location == '/age-gate' ||
+        location == '/terms' ||
+        location == '/privacy' ||
+        location == AppRoutes.splash;
+
+    // Gate 1: Legal acceptance
+    if (!config.hasAcceptedTerms && !isOnLegalFlow) {
       return '/age-gate';
     }
-    return null;
+
+    // Gate 2: Onboarding
+    if (config.hasAcceptedTerms &&
+        config.isFirstLaunch &&
+        location != '/onboarding' &&
+        !isOnLegalFlow) {
+      return '/onboarding';
+    }
+
+    return null; // No redirect needed
   },
   routes: [
     GoRoute(path: AppRoutes.splash, builder: (c, s) => const SplashPage()),
@@ -54,16 +68,14 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.home,
       pageBuilder: (c, s) => _fadeTransition(s, const HomePage()),
-      routes: [],
+      routes: const [],
     ),
     GoRoute(
       path: AppRoutes.player,
-      pageBuilder: (c, s) {
-        final video = s.extra as VideoEntity?;
-        if (video != null) {
-          return _fadeTransition(s, VideoPlayerPage(video: video));
-        }
-        return _fadeTransition(s, const Scaffold(body: Center(child: Text('Error: No Video Data'))));
+      pageBuilder: (context, state) {
+        final video = state.extra as VideoEntity?;
+        if (video == null) return _fadeTransition(state, const NotFoundPage()); // graceful fallback
+        return _fadeTransition(state, VideoPlayerPage(video: video));
       },
     ),
     GoRoute(path: AppRoutes.vpn, builder: (c, s) => const VpnStatusScreen()),
@@ -77,7 +89,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(path: '/profile', builder: (c, s) => const ProfilePage()),
     GoRoute(path: '/profile/edit', builder: (c, s) => const EditProfilePage()),
-    GoRoute(path: '/notifications', builder: (c, s) => const NotificationsPage()),
+    GoRoute(
+        path: '/notifications', builder: (c, s) => const NotificationsPage()),
     GoRoute(path: '/downloads', builder: (c, s) => const DownloadsPage()),
     GoRoute(path: '/playlists', builder: (c, s) => const PlaylistsPage()),
     GoRoute(
@@ -89,13 +102,18 @@ final appRouter = GoRouter(
     ),
     GoRoute(path: '/liked', builder: (c, s) => const LikedVideosPage()),
     GoRoute(path: AppRoutes.settings, builder: (c, s) => const SettingsPage()),
-    GoRoute(path: '/settings/playback', builder: (c, s) => const PlaceholderPage(title: 'Playback Settings')),
-    GoRoute(path: '/settings/parental', builder: (c, s) => const PlaceholderPage(title: 'Parental Control')),
+    GoRoute(
+        path: '/settings/playback',
+        builder: (c, s) => const PlaybackSettingsPage()),
+    GoRoute(
+        path: '/settings/parental',
+        builder: (c, s) => const ParentalControlPage()),
     GoRoute(path: '/help', builder: (c, s) => const HelpFaqPage()),
     GoRoute(path: '/about', builder: (c, s) => const AboutPage()),
-    GoRoute(path: '/cast', builder: (c, s) => const PlaceholderPage(title: 'Cast')),
+    GoRoute(
+        path: '/cast', builder: (c, s) => const PlaceholderPage(title: 'Cast')),
   ],
-  errorBuilder: (context, state) => const Scaffold(body: Center(child: Text('Not Found'))),
+  errorBuilder: (context, state) => const NotFoundPage(),
 );
 
 CustomTransitionPage<void> _fadeTransition(GoRouterState state, Widget child) {

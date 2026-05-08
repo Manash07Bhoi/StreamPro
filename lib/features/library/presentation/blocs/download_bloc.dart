@@ -172,7 +172,8 @@ class DownloadBloc extends Bloc<DownloadEvent, DownloadState> {
         final record = _repository.getDownloadForVideo(event.downloadId);
         if (record != null) {
           final newBytes = (record.fileSizeBytes * event.progress).toInt();
-          await _repository.updateDownloadProgress(event.downloadId, event.progress, newBytes, 'downloading');
+          await _repository.updateDownloadProgress(
+              event.downloadId, event.progress, newBytes, 'downloading');
           final downloads = _repository.getAllDownloads();
           final totalStorage = _repository.getTotalStorageUsedBytes();
           emit(DownloadLoaded(downloads, totalStorage));
@@ -186,7 +187,8 @@ class DownloadBloc extends Bloc<DownloadEvent, DownloadState> {
       try {
         final record = _repository.getDownloadForVideo(event.downloadId);
         if (record != null) {
-          await _repository.updateDownloadProgress(event.downloadId, 1.0, record.fileSizeBytes, 'completed');
+          await _repository.updateDownloadProgress(
+              event.downloadId, 1.0, record.fileSizeBytes, 'completed');
           final downloads = _repository.getAllDownloads();
           final totalStorage = _repository.getTotalStorageUsedBytes();
           emit(DownloadLoaded(downloads, totalStorage));

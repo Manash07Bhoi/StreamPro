@@ -72,7 +72,8 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close, color: AppColors.colorTextSecondary),
+                        icon: const Icon(Icons.close,
+                            color: AppColors.colorTextSecondary),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],
@@ -85,20 +86,36 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                   child: BlocBuilder<CommentBloc, CommentState>(
                     builder: (context, state) {
                       if (state is CommentLoading || state is CommentInitial) {
-                        return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
-                      } else if (state is CommentLoaded || state is CommentPosting) {
-                        final comments = state is CommentLoaded ? state.comments : (state as CommentPosting).currentComments;
+                        return const Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.colorPrimary));
+                      } else if (state is CommentLoaded ||
+                          state is CommentPosting) {
+                        final comments = state is CommentLoaded
+                            ? state.comments
+                            : (state as CommentPosting).currentComments;
 
                         if (comments.isEmpty) {
-                          return Center(
+                          return const Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.chat_bubble_outline, size: 64, color: AppColors.colorSurface3),
-                                const SizedBox(height: 16),
-                                const Text('No Comments Yet', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
-                                const SizedBox(height: 8),
-                                const Text('Be the first to comment on this video.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+                                Icon(Icons.chat_bubble_outline,
+                                    size: 64, color: AppColors.colorSurface3),
+                                SizedBox(height: 16),
+                                Text('No Comments Yet',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white)),
+                                SizedBox(height: 8),
+                                Text(
+                                    'Be the first to comment on this video.',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        color: AppColors.colorTextSecondary)),
                               ],
                             ),
                           );
@@ -113,7 +130,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                           },
                         );
                       } else if (state is CommentError) {
-                        return Center(child: Text(state.message, style: const TextStyle(color: Colors.red)));
+                        return Center(
+                            child: Text(state.message,
+                                style: const TextStyle(color: Colors.red)));
                       }
                       return const SizedBox.shrink();
                     },
@@ -122,67 +141,82 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
 
                 // Add Comment Input
                 BlocBuilder<CommentBloc, CommentState>(
-                  builder: (context, state) {
-                    return Container(
-                      padding: EdgeInsets.only(
-                        left: 16,
-                        right: 16,
-                        top: 12,
-                        bottom: MediaQuery.of(context).viewInsets.bottom + 12,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: AppColors.colorSurface2,
-                        border: Border(top: BorderSide(color: AppColors.colorSurface3)),
-                      ),
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 16,
-                            backgroundColor: AppColors.colorSurface3,
-                            child: Icon(Icons.person, size: 20, color: Colors.white54),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: TextField(
-                              controller: _commentController,
-                              style: const TextStyle(fontFamily: 'Poppins', color: Colors.white, fontSize: 14),
-                              maxLength: 500,
-                              buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
-                              decoration: InputDecoration(
-                                hintText: 'Add a comment...',
-                                hintStyle: const TextStyle(color: AppColors.colorTextMuted, fontFamily: 'Poppins', fontSize: 14),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: AppColors.colorSurface3,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    builder: (context, state) {
+                  return Container(
+                    padding: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 12,
+                      bottom: MediaQuery.of(context).viewInsets.bottom + 12,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: AppColors.colorSurface2,
+                      border: Border(
+                          top: BorderSide(color: AppColors.colorSurface3)),
+                    ),
+                    child: Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 16,
+                          backgroundColor: AppColors.colorSurface3,
+                          child: Icon(Icons.person,
+                              size: 20, color: Colors.white54),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextField(
+                            controller: _commentController,
+                            style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontSize: 14),
+                            maxLength: 500,
+                            buildCounter: (context,
+                                    {required currentLength,
+                                    required isFocused,
+                                    maxLength}) =>
+                                null,
+                            decoration: InputDecoration(
+                              hintText: 'Add a comment...',
+                              hintStyle: const TextStyle(
+                                  color: AppColors.colorTextMuted,
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide.none,
                               ),
+                              filled: true,
+                              fillColor: AppColors.colorSurface3,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          if (state is CommentPosting)
-                            const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(color: AppColors.colorPrimary, strokeWidth: 2),
-                            )
-                          else
-                            IconButton(
-                              icon: const Icon(Icons.send, color: AppColors.colorPrimary),
-                              onPressed: () {
-                                if (_commentController.text.trim().isNotEmpty) {
-                                  context.read<CommentBloc>().add(PostComment(widget.video.id, _commentController.text));
-                                  _commentController.clear();
-                                }
-                              },
-                            ),
-                        ],
-                      ),
-                    );
-                  }
-                ),
+                        ),
+                        const SizedBox(width: 8),
+                        if (state is CommentPosting)
+                          const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                                color: AppColors.colorPrimary, strokeWidth: 2),
+                          )
+                        else
+                          IconButton(
+                            icon: const Icon(Icons.send,
+                                color: AppColors.colorPrimary),
+                            onPressed: () {
+                              if (_commentController.text.trim().isNotEmpty) {
+                                context.read<CommentBloc>().add(PostComment(
+                                    widget.video.id, _commentController.text));
+                                _commentController.clear();
+                              }
+                            },
+                          ),
+                      ],
+                    ),
+                  );
+                }),
               ],
             ),
           );
@@ -200,8 +234,12 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
           CircleAvatar(
             radius: 20,
             backgroundColor: AppColors.colorSurface3,
-            backgroundImage: comment.authorAvatar.isNotEmpty ? CachedNetworkImageProvider(comment.authorAvatar) : null,
-            child: comment.authorAvatar.isEmpty ? const Icon(Icons.person, color: Colors.white54) : null,
+            backgroundImage: comment.authorAvatar.isNotEmpty
+                ? CachedNetworkImageProvider(comment.authorAvatar)
+                : null,
+            child: comment.authorAvatar.isEmpty
+                ? const Icon(Icons.person, color: Colors.white54)
+                : null,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -212,23 +250,35 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                   children: [
                     Text(
                       comment.authorName,
-                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                      style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white),
                     ),
                     if (comment.isUserComment) ...[
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppColors.colorSurface3,
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('You', style: TextStyle(fontFamily: 'Poppins', fontSize: 10, color: Colors.white)),
+                        child: const Text('You',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 10,
+                                color: Colors.white)),
                       ),
                     ],
                     const SizedBox(width: 8),
                     Text(
                       _formatTimeAgo(comment.postedAt),
-                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextMuted),
+                      style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 12,
+                          color: AppColors.colorTextMuted),
                     ),
                   ],
                 ),
@@ -241,7 +291,10 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                   },
                   child: Text(
                     comment.text,
-                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextPrimary),
+                    style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        color: AppColors.colorTextPrimary),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -249,18 +302,29 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        context.read<CommentBloc>().add(LikeComment(comment.id));
+                        context
+                            .read<CommentBloc>()
+                            .add(LikeComment(comment.id));
                       },
                       child: Row(
                         children: [
-                          const Icon(Icons.thumb_up_alt_outlined, size: 14, color: AppColors.colorTextSecondary),
+                          const Icon(Icons.thumb_up_alt_outlined,
+                              size: 14, color: AppColors.colorTextSecondary),
                           const SizedBox(width: 4),
-                          Text(comment.likeCount.toString(), style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
+                          Text(comment.likeCount.toString(),
+                              style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 12,
+                                  color: AppColors.colorTextSecondary)),
                         ],
                       ),
                     ),
                     const SizedBox(width: 24),
-                    const Text('Reply', style: TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
+                    const Text('Reply',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                            color: AppColors.colorTextSecondary)),
                   ],
                 ),
               ],
@@ -276,19 +340,29 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.colorSurface2,
-        title: const Text('Delete Comment', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
-        content: const Text('Are you sure you want to delete this comment?', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
+        title: const Text('Delete Comment',
+            style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
+        content: const Text('Are you sure you want to delete this comment?',
+            style: TextStyle(
+                color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
+            child: const Text('Cancel',
+                style: TextStyle(
+                    color: AppColors.colorTextSecondary,
+                    fontFamily: 'Poppins')),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               blocContext.read<CommentBloc>().add(DeleteComment(comment.id));
             },
-            child: const Text('Delete', style: TextStyle(color: AppColors.colorError, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+            child: const Text('Delete',
+                style: TextStyle(
+                    color: AppColors.colorError,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600)),
           ),
         ],
       ),

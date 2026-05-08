@@ -1,9 +1,10 @@
 import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection.dart';
 import '../blocs/profile_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -17,9 +18,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final List<String> _selectedInterests = [];
 
   final List<String> _allInterests = [
-    'Action', 'Comedy', 'Drama', 'Documentary', 'Music', 'Sports',
-    'Technology', 'Travel', 'Animation', 'Horror', 'Romance',
-    'Thriller', 'Science', 'Gaming', 'Cooking'
+    'Action',
+    'Comedy',
+    'Drama',
+    'Documentary',
+    'Music',
+    'Sports',
+    'Technology',
+    'Travel',
+    'Animation',
+    'Horror',
+    'Romance',
+    'Thriller',
+    'Science',
+    'Gaming',
+    'Cooking'
   ];
 
   @override
@@ -44,7 +57,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void _saveProfile() {
     if (_nameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Display name cannot be empty')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Display name cannot be empty')));
       return;
     }
 
@@ -61,11 +75,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
       backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
         backgroundColor: AppColors.colorBackground,
-        title: const Text('Edit Profile', style: TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w500)),
+        title: const Text('Edit Profile',
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w500)),
         actions: [
           TextButton(
             onPressed: _saveProfile,
-            child: const Text('Save', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+            child: const Text('Save',
+                style: TextStyle(
+                    color: AppColors.colorPrimary,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -76,9 +98,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
           children: [
             Center(
               child: GestureDetector(
-                onTap: () {
-                  // TODO: Implement image picker logic
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Image picker coming soon')));
+                onTap: () async {
+                  final picker = ImagePicker();
+                  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    if (!context.mounted) return;
+                    // Update BLoC
+                    context.read<ProfileBloc>().add(UpdateAvatar(pickedFile.path));
+                  }
                 },
                 child: Stack(
                   children: [
@@ -88,10 +115,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       decoration: BoxDecoration(
                         color: AppColors.colorSurface3,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.colorPrimary, width: 2),
+                        border:
+                            Border.all(color: AppColors.colorPrimary, width: 2),
                       ),
                       child: const Center(
-                        child: Icon(Icons.person, size: 50, color: AppColors.colorTextMuted),
+                        child: Icon(Icons.person,
+                            size: 50, color: AppColors.colorTextMuted),
                       ),
                     ),
                     Positioned(
@@ -103,7 +132,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           color: AppColors.colorPrimary,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
+                        child: const Icon(Icons.camera_alt,
+                            size: 16, color: Colors.white),
                       ),
                     ),
                   ],
@@ -111,11 +141,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
             const SizedBox(height: 32),
-            const Text('Display Name', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+            const Text('Display Name',
+                style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: AppColors.colorTextSecondary)),
             const SizedBox(height: 8),
             TextField(
               controller: _nameController,
-              style: const TextStyle(fontFamily: 'Poppins', color: Colors.white),
+              style:
+                  const TextStyle(fontFamily: 'Poppins', color: Colors.white),
               maxLength: 30,
               decoration: InputDecoration(
                 filled: true,
@@ -131,7 +166,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text('Interests', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+            const Text('Interests',
+                style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: AppColors.colorTextSecondary)),
             const SizedBox(height: 16),
             Wrap(
               spacing: 8.0,
@@ -151,15 +190,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     });
                   },
                   backgroundColor: AppColors.colorSurface2,
-                  selectedColor: AppColors.colorPrimary.withValues(alpha:0.2),
+                  selectedColor: AppColors.colorPrimary.withValues(alpha: 0.2),
                   labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : AppColors.colorTextSecondary,
+                    color: isSelected
+                        ? Colors.white
+                        : AppColors.colorTextSecondary,
                     fontFamily: 'Poppins',
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(
-                      color: isSelected ? AppColors.colorPrimary : Colors.transparent,
+                      color: isSelected
+                          ? AppColors.colorPrimary
+                          : Colors.transparent,
                     ),
                   ),
                 );

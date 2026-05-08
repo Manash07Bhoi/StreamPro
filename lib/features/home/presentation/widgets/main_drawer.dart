@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../vpn/presentation/blocs/vpn_bloc.dart';
 import '../../../profile/presentation/blocs/profile_bloc.dart';
 
@@ -28,7 +27,8 @@ class MainDrawer extends StatelessWidget {
               }
 
               return Container(
-                padding: const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
+                padding: const EdgeInsets.only(
+                    top: 60, bottom: 20, left: 20, right: 20),
                 decoration: const BoxDecoration(
                   gradient: AppColors.primaryGradient,
                 ),
@@ -53,14 +53,18 @@ class MainDrawer extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.white70),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Text(
                             'Free Member',
-                            style: TextStyle(color: Colors.white70, fontSize: 10, fontFamily: 'Poppins'),
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 10,
+                                fontFamily: 'Poppins'),
                           ),
                         ),
                       ],
@@ -145,7 +149,8 @@ class MainDrawer extends StatelessWidget {
           ),
           const Divider(color: AppColors.colorSurface3, height: 1),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -156,19 +161,35 @@ class MainDrawer extends StatelessWidget {
                         Navigator.pop(context);
                         context.push('/privacy');
                       },
-                      child: const Text('Privacy Policy', style: TextStyle(color: AppColors.colorTextSecondary, fontSize: 12, fontFamily: 'Poppins', decoration: TextDecoration.underline)),
+                      child: const Text('Privacy Policy',
+                          style: TextStyle(
+                              color: AppColors.colorTextSecondary,
+                              fontSize: 12,
+                              fontFamily: 'Poppins',
+                              decoration: TextDecoration.underline)),
                     ),
-                    const Text('  •  ', style: TextStyle(color: AppColors.colorTextMuted, fontSize: 12)),
+                    const Text('  •  ',
+                        style: TextStyle(
+                            color: AppColors.colorTextMuted, fontSize: 12)),
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                         context.push('/terms');
                       },
-                      child: const Text('Terms of Service', style: TextStyle(color: AppColors.colorTextSecondary, fontSize: 12, fontFamily: 'Poppins', decoration: TextDecoration.underline)),
+                      child: const Text('Terms of Service',
+                          style: TextStyle(
+                              color: AppColors.colorTextSecondary,
+                              fontSize: 12,
+                              fontFamily: 'Poppins',
+                              decoration: TextDecoration.underline)),
                     ),
                   ],
                 ),
-                const Text('v1.0.0', style: TextStyle(color: AppColors.colorTextMuted, fontSize: 12, fontFamily: 'Poppins')),
+                const Text('v1.0.0',
+                    style: TextStyle(
+                        color: AppColors.colorTextMuted,
+                        fontSize: 12,
+                        fontFamily: 'Poppins')),
               ],
             ),
           ),
@@ -185,7 +206,9 @@ class MainDrawer extends StatelessWidget {
     // Basic active state simulation could be added here by passing current route
     return ListTile(
       leading: Icon(icon, color: AppColors.colorTextSecondary),
-      title: Text(title, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 14)),
+      title: Text(title,
+          style: const TextStyle(
+              color: Colors.white, fontFamily: 'Poppins', fontSize: 14)),
       onTap: onTap,
     );
   }

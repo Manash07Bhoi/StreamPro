@@ -10,7 +10,11 @@ class AboutPage extends StatelessWidget {
       backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
         backgroundColor: AppColors.colorBackground,
-        title: const Text('About StreamPro', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
+        title: const Text('About StreamPro',
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w500)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -23,7 +27,8 @@ class AboutPage extends StatelessWidget {
               height: 100,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
+                gradient: LinearGradient(
+                    colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
               ),
               child: const Center(
                 child: Icon(Icons.play_arrow, size: 50, color: Colors.white),
@@ -32,20 +37,29 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 24),
             const Text(
               'StreamPro',
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
             const SizedBox(height: 4),
             const Text(
               'v1.0.0 (Build 1)',
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: AppColors.colorTextSecondary),
             ),
             const SizedBox(height: 8),
             const Text(
               'Premium. Free. Unlimited.',
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 16, color: AppColors.colorPrimary),
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  color: AppColors.colorPrimary),
             ),
             const SizedBox(height: 48),
-
             Container(
               decoration: BoxDecoration(
                 color: AppColors.colorSurface,
@@ -53,7 +67,8 @@ class AboutPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  _buildActionRow(Icons.description_outlined, 'Open Source Licenses'),
+                  _buildActionRow(
+                      Icons.description_outlined, 'Open Source Licenses'),
                   const Divider(color: AppColors.colorSurface3, height: 1),
                   _buildActionRow(Icons.star_rate_outlined, 'Rate the App'),
                   const Divider(color: AppColors.colorSurface3, height: 1),
@@ -63,11 +78,13 @@ class AboutPage extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 48),
             const Text(
               'Made with ♥ using Flutter',
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextMuted),
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 12,
+                  color: AppColors.colorTextMuted),
             ),
           ],
         ),
@@ -78,8 +95,11 @@ class AboutPage extends StatelessWidget {
   Widget _buildActionRow(IconData icon, String title) {
     return ListTile(
       leading: Icon(icon, color: AppColors.colorTextSecondary),
-      title: Text(title, style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Colors.white)),
-      trailing: const Icon(Icons.chevron_right, color: AppColors.colorTextMuted),
+      title: Text(title,
+          style: const TextStyle(
+              fontFamily: 'Poppins', fontSize: 14, color: Colors.white)),
+      trailing:
+          const Icon(Icons.chevron_right, color: AppColors.colorTextMuted),
       onTap: () {
         // Handle action
       },

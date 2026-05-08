@@ -78,7 +78,9 @@ class DownloadRepository {
 
   List<DownloadRecord> getAllDownloads() {
     final box = Hive.box<DownloadRecord>(downloadsBoxName);
-    return box.values.toList()..sort((a, b) => DateTime.parse(b.startedAt).compareTo(DateTime.parse(a.startedAt)));
+    return box.values.toList()
+      ..sort((a, b) =>
+          DateTime.parse(b.startedAt).compareTo(DateTime.parse(a.startedAt)));
   }
 
   DownloadRecord? getDownloadForVideo(String videoId) {
@@ -101,7 +103,8 @@ class DownloadRepository {
     return total;
   }
 
-  Future<void> updateDownloadProgress(String downloadId, double progressPercent, int downloadedBytes, String status) async {
+  Future<void> updateDownloadProgress(String downloadId, double progressPercent,
+      int downloadedBytes, String status) async {
     final box = Hive.box<DownloadRecord>(downloadsBoxName);
     final record = box.get(downloadId);
     if (record != null) {
@@ -113,8 +116,12 @@ class DownloadRepository {
         fileSizeBytes: record.fileSizeBytes,
         downloadedBytes: downloadedBytes,
         startedAt: record.startedAt,
-        completedAt: status == 'completed' ? DateTime.now().toIso8601String() : record.completedAt,
-        localFilePath: status == 'completed' ? '/simulated/path/${record.videoId}.mp4' : record.localFilePath,
+        completedAt: status == 'completed'
+            ? DateTime.now().toIso8601String()
+            : record.completedAt,
+        localFilePath: status == 'completed'
+            ? '/simulated/path/${record.videoId}.mp4'
+            : record.localFilePath,
         quality: record.quality,
         isExpired: record.isExpired,
         expiresAt: record.expiresAt,

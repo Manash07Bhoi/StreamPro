@@ -87,7 +87,6 @@ class HomeFeedBloc extends Bloc<HomeFeedEvent, HomeFeedState> {
 
   HomeFeedBloc(this._videoRepo, this._historyRepo, this._profileRepo)
       : super(HomeFeedInitial()) {
-
     on<LoadHomeFeed>((event, emit) async {
       await _loadFeedData(emit);
     });
@@ -105,11 +104,14 @@ class HomeFeedBloc extends Bloc<HomeFeedEvent, HomeFeedState> {
           final allVideos = await _videoRepo.getAllVideos();
           List<VideoEntity> filteredRecommended;
           if (event.category != null && event.category!.isNotEmpty) {
-            filteredRecommended = allVideos.where((v) => v.category == event.category).toList();
+            filteredRecommended =
+                allVideos.where((v) => v.category == event.category).toList();
           } else {
             // Default recommended logic
             final profile = _profileRepo.getOrCreateProfile();
-            filteredRecommended = allVideos.where((v) => profile.interests.contains(v.category)).toList();
+            filteredRecommended = allVideos
+                .where((v) => profile.interests.contains(v.category))
+                .toList();
             if (filteredRecommended.isEmpty) {
               filteredRecommended = allVideos.take(10).toList();
             }
@@ -139,26 +141,33 @@ class HomeFeedBloc extends Bloc<HomeFeedEvent, HomeFeedState> {
       final historyEntries = _historyRepo.getHistory();
       final profile = _profileRepo.getOrCreateProfile();
 
-      final featuredVideos = allVideos.where((v) => v.isFeatured).take(6).toList();
+      final featuredVideos =
+          allVideos.where((v) => v.isFeatured).take(6).toList();
 
       final continueWatchingIds = historyEntries
           .where((e) => e.progressPercent > 0.0 && e.progressPercent < 0.9)
           .map((e) => e.videoId)
           .toList();
-      final continueWatching = allVideos.where((v) => continueWatchingIds.contains(v.id)).toList();
+      final continueWatching =
+          allVideos.where((v) => continueWatchingIds.contains(v.id)).toList();
 
       final newThisWeek = allVideos.where((v) => v.isNew).take(10).toList();
-      final trendingNow = allVideos.where((v) => v.isTrending).take(10).toList();
+      final trendingNow =
+          allVideos.where((v) => v.isTrending).take(10).toList();
 
-      var recommendedForYou = allVideos.where((v) => profile.interests.contains(v.category)).toList();
+      var recommendedForYou = allVideos
+          .where((v) => profile.interests.contains(v.category))
+          .toList();
       if (recommendedForYou.isEmpty) {
-        recommendedForYou = allVideos.take(10).toList(); // Fallback if no interests
+        recommendedForYou =
+            allVideos.take(10).toList(); // Fallback if no interests
       }
 
       final topRated = List<VideoEntity>.from(allVideos)
         ..sort((a, b) => b.viewCount.compareTo(a.viewCount));
 
-      final categories = allVideos.map((v) => v.category).toSet().toList()..sort();
+      final categories = allVideos.map((v) => v.category).toSet().toList()
+        ..sort();
 
       emit(HomeFeedLoaded(
         featuredVideos: featuredVideos,

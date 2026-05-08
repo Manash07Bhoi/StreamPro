@@ -77,37 +77,59 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
       backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
         backgroundColor: AppColors.colorBackground,
-        title: const Text('Parental Controls', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
+        title: const Text('Parental Controls',
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w500)),
       ),
       body: BlocConsumer<SettingsBloc, SettingsState>(
         listener: (context, state) {
           if (state is ParentalPinError) {
-             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
           final config = sl<SettingsBloc>().state is SettingsLoaded
               ? (sl<SettingsBloc>().state as SettingsLoaded).config
-              : (sl<SettingsBloc>().state is SettingsActionSuccess ? (sl<SettingsBloc>().state as SettingsActionSuccess).config : null);
+              : (sl<SettingsBloc>().state is SettingsActionSuccess
+                  ? (sl<SettingsBloc>().state as SettingsActionSuccess).config
+                  : null);
 
-          if (config == null) return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+          if (config == null) {
+            return const Center(
+                child:
+                    CircularProgressIndicator(color: AppColors.colorPrimary));
+          }
 
           if (config.parentalControlEnabled) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.check_circle, size: 80, color: AppColors.colorSuccess),
+                  const Icon(Icons.check_circle,
+                      size: 80, color: AppColors.colorSuccess),
                   const SizedBox(height: 16),
-                  const Text('Parental Controls Active', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                  const Text('Parental Controls Active',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
                   const SizedBox(height: 32),
                   ElevatedButton(
                     onPressed: () {
                       // Placeholder for entering current PIN to disable
-                      context.read<SettingsBloc>().add(DisableParentalControl(config.parentalPin));
+                      context
+                          .read<SettingsBloc>()
+                          .add(DisableParentalControl(config.parentalPin));
                     },
-                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.colorError),
-                    child: const Text('Disable Parental Controls', style: TextStyle(fontFamily: 'Poppins', color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.colorError),
+                    child: const Text('Disable Parental Controls',
+                        style: TextStyle(
+                            fontFamily: 'Poppins', color: Colors.white)),
                   ),
                 ],
               ),
@@ -119,12 +141,19 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
             children: [
               Text(
                 _isConfirming ? 'Confirm PIN' : 'Enter a 4-digit PIN',
-                style: const TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
+                style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
               ),
               const SizedBox(height: 16),
               const Text(
                 'This PIN will be required to watch R-rated content.',
-                style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
+                style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: AppColors.colorTextSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
@@ -139,14 +168,18 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
                     height: 16,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isFilled ? AppColors.colorPrimary : AppColors.colorSurface3,
+                      color: isFilled
+                          ? AppColors.colorPrimary
+                          : AppColors.colorSurface3,
                     ),
                   );
                 }),
               ),
               if (_errorText.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                Text(_errorText, style: const TextStyle(fontFamily: 'Poppins', color: AppColors.colorError)),
+                Text(_errorText,
+                    style: const TextStyle(
+                        fontFamily: 'Poppins', color: AppColors.colorError)),
               ],
               const SizedBox(height: 64),
               _buildNumpad(),
@@ -180,7 +213,8 @@ class _ParentalControlPageState extends State<ParentalControlPage> {
     );
   }
 
-  Widget _buildDialButton(String label, VoidCallback onTap, {bool isIcon = false}) {
+  Widget _buildDialButton(String label, VoidCallback onTap,
+      {bool isIcon = false}) {
     return SizedBox(
       width: 80,
       height: 80,

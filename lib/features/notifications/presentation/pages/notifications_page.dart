@@ -27,33 +27,51 @@ class _NotificationsPageContent extends StatelessWidget {
       backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
         backgroundColor: AppColors.colorBackground,
-        title: const Text('Notifications', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
+        title: const Text('Notifications',
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w500)),
         actions: [
           TextButton(
             onPressed: () {
               context.read<NotificationBloc>().add(MarkAllNotificationsRead());
             },
-            child: const Text('Mark All Read', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins')),
+            child: const Text('Mark All Read',
+                style: TextStyle(
+                    color: AppColors.colorPrimary, fontFamily: 'Poppins')),
           ),
         ],
       ),
       body: BlocBuilder<NotificationBloc, NotificationState>(
         builder: (context, state) {
           if (state is NotificationLoading || state is NotificationInitial) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+            return const Center(
+                child:
+                    CircularProgressIndicator(color: AppColors.colorPrimary));
           } else if (state is NotificationLoaded) {
             final notifications = state.notifications;
 
             if (notifications.isEmpty) {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.notifications_off_outlined, size: 80, color: AppColors.colorSurface3),
-                    const SizedBox(height: 16),
-                    const Text('All Caught Up!', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
-                    const SizedBox(height: 8),
-                    const Text('No new notifications right now.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+                    Icon(Icons.notifications_off_outlined,
+                        size: 80, color: AppColors.colorSurface3),
+                    SizedBox(height: 16),
+                    Text('All Caught Up!',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white)),
+                    SizedBox(height: 8),
+                    Text('No new notifications right now.',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            color: AppColors.colorTextSecondary)),
                   ],
                 ),
               );
@@ -61,14 +79,17 @@ class _NotificationsPageContent extends StatelessWidget {
 
             return ListView.separated(
               itemCount: notifications.length,
-              separatorBuilder: (context, index) => const Divider(color: Color.fromRGBO(255, 255, 255, 0.05), height: 1),
+              separatorBuilder: (context, index) => const Divider(
+                  color: Color.fromRGBO(255, 255, 255, 0.05), height: 1),
               itemBuilder: (context, index) {
                 final notification = notifications[index];
                 return Dismissible(
                   key: Key(notification.id),
                   direction: DismissDirection.endToStart,
                   onDismissed: (_) {
-                    context.read<NotificationBloc>().add(DeleteNotification(notification.id));
+                    context
+                        .read<NotificationBloc>()
+                        .add(DeleteNotification(notification.id));
                   },
                   background: Container(
                     color: AppColors.colorError,
@@ -78,14 +99,18 @@ class _NotificationsPageContent extends StatelessWidget {
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16.0),
-                    tileColor: notification.isRead ? AppColors.colorBackground : AppColors.colorSurface2,
+                    tileColor: notification.isRead
+                        ? AppColors.colorBackground
+                        : AppColors.colorSurface2,
                     leading: _buildIconForType(notification.type),
                     title: Text(
                       notification.title,
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 14,
-                        fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
+                        fontWeight: notification.isRead
+                            ? FontWeight.normal
+                            : FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
@@ -95,14 +120,20 @@ class _NotificationsPageContent extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           notification.body,
-                          style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary),
+                          style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              color: AppColors.colorTextSecondary),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           _formatTimeAgo(notification.createdAt),
-                          style: const TextStyle(fontFamily: 'Poppins', fontSize: 10, color: AppColors.colorTextMuted),
+                          style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 10,
+                              color: AppColors.colorTextMuted),
                         ),
                       ],
                     ),
@@ -118,14 +149,16 @@ class _NotificationsPageContent extends StatelessWidget {
                           ),
                     onTap: () {
                       if (!notification.isRead) {
-                        context.read<NotificationBloc>().add(MarkNotificationRead(notification.id));
+                        context
+                            .read<NotificationBloc>()
+                            .add(MarkNotificationRead(notification.id));
                       }
                       if (notification.actionRoute != null) {
                         if (notification.actionArg != null) {
                           // Note: complex object passing via go_router might need extra state management if going to /player
                           // For now this handles basic string routes
                         } else {
-                           context.push(notification.actionRoute!);
+                          context.push(notification.actionRoute!);
                         }
                       }
                     },
@@ -134,7 +167,9 @@ class _NotificationsPageContent extends StatelessWidget {
               },
             );
           } else if (state is NotificationError) {
-             return Center(child: Text(state.message, style: const TextStyle(color: Colors.red)));
+            return Center(
+                child: Text(state.message,
+                    style: const TextStyle(color: Colors.red)));
           }
           return const SizedBox.shrink();
         },
