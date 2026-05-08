@@ -22,7 +22,8 @@ class LibraryView extends StatefulWidget {
   State<LibraryView> createState() => _LibraryViewState();
 }
 
-class _LibraryViewState extends State<LibraryView> with SingleTickerProviderStateMixin {
+class _LibraryViewState extends State<LibraryView>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -61,7 +62,8 @@ class _LibraryViewState extends State<LibraryView> with SingleTickerProviderStat
             indicatorColor: AppColors.colorPrimary,
             labelColor: AppColors.colorPrimary,
             unselectedLabelColor: AppColors.colorTextSecondary,
-            labelStyle: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
+            labelStyle: const TextStyle(
+                fontFamily: 'Poppins', fontWeight: FontWeight.w600),
             unselectedLabelStyle: const TextStyle(fontFamily: 'Poppins'),
           ),
           Expanded(
@@ -90,7 +92,8 @@ class _HistoryTab extends StatefulWidget {
 class _HistoryTabState extends State<_HistoryTab> {
   final _historyRepo = sl<HistoryRepository>();
   final _videoRepo = sl<VideoRepository>();
-  final PagingController<int, VideoEntity> _pagingController = PagingController(firstPageKey: 0);
+  final PagingController<int, VideoEntity> _pagingController =
+      PagingController(firstPageKey: 0);
 
   @override
   void initState() {
@@ -108,7 +111,10 @@ class _HistoryTabState extends State<_HistoryTab> {
       final allVideos = _videoRepo.getVideos();
       final videoMap = {for (var v in allVideos) v.id: v};
 
-      final List<VideoEntity> historyVideos = historyRecords.map((r) => videoMap[r.videoId]).whereType<VideoEntity>().toList();
+      final List<VideoEntity> historyVideos = historyRecords
+          .map((r) => videoMap[r.videoId])
+          .whereType<VideoEntity>()
+          .toList();
 
       const pageSize = 10;
       final start = pageKey * pageSize;
@@ -118,7 +124,9 @@ class _HistoryTabState extends State<_HistoryTab> {
         return;
       }
 
-      final end = (start + pageSize > historyVideos.length) ? historyVideos.length : start + pageSize;
+      final end = (start + pageSize > historyVideos.length)
+          ? historyVideos.length
+          : start + pageSize;
       final newItems = historyVideos.sublist(start, end);
 
       final isLastPage = newItems.length < pageSize;
@@ -154,7 +162,9 @@ class _HistoryTabState extends State<_HistoryTab> {
                   _historyRepo.clearAllHistory();
                   _pagingController.refresh();
                 },
-                child: const Text('Clear All History', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins')),
+                child: const Text('Clear All History',
+                    style: TextStyle(
+                        color: AppColors.colorPrimary, fontFamily: 'Poppins')),
               ),
             ],
           ),
@@ -205,7 +215,9 @@ class _HistoryTabState extends State<_HistoryTab> {
                                 child: LinearProgressIndicator(
                                   value: record.progressPercent,
                                   backgroundColor: Colors.black54,
-                                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.colorPrimary),
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                          AppColors.colorPrimary),
                                   minHeight: 3,
                                 ),
                               ),
@@ -213,8 +225,21 @@ class _HistoryTabState extends State<_HistoryTab> {
                         ),
                       ),
                     ),
-                    title: Text(item.title, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
-                    subtitle: Text(record != null ? 'Watched ${DateTime.now().difference(DateTime.parse(record.watchedAt)).inDays}d ago' : '', style: const TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins', fontSize: 12)),
+                    title: Text(item.title,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                            fontSize: 14),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                    subtitle: Text(
+                        record != null
+                            ? 'Watched ${DateTime.now().difference(DateTime.parse(record.watchedAt)).inDays}d ago'
+                            : '',
+                        style: const TextStyle(
+                            color: AppColors.colorTextSecondary,
+                            fontFamily: 'Poppins',
+                            fontSize: 12)),
                     onTap: () => context.push('/player', extra: item),
                   ),
                 );
@@ -223,11 +248,21 @@ class _HistoryTabState extends State<_HistoryTab> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.history, size: 80, color: AppColors.colorSurface3),
+                    Icon(Icons.history,
+                        size: 80, color: AppColors.colorSurface3),
                     SizedBox(height: 16),
-                    Text('Nothing Here Yet', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                    Text('Nothing Here Yet',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white)),
                     SizedBox(height: 8),
-                    Text('Videos you watch will appear in your history.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+                    Text('Videos you watch will appear in your history.',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            color: AppColors.colorTextSecondary)),
                   ],
                 ),
               ),
@@ -256,11 +291,15 @@ class _BookmarksTabState extends State<_BookmarksTab> {
         final entries = _bookmarkRepo.getBookmarks();
         final videos = _videoRepo.getVideos();
         final videoMap = {for (var v in videos) v.id: v};
-        return entries.map((e) => videoMap[e.videoId]).whereType<VideoEntity>().toList();
+        return entries
+            .map((e) => videoMap[e.videoId])
+            .whereType<VideoEntity>()
+            .toList();
       }),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+          return const Center(
+              child: CircularProgressIndicator(color: AppColors.colorPrimary));
         }
         final videos = snapshot.data ?? [];
         if (videos.isEmpty) {
@@ -268,11 +307,21 @@ class _BookmarksTabState extends State<_BookmarksTab> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.bookmark_border, size: 80, color: AppColors.colorSurface3),
+                Icon(Icons.bookmark_border,
+                    size: 80, color: AppColors.colorSurface3),
                 SizedBox(height: 16),
-                Text('No Bookmarks Yet', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                Text('No Bookmarks Yet',
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white)),
                 SizedBox(height: 8),
-                Text('Tap the bookmark icon on any video to save it.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+                Text('Tap the bookmark icon on any video to save it.',
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        color: AppColors.colorTextSecondary)),
               ],
             ),
           );
@@ -311,11 +360,21 @@ class _DownloadsTab extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.download_for_offline, size: 80, color: AppColors.colorSurface3),
+                  Icon(Icons.download_for_offline,
+                      size: 80, color: AppColors.colorSurface3),
                   SizedBox(height: 16),
-                  Text('No Downloads', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                  Text('No Downloads',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
                   SizedBox(height: 8),
-                  Text('Download videos to watch them offline.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+                  Text('Download videos to watch them offline.',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          color: AppColors.colorTextSecondary)),
                 ],
               ),
             );
@@ -328,15 +387,25 @@ class _DownloadsTab extends StatelessWidget {
               final record = state.downloads[index];
               return ListTile(
                 tileColor: AppColors.colorSurface2,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                leading: const Icon(Icons.video_file, color: AppColors.colorPrimary, size: 40),
-                title: Text('Video ${record.videoId}', style: const TextStyle(color: Colors.white, fontFamily: 'Poppins')),
-                subtitle: Text('${record.status.toUpperCase()} • ${record.quality}', style: const TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins', fontSize: 12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                leading: const Icon(Icons.video_file,
+                    color: AppColors.colorPrimary, size: 40),
+                title: Text('Video ${record.videoId}',
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'Poppins')),
+                subtitle: Text(
+                    '${record.status.toUpperCase()} • ${record.quality}',
+                    style: const TextStyle(
+                        color: AppColors.colorTextSecondary,
+                        fontFamily: 'Poppins',
+                        fontSize: 12)),
               );
             },
           );
         }
-        return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+        return const Center(
+            child: CircularProgressIndicator(color: AppColors.colorPrimary));
       },
     );
   }
@@ -348,17 +417,29 @@ class _PlaylistsTab extends StatelessWidget {
     return BlocBuilder<PlaylistBloc, PlaylistState>(
       builder: (context, state) {
         if (state is PlaylistLoaded || state is PlaylistActionSuccess) {
-          final playlists = (state is PlaylistLoaded) ? state.playlists : (state as PlaylistActionSuccess).playlists;
+          final playlists = (state is PlaylistLoaded)
+              ? state.playlists
+              : (state as PlaylistActionSuccess).playlists;
           if (playlists.isEmpty) {
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.featured_play_list_outlined, size: 80, color: AppColors.colorSurface3),
+                  Icon(Icons.featured_play_list_outlined,
+                      size: 80, color: AppColors.colorSurface3),
                   SizedBox(height: 16),
-                  Text('No Playlists', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                  Text('No Playlists',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
                   SizedBox(height: 8),
-                  Text('Create a playlist to organize your favorites.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+                  Text('Create a playlist to organize your favorites.',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          color: AppColors.colorTextSecondary)),
                 ],
               ),
             );
@@ -382,17 +463,27 @@ class _PlaylistsTab extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.playlist_play, size: 48, color: AppColors.colorPrimary),
+                    const Icon(Icons.playlist_play,
+                        size: 48, color: AppColors.colorPrimary),
                     const SizedBox(height: 8),
-                    Text(playlist.name, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
-                    Text('${playlist.videoCount} videos', style: const TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins', fontSize: 12)),
+                    Text(playlist.name,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600)),
+                    Text('${playlist.videoCount} videos',
+                        style: const TextStyle(
+                            color: AppColors.colorTextSecondary,
+                            fontFamily: 'Poppins',
+                            fontSize: 12)),
                   ],
                 ),
               );
             },
           );
         }
-        return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+        return const Center(
+            child: CircularProgressIndicator(color: AppColors.colorPrimary));
       },
     );
   }
@@ -404,24 +495,38 @@ class _LikedTab extends StatelessWidget {
     return BlocBuilder<LikeBloc, LikeState>(
       builder: (context, state) {
         if (state is LikeLoaded) {
-          final likedIds = state.reactions.entries.where((e) => e.value == 'like').map((e) => e.key).toList();
+          final likedIds = state.reactions.entries
+              .where((e) => e.value == 'like')
+              .map((e) => e.key)
+              .toList();
           if (likedIds.isEmpty) {
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.favorite_border, size: 80, color: AppColors.colorSurface3),
+                  Icon(Icons.favorite_border,
+                      size: 80, color: AppColors.colorSurface3),
                   SizedBox(height: 16),
-                  Text('No Liked Videos', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                  Text('No Liked Videos',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
                   SizedBox(height: 8),
-                  Text('Double-tap a video or tap the heart to like it.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+                  Text('Double-tap a video or tap the heart to like it.',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          color: AppColors.colorTextSecondary)),
                 ],
               ),
             );
           }
           final videoRepo = sl<VideoRepository>();
           final allVideos = videoRepo.getVideos();
-          final videos = allVideos.where((v) => likedIds.contains(v.id)).toList();
+          final videos =
+              allVideos.where((v) => likedIds.contains(v.id)).toList();
 
           return GridView.builder(
             padding: const EdgeInsets.all(16),
@@ -441,7 +546,8 @@ class _LikedTab extends StatelessWidget {
             },
           );
         }
-        return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
+        return const Center(
+            child: CircularProgressIndicator(color: AppColors.colorPrimary));
       },
     );
   }

@@ -43,7 +43,9 @@ class BookmarkRepository {
 
   List<BookmarkEntry> getBookmarks({int limit = 50, int offset = 0}) {
     final box = Hive.box<BookmarkEntry>(bookmarksBoxName);
-    final sorted = box.values.toList()..sort((a, b) => DateTime.parse(b.savedAt).compareTo(DateTime.parse(a.savedAt)));
+    final sorted = box.values.toList()
+      ..sort((a, b) =>
+          DateTime.parse(b.savedAt).compareTo(DateTime.parse(a.savedAt)));
     final start = offset;
     if (start >= sorted.length) return [];
     final end = (start + limit > sorted.length) ? sorted.length : start + limit;

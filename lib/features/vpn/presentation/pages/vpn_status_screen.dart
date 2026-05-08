@@ -113,8 +113,8 @@ class _VpnStatusScreenState extends State<VpnStatusScreen> with SafePopMixin {
                   if (isConnecting)
                     const Padding(
                       padding: EdgeInsets.all(16.0),
-                      child:
-                          CircularProgressIndicator(color: AppColors.colorPrimary),
+                      child: CircularProgressIndicator(
+                          color: AppColors.colorPrimary),
                     ),
 
                   const SizedBox(height: 20),

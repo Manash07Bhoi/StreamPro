@@ -5,7 +5,8 @@ import 'package:uuid/uuid.dart';
 class HistoryRepository {
   static const String historyBoxName = 'history_box';
 
-  Future<void> addOrUpdateHistory(String videoId, {int watchedDurationSeconds = 0, double progressPercent = 0.0}) async {
+  Future<void> addOrUpdateHistory(String videoId,
+      {int watchedDurationSeconds = 0, double progressPercent = 0.0}) async {
     final box = Hive.box<WatchHistoryEntry>(historyBoxName);
 
     WatchHistoryEntry? existingEntry;
@@ -23,7 +24,9 @@ class HistoryRepository {
         watchedDurationSeconds: watchedDurationSeconds,
         progressPercent: progressPercent,
         isCompleted: progressPercent >= 0.9,
-        watchCount: progressPercent >= 0.9 && !existingEntry.isCompleted ? existingEntry.watchCount + 1 : existingEntry.watchCount,
+        watchCount: progressPercent >= 0.9 && !existingEntry.isCompleted
+            ? existingEntry.watchCount + 1
+            : existingEntry.watchCount,
       );
       await box.put(updatedEntry.id, updatedEntry);
     } else {
@@ -42,7 +45,9 @@ class HistoryRepository {
 
   List<WatchHistoryEntry> getHistory({int limit = 50, int offset = 0}) {
     final box = Hive.box<WatchHistoryEntry>(historyBoxName);
-    final sorted = box.values.toList()..sort((a, b) => DateTime.parse(b.watchedAt).compareTo(DateTime.parse(a.watchedAt)));
+    final sorted = box.values.toList()
+      ..sort((a, b) =>
+          DateTime.parse(b.watchedAt).compareTo(DateTime.parse(a.watchedAt)));
     final start = offset;
     if (start >= sorted.length) return [];
     final end = (start + limit > sorted.length) ? sorted.length : start + limit;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/home_feed_view.dart';
+import 'package:go_router/go_router.dart';
 import '../../../discover/presentation/pages/discover_view.dart';
 import '../../../trending/presentation/pages/trending_view.dart';
 import '../../../library/presentation/pages/library_view.dart';
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> {
                   color: isConnected ? Colors.green : Colors.grey,
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.vpn);
+                  GoRouter.of(context).push(AppRoutes.vpn);
                 },
               );
             },

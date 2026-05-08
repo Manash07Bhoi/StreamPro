@@ -14,7 +14,8 @@ class SeekFeedbackOverlay extends StatefulWidget {
   State<SeekFeedbackOverlay> createState() => _SeekFeedbackOverlayState();
 }
 
-class _SeekFeedbackOverlayState extends State<SeekFeedbackOverlay> with SingleTickerProviderStateMixin {
+class _SeekFeedbackOverlayState extends State<SeekFeedbackOverlay>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -54,17 +55,23 @@ class _SeekFeedbackOverlayState extends State<SeekFeedbackOverlay> with SingleTi
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha:0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!widget.isForward) const Icon(Icons.fast_rewind, color: Colors.white),
+                  if (!widget.isForward)
+                    const Icon(Icons.fast_rewind, color: Colors.white),
                   if (!widget.isForward) const SizedBox(width: 8),
-                  const Text('10s', style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.bold)),
+                  const Text('10s',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold)),
                   if (widget.isForward) const SizedBox(width: 8),
-                  if (widget.isForward) const Icon(Icons.fast_forward, color: Colors.white),
+                  if (widget.isForward)
+                    const Icon(Icons.fast_forward, color: Colors.white),
                 ],
               ),
             ),

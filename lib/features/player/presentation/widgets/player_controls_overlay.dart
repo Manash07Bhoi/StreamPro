@@ -2,8 +2,10 @@ import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../../core/models/video_entity.dart';
 import '../blocs/player_bloc.dart';
+import 'add_to_playlist_sheet.dart';
 
 class PlayerControlsOverlay extends StatelessWidget {
   final VideoEntity video;
@@ -57,7 +59,8 @@ class PlayerControlsOverlay extends StatelessWidget {
                 children: [
                   _buildTopBar(context),
                   _buildCenterControls(context, state.isPlaying),
-                  _buildBottomBar(context, state.progressPercent, state.currentSeconds),
+                  _buildBottomBar(
+                      context, state.progressPercent, state.currentSeconds),
                 ],
               ),
             ),
@@ -96,7 +99,11 @@ class PlayerControlsOverlay extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.share, color: Colors.white),
-              onPressed: () {}, // share logic
+              onPressed: () {
+                SharePlus.instance.share(ShareParams(
+                  text: 'Check out StreamPro — Premium free video streaming!\n\nhttps://streampro.app/watch/${video.id}'
+                ));
+              },
             ),
           ],
         ),
@@ -110,7 +117,9 @@ class PlayerControlsOverlay extends StatelessWidget {
       children: [
         IconButton(
           icon: const Icon(Icons.skip_previous, color: Colors.white, size: 48),
-          onPressed: () {},
+          onPressed: () {
+            // Need to implement skip previous logic
+          },
         ),
         const SizedBox(width: 32),
         GestureDetector(
@@ -118,24 +127,29 @@ class PlayerControlsOverlay extends StatelessWidget {
           child: Container(
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
+              gradient: LinearGradient(
+                  colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 48),
+              child: Icon(isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.white, size: 48),
             ),
           ),
         ),
         const SizedBox(width: 32),
         IconButton(
           icon: const Icon(Icons.skip_next, color: Colors.white, size: 48),
-          onPressed: () {},
+          onPressed: () {
+            // Need to implement skip next logic
+          },
         ),
       ],
     );
   }
 
-  Widget _buildBottomBar(BuildContext context, double progressPercent, int currentSeconds) {
+  Widget _buildBottomBar(
+      BuildContext context, double progressPercent, int currentSeconds) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,15 +160,21 @@ class PlayerControlsOverlay extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildActionButton(
-                icon: reaction == 'like' ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+                icon: reaction == 'like'
+                    ? Icons.thumb_up
+                    : Icons.thumb_up_alt_outlined,
                 label: video.likeCount.toString(),
-                color: reaction == 'like' ? AppColors.colorPrimary : Colors.white,
+                color:
+                    reaction == 'like' ? AppColors.colorPrimary : Colors.white,
                 onTap: onToggleLike,
               ),
               _buildActionButton(
-                icon: reaction == 'dislike' ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
+                icon: reaction == 'dislike'
+                    ? Icons.thumb_down
+                    : Icons.thumb_down_alt_outlined,
                 label: 'Dislike',
-                color: reaction == 'dislike' ? AppColors.colorError : Colors.white,
+                color:
+                    reaction == 'dislike' ? AppColors.colorError : Colors.white,
                 onTap: onToggleDislike,
               ),
               _buildActionButton(
@@ -167,7 +187,14 @@ class PlayerControlsOverlay extends StatelessWidget {
                 icon: Icons.playlist_add,
                 label: 'Add',
                 color: Colors.white,
-                onTap: () {}, // Add to playlist
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => AddToPlaylistSheet(video: video),
+                  );
+                }, // Add to playlist
               ),
             ],
           ),
@@ -178,19 +205,26 @@ class PlayerControlsOverlay extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(_formatTime(currentSeconds), style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 12)),
+              Text(_formatTime(currentSeconds),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Poppins',
+                      fontSize: 12)),
               Expanded(
                 child: SliderTheme(
-                  data: SliderThemeData(
+                  data: const SliderThemeData(
                     trackHeight: 2,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                    thumbShape:
+                        RoundSliderThumbShape(enabledThumbRadius: 6),
+                    overlayShape:
+                        RoundSliderOverlayShape(overlayRadius: 14),
                   ),
                   child: Slider(
                     value: progressPercent.clamp(0.0, 1.0),
                     onChanged: (value) {
                       if (video.durationSeconds > 0) {
-                         context.read<PlayerBloc>().add(SeekTo((value * video.durationSeconds).round()));
+                        context.read<PlayerBloc>().add(
+                            SeekTo((value * video.durationSeconds).round()));
                       }
                     },
                     activeColor: AppColors.colorPrimary,
@@ -198,11 +232,16 @@ class PlayerControlsOverlay extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(video.duration, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 12)),
+              Text(video.duration,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Poppins',
+                      fontSize: 12)),
               const SizedBox(width: 8),
               IconButton(
                 icon: const Icon(Icons.fullscreen, color: Colors.white),
-                onPressed: () => context.read<PlayerBloc>().add(ToggleFitMode()),
+                onPressed: () =>
+                    context.read<PlayerBloc>().add(ToggleFitMode()),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
               ),
@@ -214,7 +253,11 @@ class PlayerControlsOverlay extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
             child: GestureDetector(
               onTap: onRevealComments,
-              child: const Text('↑ Related & Comments', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins', fontSize: 12)),
+              child: const Text('↑ Related & Comments',
+                  style: TextStyle(
+                      color: AppColors.colorTextSecondary,
+                      fontFamily: 'Poppins',
+                      fontSize: 12)),
             ),
           ),
         ),
@@ -222,7 +265,11 @@ class PlayerControlsOverlay extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, required Color color, required VoidCallback onTap}) {
+  Widget _buildActionButton(
+      {required IconData icon,
+      required String label,
+      required Color color,
+      required VoidCallback onTap}) {
     return InkWell(
       onTap: onTap,
       child: Column(
@@ -230,7 +277,9 @@ class PlayerControlsOverlay extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 24),
           const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: color, fontFamily: 'Poppins', fontSize: 10)),
+          Text(label,
+              style:
+                  TextStyle(color: color, fontFamily: 'Poppins', fontSize: 10)),
         ],
       ),
     );

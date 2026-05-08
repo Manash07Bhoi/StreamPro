@@ -103,7 +103,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
           }
 
           await _repository.addUserComment(event.videoId, text);
-          final updatedComments = _repository.getCommentsForVideo(event.videoId);
+          final updatedComments =
+              _repository.getCommentsForVideo(event.videoId);
           emit(CommentLoaded(updatedComments));
         } catch (e) {
           emit(CommentError('Failed to post comment: $e'));
@@ -118,7 +119,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         try {
           await _repository.deleteUserComment(event.commentId);
           // Assuming videoId is known from the list, or we could pass it. We'll just filter out the list locally for MVP.
-          final updatedComments = currentState.comments.where((c) => c.id != event.commentId).toList();
+          final updatedComments = currentState.comments
+              .where((c) => c.id != event.commentId)
+              .toList();
           emit(CommentLoaded(updatedComments));
         } catch (e) {
           emit(CommentError('Failed to delete comment: $e'));
@@ -129,26 +132,26 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
     on<LikeComment>((event, emit) async {
       if (state is CommentLoaded) {
-         // Simulation for MVP:
-         // Final implementation would save this in DB.
-         final currentState = state as CommentLoaded;
-         final updatedList = currentState.comments.map((c) {
-           if (c.id == event.commentId) {
-             return Comment(
-                id: c.id,
-                videoId: c.videoId,
-                authorName: c.authorName,
-                authorAvatar: c.authorAvatar,
-                text: c.text,
-                postedAt: c.postedAt,
-                likeCount: c.likeCount + 1,
-                isUserComment: c.isUserComment,
-                parentId: c.parentId,
-             );
-           }
-           return c;
-         }).toList();
-         emit(CommentLoaded(updatedList));
+        // Simulation for MVP:
+        // Final implementation would save this in DB.
+        final currentState = state as CommentLoaded;
+        final updatedList = currentState.comments.map((c) {
+          if (c.id == event.commentId) {
+            return Comment(
+              id: c.id,
+              videoId: c.videoId,
+              authorName: c.authorName,
+              authorAvatar: c.authorAvatar,
+              text: c.text,
+              postedAt: c.postedAt,
+              likeCount: c.likeCount + 1,
+              isUserComment: c.isUserComment,
+              parentId: c.parentId,
+            );
+          }
+          return c;
+        }).toList();
+        emit(CommentLoaded(updatedList));
       }
     });
   }

@@ -1,7 +1,5 @@
 import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/models/video_entity.dart';
@@ -19,7 +17,8 @@ class LikedVideosPage extends StatefulWidget {
 class _LikedVideosPageState extends State<LikedVideosPage> {
   final _videoRepo = sl<VideoRepository>();
   final _likeRepo = sl<LikeRepository>();
-  final PagingController<int, VideoEntity> _pagingController = PagingController(firstPageKey: 0);
+  final PagingController<int, VideoEntity> _pagingController =
+      PagingController(firstPageKey: 0);
   int _totalLikes = 0;
 
   @override
@@ -40,7 +39,10 @@ class _LikedVideosPageState extends State<LikedVideosPage> {
       final allVideos = _videoRepo.getVideos();
       final videoMap = {for (var v in allVideos) v.id: v};
 
-      final List<VideoEntity> likedVideos = likedRecords.map((r) => videoMap[r.videoId]).whereType<VideoEntity>().toList();
+      final List<VideoEntity> likedVideos = likedRecords
+          .map((r) => videoMap[r.videoId])
+          .whereType<VideoEntity>()
+          .toList();
 
       const pageSize = 10;
       final start = pageKey * pageSize;
@@ -50,7 +52,9 @@ class _LikedVideosPageState extends State<LikedVideosPage> {
         return;
       }
 
-      final end = (start + pageSize > likedVideos.length) ? likedVideos.length : start + pageSize;
+      final end = (start + pageSize > likedVideos.length)
+          ? likedVideos.length
+          : start + pageSize;
       final newItems = likedVideos.sublist(start, end);
 
       final isLastPage = newItems.length < pageSize;
@@ -80,8 +84,16 @@ class _LikedVideosPageState extends State<LikedVideosPage> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Liked Videos', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
-            Text('$_totalLikes videos', style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary)),
+            const Text('Liked Videos',
+                style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500)),
+            Text('$_totalLikes videos',
+                style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                    color: AppColors.colorTextSecondary)),
           ],
         ),
       ),
@@ -94,9 +106,14 @@ class _LikedVideosPageState extends State<LikedVideosPage> {
               crossAxisSpacing: 12,
               padding: const EdgeInsets.all(12),
               builderDelegate: PagedChildBuilderDelegate<VideoEntity>(
-                itemBuilder: (context, item, index) => PremiumVideoCard(video: item, width: double.infinity, height: 200),
-                firstPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary)),
-                newPageProgressIndicatorBuilder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary)),
+                itemBuilder: (context, item, index) => PremiumVideoCard(
+                    video: item, width: double.infinity, height: 200),
+                firstPageProgressIndicatorBuilder: (_) => const Center(
+                    child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary)),
+                newPageProgressIndicatorBuilder: (_) => const Center(
+                    child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary)),
                 noItemsFoundIndicatorBuilder: (_) => _buildEmptyState(),
               ),
             ),
@@ -104,15 +121,25 @@ class _LikedVideosPageState extends State<LikedVideosPage> {
   }
 
   Widget _buildEmptyState() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.favorite_border, size: 80, color: AppColors.colorSurface3),
-          const SizedBox(height: 16),
-          const Text('No Liked Videos', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
-          const SizedBox(height: 8),
-          const Text('Double-tap a video or tap the heart to like it.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+          Icon(Icons.favorite_border,
+              size: 80, color: AppColors.colorSurface3),
+          SizedBox(height: 16),
+          Text('No Liked Videos',
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white)),
+          SizedBox(height: 8),
+          Text('Double-tap a video or tap the heart to like it.',
+              style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: AppColors.colorTextSecondary)),
         ],
       ),
     );

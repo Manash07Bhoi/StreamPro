@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../blocs/player_bloc.dart';
 import '../blocs/pip_bloc.dart';
 
@@ -19,8 +20,6 @@ class PlayerGestureDetector extends StatefulWidget {
 
 class _PlayerGestureDetectorState extends State<PlayerGestureDetector> {
   double _startDragY = 0;
-  double _startDragX = 0;
-  bool _isHorizontalDrag = false;
   double _initialBrightness = 0.5;
   double _initialVolume = 1.0;
 
@@ -57,7 +56,8 @@ class _PlayerGestureDetectorState extends State<PlayerGestureDetector> {
                 },
                 onLongPressStart: (details) {
                   final width = MediaQuery.of(context).size.width;
-                  if (details.localPosition.dx > width * 0.4 && details.localPosition.dx < width * 0.6) {
+                  if (details.localPosition.dx > width * 0.4 &&
+                      details.localPosition.dx < width * 0.6) {
                     context.read<PlayerBloc>().add(SetSpeed(2.0));
                   }
                 },
@@ -66,7 +66,6 @@ class _PlayerGestureDetectorState extends State<PlayerGestureDetector> {
                 },
                 onVerticalDragStart: (details) {
                   _startDragY = details.localPosition.dy;
-                  _startDragX = details.localPosition.dx;
                   _initialBrightness = state.brightness;
                   _initialVolume = state.volume;
                 },
@@ -81,37 +80,43 @@ class _PlayerGestureDetectorState extends State<PlayerGestureDetector> {
 
                   if (dx < width * 0.4) {
                     // Brightness
-                    context.read<PlayerBloc>().add(SetBrightness(_initialBrightness + adjustment));
+                    context
+                        .read<PlayerBloc>()
+                        .add(SetBrightness(_initialBrightness + adjustment));
                   } else if (dx > width * 0.6) {
                     // Volume
-                    context.read<PlayerBloc>().add(SetVolume(_initialVolume + adjustment));
+                    context
+                        .read<PlayerBloc>()
+                        .add(SetVolume(_initialVolume + adjustment));
                   }
                 },
                 onVerticalDragEnd: (details) {
-                  final width = MediaQuery.of(context).size.width;
                   final height = MediaQuery.of(context).size.height;
 
                   // Top Edge Swipe Down -> PiP
-                  if (_startDragY < height * 0.15 && details.primaryVelocity != null && details.primaryVelocity! > 400) {
-                     context.read<PipBloc>().add(ActivatePip(state.video, state.currentSeconds));
-                     Navigator.of(context).pop(); // Mocking minimize
+                  if (_startDragY < height * 0.15 &&
+                      details.primaryVelocity != null &&
+                      details.primaryVelocity! > 400) {
+                    context
+                        .read<PipBloc>()
+                        .add(ActivatePip(state.video, state.currentSeconds));
+                    GoRouter.of(context).pop(); // Mocking minimize
                   }
 
                   // Bottom Edge Swipe Up -> Reveal Comments
-                  if (_startDragY > height * 0.8 && details.primaryVelocity != null && details.primaryVelocity! < -300) {
-                     widget.onRevealComments();
+                  if (_startDragY > height * 0.8 &&
+                      details.primaryVelocity != null &&
+                      details.primaryVelocity! < -300) {
+                    widget.onRevealComments();
                   }
                 },
                 onHorizontalDragStart: (details) {
-                  _startDragX = details.localPosition.dx;
                   _startDragY = details.localPosition.dy;
-                  _isHorizontalDrag = true;
                 },
                 onHorizontalDragUpdate: (details) {
                   // Stub for seeking scrub visual
                 },
                 onHorizontalDragEnd: (details) {
-                  _isHorizontalDrag = false;
                 },
               ),
             ),

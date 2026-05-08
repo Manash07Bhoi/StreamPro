@@ -60,15 +60,18 @@ class StreamProApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<ConnectivityBloc>()..add(StartMonitoring())),
+        BlocProvider(
+            create: (_) => sl<ConnectivityBloc>()..add(StartMonitoring())),
         BlocProvider(create: (_) => sl<VpnBloc>()..add(AutoConnectVpnEvent())),
-        BlocProvider(create: (_) => sl<NotificationBloc>()..add(LoadNotifications())),
+        BlocProvider(
+            create: (_) => sl<NotificationBloc>()..add(LoadNotifications())),
         BlocProvider(create: (_) => sl<SettingsBloc>()..add(LoadSettings())),
         BlocProvider(create: (_) => sl<ProfileBloc>()..add(LoadProfile())),
         BlocProvider(create: (_) => sl<PipBloc>()),
       ],
       child: BlocBuilder<SettingsBloc, SettingsState>(
-        buildWhen: (prev, curr) => curr is SettingsLoaded || curr is SettingsActionSuccess,
+        buildWhen: (prev, curr) =>
+            curr is SettingsLoaded || curr is SettingsActionSuccess,
         builder: (context, state) {
           return MaterialApp.router(
             title: 'StreamPro',
@@ -76,7 +79,8 @@ class StreamProApp extends StatelessWidget {
             theme: AppTheme.darkTheme,
             routerConfig: appRouter,
             builder: (context, child) {
-              return ConnectivityOverlay(child: child ?? const SizedBox.shrink());
+              return ConnectivityOverlay(
+                  child: child ?? const SizedBox.shrink());
             },
           );
         },

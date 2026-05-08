@@ -124,7 +124,8 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
           return;
         }
 
-        await _repository.createPlaylist(event.name, description: event.description, color: event.color);
+        await _repository.createPlaylist(event.name,
+            description: event.description, color: event.color);
         final playlists = _repository.getAllPlaylists();
         emit(PlaylistActionSuccess(playlists, 'Playlist created'));
         emit(PlaylistLoaded(playlists));
@@ -168,7 +169,8 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
 
     on<RemoveVideoFromPlaylist>((event, emit) async {
       try {
-        await _repository.removeVideoFromPlaylist(event.playlistId, event.videoId);
+        await _repository.removeVideoFromPlaylist(
+            event.playlistId, event.videoId);
         final playlists = _repository.getAllPlaylists();
         emit(PlaylistActionSuccess(playlists, 'Removed from playlist'));
         emit(PlaylistLoaded(playlists));
@@ -179,7 +181,8 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
 
     on<ReorderPlaylistItems>((event, emit) async {
       try {
-        await _repository.reorderPlaylistItem(event.playlistId, event.oldIndex, event.newIndex);
+        await _repository.reorderPlaylistItem(
+            event.playlistId, event.oldIndex, event.newIndex);
         final playlists = _repository.getAllPlaylists();
         emit(PlaylistLoaded(playlists));
       } catch (e) {

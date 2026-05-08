@@ -28,7 +28,11 @@ class _PlaylistsPageContent extends StatelessWidget {
       backgroundColor: AppColors.colorBackground,
       appBar: AppBar(
         backgroundColor: AppColors.colorBackground,
-        title: const Text('My Playlists', style: TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w500)),
+        title: const Text('My Playlists',
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w500)),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -39,29 +43,47 @@ class _PlaylistsPageContent extends StatelessWidget {
       body: BlocBuilder<PlaylistBloc, PlaylistState>(
         builder: (context, state) {
           if (state is PlaylistLoading || state is PlaylistInitial) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.colorPrimary));
-          } else if (state is PlaylistLoaded || state is PlaylistActionSuccess) {
-            final playlists = (state is PlaylistLoaded) ? state.playlists : (state as PlaylistActionSuccess).playlists;
+            return const Center(
+                child:
+                    CircularProgressIndicator(color: AppColors.colorPrimary));
+          } else if (state is PlaylistLoaded ||
+              state is PlaylistActionSuccess) {
+            final playlists = (state is PlaylistLoaded)
+                ? state.playlists
+                : (state as PlaylistActionSuccess).playlists;
 
             if (playlists.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.featured_play_list_outlined, size: 80, color: AppColors.colorSurface3),
+                    const Icon(Icons.featured_play_list_outlined,
+                        size: 80, color: AppColors.colorSurface3),
                     const SizedBox(height: 16),
-                    const Text('No Playlists', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                    const Text('No Playlists',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white)),
                     const SizedBox(height: 8),
-                    const Text('Create a playlist to organize your favorites.', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary)),
+                    const Text('Create a playlist to organize your favorites.',
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            color: AppColors.colorTextSecondary)),
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () => _showCreatePlaylistSheet(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.colorSurface2,
                         side: const BorderSide(color: AppColors.colorPrimary),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
                       ),
-                      child: const Text('Create Playlist', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
+                      child: const Text('Create Playlist',
+                          style: TextStyle(
+                              color: Colors.white, fontFamily: 'Poppins')),
                     ),
                   ],
                 ),
@@ -82,7 +104,9 @@ class _PlaylistsPageContent extends StatelessWidget {
               },
             );
           } else if (state is PlaylistError) {
-             return Center(child: Text(state.message, style: const TextStyle(color: Colors.red)));
+            return Center(
+                child: Text(state.message,
+                    style: const TextStyle(color: Colors.red)));
           }
           return const SizedBox.shrink();
         },
@@ -106,20 +130,27 @@ class _PlaylistsPageContent extends StatelessWidget {
           children: [
             Expanded(
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(10)),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
                     playlist.coverVideoId.isNotEmpty
                         ? CachedNetworkImage(
-                            imageUrl: 'https://picsum.photos/seed/${playlist.coverVideoId}/640/360',
+                            imageUrl:
+                                'https://picsum.photos/seed/${playlist.coverVideoId}/640/360',
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => const ColoredBox(color: AppColors.colorSurface3),
-                            errorWidget: (context, url, error) => const ColoredBox(color: AppColors.colorSurface3),
+                            placeholder: (context, url) => const ColoredBox(
+                                color: AppColors.colorSurface3),
+                            errorWidget: (context, url, error) =>
+                                const ColoredBox(
+                                    color: AppColors.colorSurface3),
                           )
                         : Container(
                             color: AppColors.colorSurface3,
-                            child: const Center(child: Icon(Icons.music_video, color: AppColors.colorTextMuted, size: 40)),
+                            child: const Center(
+                                child: Icon(Icons.music_video,
+                                    color: AppColors.colorTextMuted, size: 40)),
                           ),
                     Positioned(
                       bottom: 0,
@@ -131,7 +162,10 @@ class _PlaylistsPageContent extends StatelessWidget {
                           gradient: LinearGradient(
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
-                            colors: [Colors.black.withValues(alpha:0.8), Colors.transparent],
+                            colors: [
+                              Colors.black.withValues(alpha: 0.8),
+                              Colors.transparent
+                            ],
                           ),
                         ),
                       ),
@@ -147,14 +181,21 @@ class _PlaylistsPageContent extends StatelessWidget {
                 children: [
                   Text(
                     playlist.name,
-                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     '${playlist.videoCount} videos',
-                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 12, color: AppColors.colorTextSecondary),
+                    style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
+                        color: AppColors.colorTextSecondary),
                   ),
                 ],
               ),
@@ -170,9 +211,11 @@ class _PlaylistsPageContent extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.colorSurface2,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (bottomSheetContext) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom),
+        padding: EdgeInsets.only(
+            bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom),
         child: BlocProvider.value(
           value: BlocProvider.of<PlaylistBloc>(context),
           child: const _CreatePlaylistSheet(),
@@ -203,7 +246,12 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
   String _selectedColor = '#C026D3';
 
   final List<String> _colors = [
-    '#C026D3', '#DB2777', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'
+    '#C026D3',
+    '#DB2777',
+    '#3B82F6',
+    '#10B981',
+    '#F59E0B',
+    '#EF4444'
   ];
 
   @override
@@ -224,7 +272,12 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('New Playlist', style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+              const Text('New Playlist',
+                  style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white)),
               IconButton(
                 icon: const Icon(Icons.close, color: Colors.white),
                 onPressed: () => context.pop(),
@@ -241,8 +294,12 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
               labelStyle: const TextStyle(color: AppColors.colorTextSecondary),
               filled: true,
               fillColor: AppColors.colorSurface3,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.colorPrimary)),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.colorPrimary)),
             ),
           ),
           const SizedBox(height: 16),
@@ -256,17 +313,24 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
               labelStyle: const TextStyle(color: AppColors.colorTextSecondary),
               filled: true,
               fillColor: AppColors.colorSurface3,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.colorPrimary)),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.colorPrimary)),
             ),
           ),
           const SizedBox(height: 24),
-          const Text('Accent Color', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Colors.white)),
+          const Text('Accent Color',
+              style: TextStyle(
+                  fontFamily: 'Poppins', fontSize: 14, color: Colors.white)),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: _colors.map((hex) {
-              Color c = Color(int.parse(hex.replaceFirst('#', 'FF'), radix: 16));
+              Color c =
+                  Color(int.parse(hex.replaceFirst('#', 'FF'), radix: 16));
               bool isSelected = _selectedColor == hex;
               return GestureDetector(
                 onTap: () {
@@ -280,9 +344,13 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
                   decoration: BoxDecoration(
                     color: c,
                     shape: BoxShape.circle,
-                    border: isSelected ? Border.all(color: Colors.white, width: 2) : null,
+                    border: isSelected
+                        ? Border.all(color: Colors.white, width: 2)
+                        : null,
                   ),
-                  child: isSelected ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
+                  child: isSelected
+                      ? const Icon(Icons.check, size: 16, color: Colors.white)
+                      : null,
                 ),
               );
             }).toList(),
@@ -295,24 +363,33 @@ class _CreatePlaylistSheetState extends State<_CreatePlaylistSheet> {
               onPressed: () {
                 if (_nameController.text.trim().isEmpty) return;
                 context.read<PlaylistBloc>().add(CreatePlaylist(
-                  name: _nameController.text.trim(),
-                  description: _descController.text.trim(),
-                  color: _selectedColor,
-                ));
+                      name: _nameController.text.trim(),
+                      description: _descController.text.trim(),
+                      color: _selectedColor,
+                    ));
                 context.pop();
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
               ),
               child: Ink(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
+                  gradient: const LinearGradient(colors: [
+                    AppColors.colorPrimary,
+                    AppColors.colorSecondary
+                  ]),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Container(
                   alignment: Alignment.center,
-                  child: const Text('Create', style: TextStyle(fontFamily: 'Poppins', fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
+                  child: const Text('Create',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
                 ),
               ),
             ),

@@ -55,7 +55,9 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
     on<LoadReaction>((event, emit) async {
       try {
         final reaction = _repository.getReaction(event.videoId);
-        final currentReactions = state is LikeLoaded ? Map<String, String>.from((state as LikeLoaded).reactions) : <String, String>{};
+        final currentReactions = state is LikeLoaded
+            ? Map<String, String>.from((state as LikeLoaded).reactions)
+            : <String, String>{};
         currentReactions[event.videoId] = reaction;
         emit(LikeLoaded(currentReactions));
       } catch (e) {
@@ -66,7 +68,9 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
     on<SetReaction>((event, emit) async {
       try {
         await _repository.setReaction(event.videoId, event.reaction);
-        final currentReactions = state is LikeLoaded ? Map<String, String>.from((state as LikeLoaded).reactions) : <String, String>{};
+        final currentReactions = state is LikeLoaded
+            ? Map<String, String>.from((state as LikeLoaded).reactions)
+            : <String, String>{};
         currentReactions[event.videoId] = event.reaction;
         emit(LikeLoaded(currentReactions));
       } catch (e) {

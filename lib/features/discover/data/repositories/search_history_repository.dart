@@ -28,7 +28,9 @@ class SearchHistoryRepository {
 
   List<SearchHistoryEntry> getRecentSearches({int limit = 10}) {
     final box = Hive.box<SearchHistoryEntry>(searchHistoryBoxName);
-    final sorted = box.values.toList()..sort((a, b) => DateTime.parse(b.searchedAt).compareTo(DateTime.parse(a.searchedAt)));
+    final sorted = box.values.toList()
+      ..sort((a, b) =>
+          DateTime.parse(b.searchedAt).compareTo(DateTime.parse(a.searchedAt)));
     return sorted.take(limit).toList();
   }
 

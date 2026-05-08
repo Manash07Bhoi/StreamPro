@@ -76,9 +76,11 @@ class TrendingBloc extends Bloc<TrendingEvent, TrendingState> {
       // Simulating trending ranking logic
       final trending = allVideos.where((v) => v.isTrending).toList();
       if (isToday) {
-        trending.sort((a, b) => b.viewCount.compareTo(a.viewCount)); // e.g. views
+        trending
+            .sort((a, b) => b.viewCount.compareTo(a.viewCount)); // e.g. views
       } else {
-        trending.sort((a, b) => b.likeCount.compareTo(a.likeCount)); // e.g. likes
+        trending
+            .sort((a, b) => b.likeCount.compareTo(a.likeCount)); // e.g. likes
       }
 
       emit(TrendingLoaded(videos: trending, isToday: isToday));

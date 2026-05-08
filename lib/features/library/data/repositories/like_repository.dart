@@ -45,7 +45,9 @@ class LikeRepository {
 
   List<LikeRecord> getLikedVideos() {
     final box = Hive.box<LikeRecord>(likesBoxName);
-    return box.values.where((r) => r.reaction == 'like').toList()..sort((a, b) => DateTime.parse(b.reactedAt).compareTo(DateTime.parse(a.reactedAt)));
+    return box.values.where((r) => r.reaction == 'like').toList()
+      ..sort((a, b) =>
+          DateTime.parse(b.reactedAt).compareTo(DateTime.parse(a.reactedAt)));
   }
 
   int getLikeCount() {

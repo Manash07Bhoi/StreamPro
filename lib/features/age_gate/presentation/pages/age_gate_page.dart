@@ -26,7 +26,8 @@ class _AgeGatePageState extends State<AgeGatePage> {
     super.initState();
     selectedYear = currentYear - 25; // Default selection to 25 years ago
     years = List.generate(101, (index) => currentYear - index);
-    _scrollController = ScrollController(initialScrollOffset: 25 * 80.0); // Rough initial offset
+    _scrollController = ScrollController(
+        initialScrollOffset: 25 * 80.0); // Rough initial offset
   }
 
   @override
@@ -68,7 +69,7 @@ class _AgeGatePageState extends State<AgeGatePage> {
     // Navigation logic handled after checking terms
     final config = configRepo.getConfig();
     if (!config.hasAcceptedTerms || !config.hasAcceptedPrivacy) {
-        // Can't proceed yet
+      // Can't proceed yet
     } else {
       if (config.isFirstLaunch) {
         context.go('/onboarding');
@@ -84,14 +85,25 @@ class _AgeGatePageState extends State<AgeGatePage> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.colorSurface2,
-        title: const Text('Access Restricted', style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
-        content: const Text('This app requires users to be at least 13 years of age.', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
+        title: const Text('Access Restricted',
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600)),
+        content: const Text(
+            'This app requires users to be at least 13 years of age.',
+            style: TextStyle(
+                color: AppColors.colorTextSecondary, fontFamily: 'Poppins')),
         actions: [
           TextButton(
             onPressed: () {
               SystemNavigator.pop();
             },
-            child: const Text('Exit App', style: TextStyle(color: AppColors.colorPrimary, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+            child: const Text('Exit App',
+                style: TextStyle(
+                    color: AppColors.colorPrimary,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -129,7 +141,10 @@ class _AgeGatePageState extends State<AgeGatePage> {
                     ),
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
-                        colors: [AppColors.colorPrimary, AppColors.colorSecondary],
+                        colors: [
+                          AppColors.colorPrimary,
+                          AppColors.colorSecondary
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ).createShader(bounds),
@@ -186,8 +201,12 @@ class _AgeGatePageState extends State<AgeGatePage> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: isSelected ? 24 : 18,
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                              color: isSelected ? Colors.white : AppColors.colorTextMuted,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.colorTextMuted,
                             ),
                           ),
                         );
@@ -212,7 +231,10 @@ class _AgeGatePageState extends State<AgeGatePage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     gradient: const LinearGradient(
-                      colors: [AppColors.colorPrimary, AppColors.colorSecondary],
+                      colors: [
+                        AppColors.colorPrimary,
+                        AppColors.colorSecondary
+                      ],
                     ),
                   ),
                   child: ElevatedButton(

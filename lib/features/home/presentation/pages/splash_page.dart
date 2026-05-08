@@ -35,7 +35,7 @@ class _SplashPageState extends State<SplashPage>
   }
 
   Future<void> _navigateToHome() async {
-    await Future.delayed(const Duration(milliseconds: 1800));
+    await Future.delayed(const Duration(milliseconds: 2500));
     if (mounted) {
       final configRepo = sl<AppConfigRepository>();
       final config = configRepo.getConfig();

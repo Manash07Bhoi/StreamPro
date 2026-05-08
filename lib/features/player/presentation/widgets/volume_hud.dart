@@ -15,7 +15,7 @@ class VolumeHud extends StatelessWidget {
         width: 40,
         height: 160,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha:0.5),
+          color: Colors.black.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -23,7 +23,8 @@ class VolumeHud extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Icon(volume == 0 ? Icons.volume_off : Icons.volume_up, color: Colors.white, size: 20),
+              child: Icon(volume == 0 ? Icons.volume_off : Icons.volume_up,
+                  color: Colors.white, size: 20),
             ),
             Expanded(
               child: Padding(
@@ -35,7 +36,8 @@ class VolumeHud extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: volume,
                       backgroundColor: Colors.white24,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.colorPrimary),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.colorPrimary),
                       minHeight: 8,
                     ),
                   ),
@@ -46,7 +48,8 @@ class VolumeHud extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
                 '${(volume * 100).toInt()}%',
-                style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: 'Poppins'),
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 10, fontFamily: 'Poppins'),
               ),
             ),
           ],

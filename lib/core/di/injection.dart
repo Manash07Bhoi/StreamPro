@@ -32,7 +32,8 @@ import '../../core/services/database_service.dart';
 import '../../core/services/connectivity_service.dart';
 import '../../core/blocs/connectivity_bloc.dart';
 
-final sl = GetIt.instance; // Re-naming to sl (service locator) as requested by PRD, but keeping getIt for compatibility if needed.
+final sl = GetIt
+    .instance; // Re-naming to sl (service locator) as requested by PRD, but keeping getIt for compatibility if needed.
 final getIt = sl;
 
 Future<void> setupInjection() async {
@@ -48,9 +49,11 @@ Future<void> setupInjection() async {
   sl.registerLazySingleton<DownloadRepository>(() => DownloadRepository());
   sl.registerLazySingleton<LikeRepository>(() => LikeRepository());
   sl.registerLazySingleton<CommentRepository>(() => CommentRepository());
-  sl.registerLazySingleton<NotificationRepository>(() => NotificationRepository());
+  sl.registerLazySingleton<NotificationRepository>(
+      () => NotificationRepository());
   sl.registerLazySingleton<ProfileRepository>(() => ProfileRepository());
-  sl.registerLazySingleton<SearchHistoryRepository>(() => SearchHistoryRepository());
+  sl.registerLazySingleton<SearchHistoryRepository>(
+      () => SearchHistoryRepository());
   sl.registerLazySingleton<AppConfigRepository>(() => AppConfigRepository());
   sl.registerLazySingleton<HistoryRepository>(() => HistoryRepository());
   sl.registerLazySingleton<BookmarkRepository>(() => BookmarkRepository());

@@ -57,7 +57,9 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
       return Scaffold(
         backgroundColor: AppColors.colorBackground,
         appBar: AppBar(backgroundColor: AppColors.colorBackground),
-        body: const Center(child: Text('Playlist not found', style: TextStyle(color: Colors.white))),
+        body: const Center(
+            child: Text('Playlist not found',
+                style: TextStyle(color: Colors.white))),
       );
     }
 
@@ -71,20 +73,30 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
         backgroundColor: AppColors.colorBackground,
         appBar: AppBar(
           backgroundColor: AppColors.colorBackground,
-          title: Text(playlist!.name, style: const TextStyle(fontFamily: 'Poppins', fontSize: 16)),
+          title: Text(playlist!.name,
+              style: const TextStyle(fontFamily: 'Poppins', fontSize: 16)),
           actions: [
-            IconButton(icon: const Icon(Icons.edit), onPressed: () {}), // Edit playlist not implemented
+            IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  // Not implemented yet
+                }),
             PopupMenuButton<String>(
               onSelected: (value) {
                 if (value == 'delete') {
-                  context.read<PlaylistBloc>().add(DeletePlaylist(playlist!.id));
+                  context
+                      .read<PlaylistBloc>()
+                      .add(DeletePlaylist(playlist!.id));
                   context.pop();
                 }
               },
               itemBuilder: (context) => [
                 const PopupMenuItem(value: 'rename', child: Text('Rename')),
                 const PopupMenuItem(value: 'share', child: Text('Share')),
-                const PopupMenuItem(value: 'delete', child: Text('Delete Playlist', style: TextStyle(color: Colors.red))),
+                const PopupMenuItem(
+                    value: 'delete',
+                    child: Text('Delete Playlist',
+                        style: TextStyle(color: Colors.red))),
               ],
             ),
           ],
@@ -96,12 +108,17 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
             ),
             SliverFillRemaining(
               child: items.isEmpty
-                  ? const Center(child: Text('No videos in this playlist', style: TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins')))
+                  ? const Center(
+                      child: Text('No videos in this playlist',
+                          style: TextStyle(
+                              color: AppColors.colorTextSecondary,
+                              fontFamily: 'Poppins')))
                   : ReorderableListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: items.length,
                       onReorder: (oldIndex, newIndex) {
-                        context.read<PlaylistBloc>().add(ReorderPlaylistItems(playlist!.id, oldIndex, newIndex));
+                        context.read<PlaylistBloc>().add(ReorderPlaylistItems(
+                            playlist!.id, oldIndex, newIndex));
                       },
                       itemBuilder: (context, index) {
                         return _buildPlaylistItem(context, items[index], index);
@@ -125,19 +142,20 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
               height: 220,
               child: playlist!.coverVideoId.isNotEmpty
                   ? CachedNetworkImage(
-                      imageUrl: 'https://picsum.photos/seed/${playlist!.coverVideoId}/640/360',
+                      imageUrl:
+                          'https://picsum.photos/seed/${playlist!.coverVideoId}/640/360',
                       fit: BoxFit.cover,
                     )
                   : Container(color: AppColors.colorSurface3),
             ),
             Container(
               height: 220,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [AppColors.colorBackground, Colors.transparent],
-                  stops: const [0.0, 0.8],
+                  stops: [0.0, 0.8],
                 ),
               ),
             ),
@@ -147,18 +165,29 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
                 children: [
                   Text(
                     playlist!.name,
-                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
-                  if (playlist!.description != null && playlist!.description!.isNotEmpty) ...[
+                  if (playlist!.description != null &&
+                      playlist!.description!.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Text(
                       playlist!.description!,
-                      style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
+                      style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          color: AppColors.colorTextSecondary),
                       textAlign: TextAlign.center,
                     ),
                   ],
                   const SizedBox(height: 8),
-                  Text('${playlist!.videoCount} videos', style: const TextStyle(fontFamily: 'Poppins', color: AppColors.colorTextMuted)),
+                  Text('${playlist!.videoCount} videos',
+                      style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          color: AppColors.colorTextMuted)),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -167,14 +196,28 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(colors: [AppColors.colorPrimary, AppColors.colorSecondary]),
+                            gradient: const LinearGradient(colors: [
+                              AppColors.colorPrimary,
+                              AppColors.colorSecondary
+                            ]),
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.play_arrow, color: Colors.white),
-                            label: const Text('Play All', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, shadowColor: Colors.transparent),
+                            onPressed: () {
+                              if (items.isNotEmpty) {
+                                // Assume we have an event to start playing playlist
+                                // Not fully defined yet, so we could just push the first video
+                              }
+                            },
+                            icon: const Icon(Icons.play_arrow,
+                                color: Colors.white),
+                            label: const Text('Play All',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Poppins')),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent),
                           ),
                         ),
                       ),
@@ -188,10 +231,20 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
                             border: Border.all(color: AppColors.colorPrimary),
                           ),
                           child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.shuffle, color: Colors.white),
-                            label: const Text('Shuffle', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, shadowColor: Colors.transparent),
+                            onPressed: () {
+                              if (items.isNotEmpty) {
+                                // Assume we have an event to start playing playlist shuffled
+                              }
+                            },
+                            icon:
+                                const Icon(Icons.shuffle, color: Colors.white),
+                            label: const Text('Shuffle',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Poppins')),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent),
                           ),
                         ),
                       ),
@@ -206,11 +259,13 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
     );
   }
 
-  Widget _buildPlaylistItem(BuildContext context, PlaylistItem item, int index) {
+  Widget _buildPlaylistItem(
+      BuildContext context, PlaylistItem item, int index) {
     // In real app, fetch video details using VideoRepository
     final videoRepo = sl<VideoRepository>();
     final videos = videoRepo.getVideos();
-    final video = videos.firstWhere((v) => v.id == item.videoId, orElse: () => videos.first);
+    final video = videos.firstWhere((v) => v.id == item.videoId,
+        orElse: () => videos.first);
 
     return Slidable(
       key: Key(item.id),
@@ -219,7 +274,9 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
         children: [
           SlidableAction(
             onPressed: (_) {
-              context.read<PlaylistBloc>().add(RemoveVideoFromPlaylist(playlist!.id, item.videoId));
+              context
+                  .read<PlaylistBloc>()
+                  .add(RemoveVideoFromPlaylist(playlist!.id, item.videoId));
             },
             backgroundColor: AppColors.colorError,
             foregroundColor: Colors.white,
@@ -241,8 +298,16 @@ class _PlaylistDetailContentState extends State<_PlaylistDetailContent> {
             ),
           ),
         ),
-        title: Text(video.title, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
-        subtitle: Text(video.duration, style: const TextStyle(color: AppColors.colorTextSecondary, fontFamily: 'Poppins', fontSize: 12)),
+        title: Text(video.title,
+            style: const TextStyle(
+                color: Colors.white, fontFamily: 'Poppins', fontSize: 14),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis),
+        subtitle: Text(video.duration,
+            style: const TextStyle(
+                color: AppColors.colorTextSecondary,
+                fontFamily: 'Poppins',
+                fontSize: 12)),
         trailing: const ReorderableDragStartListener(
           index: 0, // Ignored by builder but required by widget
           child: Icon(Icons.drag_handle, color: AppColors.colorTextMuted),

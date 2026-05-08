@@ -17,10 +17,26 @@ class CommentRepository {
 
     final random = Random();
     final authors = [
-      'Alex Rivera', 'Jordan Kim', 'Taylor Brooks', 'Morgan Chen', 'Sam Patel',
-      'Casey Wilson', 'Drew Thompson', 'Blake Anderson', 'Quinn Martinez', 'Reese Garcia',
-      'Avery Johnson', 'Riley Lee', 'Finley Williams', 'Peyton Davis', 'Hayden Brown',
-      'Dakota Miller', 'Sydney Moore', 'Cameron Taylor', 'Kendall Jackson', 'Sage White'
+      'Alex Rivera',
+      'Jordan Kim',
+      'Taylor Brooks',
+      'Morgan Chen',
+      'Sam Patel',
+      'Casey Wilson',
+      'Drew Thompson',
+      'Blake Anderson',
+      'Quinn Martinez',
+      'Reese Garcia',
+      'Avery Johnson',
+      'Riley Lee',
+      'Finley Williams',
+      'Peyton Davis',
+      'Hayden Brown',
+      'Dakota Miller',
+      'Sydney Moore',
+      'Cameron Taylor',
+      'Kendall Jackson',
+      'Sage White'
     ];
 
     final sampleTexts = [
@@ -50,7 +66,10 @@ class CommentRepository {
           authorName: authors[authorIdx],
           authorAvatar: 'https://picsum.photos/seed/${authorIdx + 1}/100/100',
           text: text,
-          postedAt: DateTime.now().subtract(Duration(days: random.nextInt(30), hours: random.nextInt(24))).toIso8601String(),
+          postedAt: DateTime.now()
+              .subtract(
+                  Duration(days: random.nextInt(30), hours: random.nextInt(24)))
+              .toIso8601String(),
           likeCount: random.nextInt(50),
           isUserComment: false,
         );
@@ -90,7 +109,9 @@ class CommentRepository {
 
   List<Comment> getCommentsForVideo(String videoId, {int limit = 30}) {
     final box = Hive.box<Comment>(commentsBoxName);
-    final sorted = box.values.where((c) => c.videoId == videoId).toList()..sort((a, b) => DateTime.parse(b.postedAt).compareTo(DateTime.parse(a.postedAt)));
+    final sorted = box.values.where((c) => c.videoId == videoId).toList()
+      ..sort((a, b) =>
+          DateTime.parse(b.postedAt).compareTo(DateTime.parse(a.postedAt)));
     return sorted.take(limit).toList();
   }
 

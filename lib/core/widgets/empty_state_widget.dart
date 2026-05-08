@@ -2,7 +2,16 @@ import '../../core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-enum EmptyStateType { search, history, bookmarks, downloads, playlists, liked, notifications, comments }
+enum EmptyStateType {
+  search,
+  history,
+  bookmarks,
+  downloads,
+  playlists,
+  liked,
+  notifications,
+  comments
+}
 
 class EmptyStateWidget extends StatelessWidget {
   final EmptyStateType type;
@@ -85,13 +94,20 @@ class EmptyStateWidget extends StatelessWidget {
                 lottieAsset,
                 height: 200,
                 repeat: false,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.hourglass_empty, size: 80, color: AppColors.colorSurface3),
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.hourglass_empty,
+                    size: 80,
+                    color: AppColors.colorSurface3),
               ),
               const SizedBox(height: 24),
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
+                style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
               ),
               const SizedBox(height: 8),
               SizedBox(
@@ -99,7 +115,10 @@ class EmptyStateWidget extends StatelessWidget {
                 child: Text(
                   message,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontFamily: 'Poppins', fontSize: 14, color: AppColors.colorTextSecondary),
+                  style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      color: AppColors.colorTextSecondary),
                 ),
               ),
               if (actionLabel != null && onAction != null) ...[
@@ -108,9 +127,12 @@ class EmptyStateWidget extends StatelessWidget {
                   onPressed: onAction,
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.colorPrimary),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                   ),
-                  child: Text(actionLabel!, style: const TextStyle(color: Colors.white, fontFamily: 'Poppins')),
+                  child: Text(actionLabel!,
+                      style: const TextStyle(
+                          color: Colors.white, fontFamily: 'Poppins')),
                 ),
               ],
             ],
